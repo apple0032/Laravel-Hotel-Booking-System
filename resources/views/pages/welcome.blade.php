@@ -871,4 +871,11 @@
 
     </script>
 
+    <script>
+        $("#cate").val({{Input::get('category')}});
+        $("#star").val({{Input::get('star')}});
+        $("#room_type").val({{Input::get('room_type')}});
+        $("#people_limit").val({{Input::get('people_limit')}});
+    </script>
+
 @endsection

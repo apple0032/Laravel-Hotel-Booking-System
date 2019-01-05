@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Input;
 use DateTime;
 use DatePeriod;
 use DateInterval;
+use DB;
 
 class PagesController extends Controller
 {
@@ -129,115 +130,53 @@ class PagesController extends Controller
         $price_low = Input::get('price_low');
         $price_up = Input::get('price_up');
 
-        //Query logic
-        $hotels = Hotel::select('id');
+        $hotels = DB::table('hotel')
+            ->select('hotel.id')
+            ->leftJoin('hotel_room', 'hotel.id', '=', 'hotel_room.hotel_id')
+            ->leftJoin('post_tag', 'hotel.id', '=', 'post_tag.hotel_id');
 
         if ($name != null) {
-            $hotels = $hotels->Where('name', 'like', '%' . $name . '%');
+            $hotels->Where('hotel.name', 'like', '%' . $name . '%');
         }
 
         if ($category != null) {
-            $hotels = $hotels->Where('category_id', '=', $category);
-        }
-
-        if ($tags != null) {
-            $tag_array = array();
-
-            foreach ($tags as $key => $tag) {
-                $hotel_tags[$key] = PostTag::select('hotel_id')->where('tag_id', '=', $tag)->get()->toArray();
-            }
-
-            foreach ($hotel_tags as $key => $hotel_tag) {
-                foreach ($hotel_tag as $ht) {
-                    if (!in_array($ht['hotel_id'], $tag_array)) {
-                        array_push($tag_array, $ht['hotel_id']);
-                    }
-                }
-            }
-
-            if ($tag_array == null) {
-                $hotels = $hotels->where('name', '=', 'no_hotel');
-            } else {
-
-                $hotels = $hotels->where(function ($query) use ($tag_array) {
-                    foreach ($tag_array as $ta) {
-                        $query->orWhere('id', '=', $ta);
-                    }
-                });
-            }
+            $hotels->Where('hotel.category_id', '=', $category);
         }
 
         if ($star != null) {
-            $hotels = $hotels->where('star', '=', $star);
+            $hotels->where('hotel.star', '=', $star);
         }
 
-
         if ($room_type != null) {
-            $hotel_room = HotelRoom::select('hotel_id')->where('room_type_id', '=', $room_type)->get()->toArray();
-
-            $hotels = $hotels->where(function ($query) use ($hotel_room) {
-                foreach ($hotel_room as $hr) {
-                    $query->orWhere('id', '=', $hr);
-                }
-            });
+            $hotels->where('hotel_room.room_type_id','=', $room_type);
         }
 
         if ($people_limit != null) {
-            $limited_hotel = HotelRoom::select('hotel_id')
-                ->where('ppl_limit', '>=', $people_limit);
-
-            if ($room_type != null) {
-                $limited_hotel = $limited_hotel
-                    ->where('room_type_id', '=', $room_type);
-            }
-            $limited_hotel =
-                $limited_hotel->distinct('hotel_id')->get()->toArray();
-
-            $hotels = $hotels->where(function ($query) use ($limited_hotel) {
-                foreach ($limited_hotel as $lh) {
-                    $query->orWhere('id', '=', $lh);
-                }
-            });
+            $hotels->where('hotel_room.ppl_limit','>=', $people_limit);
         }
 
         if (($price_low != null) || ($price_up != null)) {
-
-            $price_hotel = HotelRoom::select('hotel_id')
-                ->where('price', '>=', $price_low)
-                ->where('price', '<=', $price_up);
-
-
-            if ($room_type != null) {
-                $price_hotel = $price_hotel
-                    ->where('room_type_id', '=', $room_type);
-            }
-            if ($people_limit != null) {
-                $price_hotel = $price_hotel
-                    ->where('ppl_limit', '>=', $people_limit);
-            }
-
-            $price_hotel =
-                $price_hotel->distinct('hotel_id')->get()->toArray();
-
-            if ($price_hotel == null) {
-                $hotels = $hotels->where('name', '=', 'no_hotel');
-            } else {
-
-                $hotels = $hotels->where(function ($query) use ($price_hotel) {
-                    foreach ($price_hotel as $ph) {
-                        $query->orWhere('id', '=', $ph);
-                    }
-                });
-            }
+            $hotels->where('hotel_room.price', '>=', $price_low);
+            $hotels->where('hotel_room.price', '<=', $price_up);
         }
 
+        if ($tags != null) {
+                $hotels->where(function ($query) use ($tags) {
+                    foreach ($tags as $tag) {
+                        $query->orWhere('post_tag.tag_id', '=', $tag);
+                    }
+                });
+        }
 
-        //die();
+        $hotels = $hotels->distinct('hotel.id')->get();
 
-        //Query to Eloquent result
-        $hotels = $hotels->get()->toArray();
+        $hotels_arr = array();
+        foreach ($hotels as $hotel){
+            $hotels_arr[]['id'] = $hotel->id;
+        }
 
-        //print_r($hotels);die();
+        $hotels = $hotels_arr;
+
 
         if($hotels != null) {
             $hotels_result = Hotel::select('*');
