@@ -1,0 +1,12 @@
+/vendor
+/node_modules
+Homestead.yaml
+Homestead.json
+.env.production
+public/images
+storage/
+.DS_Store
+
+/tests
+.idea
+/nbproject
