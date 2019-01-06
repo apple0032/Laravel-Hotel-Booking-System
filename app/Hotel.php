@@ -54,6 +54,8 @@ class Hotel extends Model
             ->where('hotel_id', '=',$id)
             ->average('star');
 
+        $rate = round($rate,2);
+
         return $rate;
     }
     
