@@ -155,7 +155,7 @@
             var name = $('#search_hotelname').val();
             name = name.replace(/ /g, "|") ;
 
-            $('#load_data').load('hotel?name=' + name + ' #load_data', function () {
+            $('#load_data').load('{{ route('admin.hotel') }}?name=' + name + ' #load_data', function () {
 
             });
         }

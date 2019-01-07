@@ -102,5 +102,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('hotel/{id}/deleteimg','UploadImagesController@deleteimg');
 
     //Backend Admin
-    Route::get('admin', ['uses' => 'AdminController@index', 'as' => 'admin']);
+    Route::get('admin/user', ['uses' => 'AdminController@user', 'as' => 'admin.user']);
+    Route::get('admin/hotel', ['uses' => 'AdminController@hotel', 'as' => 'admin.hotel']);
+    Route::get('admin/hotel/create', ['uses' => 'AdminController@create', 'as' => 'hotel.create']);
+    Route::post('admin/hotel', ['uses' => 'AdminController@store', 'as' => 'hotel.store']);
+    Route::get('admin/hotel/{id}', ['uses' => 'AdminController@edit', 'as' => 'hotel.edit']);
 });

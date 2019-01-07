@@ -165,8 +165,8 @@
                            aria-expanded="false" style="text-transform: capitalize;"><i class="fas fa-user-alt"></i> &nbsp; {{ Auth::user()->name }} <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             @if(Auth::user()->role == 'superadmin')
-                                <li><a href="{{ route('admin') }}"><i class="fas fa-users-cog"></i> &nbsp; Users</a></li>
-                                <li><a href="{{ route('hotel.index') }}"><i class="fas fa-hotel"></i> &nbsp; Hotels</a></li>
+                                <li><a href="{{ route('admin.user') }}"><i class="fas fa-users-cog"></i> &nbsp; Users</a></li>
+                                <li><a href="{{ route('admin.hotel') }}"><i class="fas fa-hotel"></i> &nbsp; Hotels</a></li>
                                 <li><a href="{{ route('categories.index') }}"><i class="fas fa-box-open"></i> &nbsp; Categories</a></li>
                                 <li><a href="{{ route('tags.index') }}"><i class="fas fa-tags"></i> &nbsp; Tags</a></li>
                             @endif
