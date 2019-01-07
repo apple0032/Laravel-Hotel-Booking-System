@@ -15,7 +15,7 @@ body{
     background-size:     cover;                      /* <------ */
     background-repeat:   no-repeat;
     background-position: center center;
-    /*opacity: 0.3;*/
+    opacity: 0.3;
 }
 
 html{ height:100%; }
