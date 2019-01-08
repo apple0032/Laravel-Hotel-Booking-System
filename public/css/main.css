@@ -15,7 +15,7 @@ body{
     background-size:     cover;                      /* <------ */
     background-repeat:   no-repeat;
     background-position: center center;
-    opacity: 0.3;
+    /*opacity: 0.3;*/
 }
 
 html{ height:100%; }
@@ -289,7 +289,8 @@ body{ min-height:100%; padding:0; margin:0; position:relative; }
 }
 
 .pagination>li>a, .pagination>li>span{
-    border: 1px solid #337ab7 !important;
+    border: 1px solid #bbcbd9 !important;
+    padding: 3px 8px !important;
 }
 
 .hotel_image{

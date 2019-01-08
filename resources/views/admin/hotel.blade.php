@@ -21,14 +21,16 @@
             border-radius: 3px;
             min-width: 80px;
             text-align: center;
+            transition: 0.2s all;
+            cursor: pointer;
+        }
+
+        .submit:hover{
+            background-color: #268898;
         }
 
         .form_height {
             margin-top: 10px;
-        }
-
-        #submit_search{
-            cursor: pointer;
         }
     </style>
 
@@ -60,8 +62,7 @@
                         <div class="submit" id="submit_search">SEARCH</div>
                     </div>
                     <div class="col-md-1 form_height" style="text-align: center;">
-                        <input onclick="location.href='hotel'" type="reset" value="RESET"
-                               class="submit"/>
+                        <div class="submit" id="submit_reset">RESET</div>
                     </div>
 
                 </div>
@@ -159,6 +160,13 @@
 
             });
         }
+
+
+        $("#submit_reset").click(function () {
+            $('#load_data').load('{{ route('admin.hotel') }} #load_data', function () {
+
+            });
+        });
 
     </script>
 

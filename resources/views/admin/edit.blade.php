@@ -163,7 +163,7 @@
                                 {!! Html::linkRoute('hotel.show', 'View', array($hotel->id), array('class' => 'btn btn-primary btn-block')) !!}
                             </div>
                             <div class="col-sm-6">
-                                {!! Html::linkRoute('hotel.index', 'Cancel', array($hotel->id), array('class' => 'btn btn-danger btn-block')) !!}
+                                {!! Html::linkRoute('admin.hotel', 'Cancel', ['name' => $hotel->id], array('class' => 'btn btn-danger btn-block')) !!}
                             </div>
                         </div>
                         <div class="row">

@@ -94,7 +94,7 @@
         <div class="col-md-4">
             <div class="well">
                 <div class="hotel_create_btn">
-                    <a href="{{ route('hotel.index') }}" class="btn btn-danger btn-lg btn-block">Cancel</a>
+                    <a href="{{ route('admin.hotel') }}" class="btn btn-danger btn-lg btn-block">Cancel</a>
                 </div>
                 <div class="hotel_create_btn">
                     {{ Form::submit('Create Hotel', array('class' => 'btn btn-success btn-lg btn-block', 'style' => 'margin-top: 20px;')) }}

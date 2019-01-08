@@ -4,15 +4,29 @@
 
 @section('content')
 
+    <style>
+        .room_header i{
+            font-size: 21px !important;
+        }
+    </style>
+
     <div class="row page_row hotel_index_table">
         <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-9">
+            <div class="row room_header">
+                <div class="col-md-8">
                     <h2>{{$hotel['name']}}</h2>
                 </div>
-                <div class="col-md-3" style="margin-top: 5px">
+                <div class="col-md-2" style="margin-top: 5px">
+                    <a href="{{ route('admin.hotel',['name' => $hotel->id]) }}"
+                       class="button button-3d button-caution button-rounded three_d_btn">
+                        <i class="fas fa-backward"></i>
+                    </a>
+                </div>
+                <div class="col-md-2" style="margin-top: 5px">
                     <a href="{{ route('hotel.roomcreate',['id' => $hotel->id]) }}"
-                       class="button button-3d button-primary button-rounded three_d_btn">Create New Room</a>
+                       class="button button-3d button-primary button-rounded three_d_btn">
+                        <i class="fas fa-plus-circle"></i>
+                    </a>
                 </div>
             </div>
             <hr>

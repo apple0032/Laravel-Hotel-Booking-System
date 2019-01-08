@@ -104,8 +104,14 @@
                 </div>
             </div>
 
-
-            {{ Form::submit('Create Room', array('class' => 'btn btn-success btn-lg btn-block', 'style' => 'margin-top: 20px;')) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ Form::submit('Create Room', array('class' => 'btn btn-success btn-lg btn-block', 'style' => 'margin-top: 20px;')) }}
+                </div>
+                <div class="col-md-6">
+                    {!! Html::linkRoute('hotel.room', 'Cancel',$hotel->id, array('class' => 'btn btn-danger btn-lg btn-block' , 'style' => 'margin-top: 20px;')) !!}
+                </div>
+            </div>
 
             {{ Form::close() }}
         </div>

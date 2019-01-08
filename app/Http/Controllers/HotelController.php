@@ -95,7 +95,7 @@ class HotelController extends Controller
     {
         $data = self::HotelGrid();
 
-        $hotels = Hotel::select('*');
+        $hotels = Hotel::select('*')->where('soft_delete', '=', 0);
         $hotels = $hotels->paginate(10);
         foreach($hotels as $k => $hotel){
             $rate[] = Hotel::rate($hotel->id);
