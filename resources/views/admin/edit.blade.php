@@ -64,7 +64,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
     <div class="row page_row">
-        {!! Form::model($hotel, ['route' => ['hotel.update', $hotel->id], 'data-parsley-validate' => '', 'files' => true, 'method' => 'PUT']) !!}
+        {!! Form::model($hotel, ['route' => ['hotel.update', $hotel->id], 'data-parsley-validate' => '', 'files' => true, 'method' => 'POST']) !!}
         <div class="col-md-8">
             {{ Form::label('name', 'Name:') }}
             {{ Form::text('name', null, ["class" => 'form-control input-lg']) }}
@@ -381,7 +381,7 @@
 
                     function DeleteImage(image_id) {
                         $.ajax({
-                            url: 'deleteimg',
+                            url: '{{$hotel->id}}/deleteimg',
                             type: 'POST',
                             async: false,
                             data: {
@@ -424,7 +424,7 @@
 
         function DeleteImage(image_id) {
             $.ajax({
-                url: 'deleteimg',
+                url: '{{$hotel->id}}/deleteimg',
                 type: 'POST',
                 async: false,
                 data: {

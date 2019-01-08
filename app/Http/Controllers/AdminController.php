@@ -264,6 +264,93 @@ class AdminController extends Controller
                 ->with('hotel_image',$hotel_image)
             ;
     }
+    
+    
+    public function update(Request $request, $id)
+    {
+        // Validate the data
+        $hotel = Hotel::find($id);
+
+        $this->validate($request, array(
+                'name'         => 'required|max:50',
+                'star'          => 'required|integer',
+                'phone'         => 'required|integer',
+                'category_id'   => 'required|integer',
+                'body'          => 'required',
+            ));
+        
+        $facility_table = new HotelFacility;
+        $hotel_facility_list = $facility_table->getTableColumns();
+
+        foreach($hotel_facility_list as $hotel_facility){
+            $this->validate($request, array(
+                $hotel_facility => 'required',
+            ));
+        }
+        
+
+         // store in the database
+        $post = Hotel::find($id);
+
+        $post->name = $request->name;
+        $post->category_id = $request->category_id;
+        //$post->body = Purifier::clean($request->body);
+        $post->body = $request->body;
+        $post->phone =  $request->phone;
+        $post->star =  $request->star;
+        $post->coordi_x = $request->coordi_x;
+        $post->coordi_y = $request->coordi_y;
+        $post->handling_price = $request->handling_price;
+
+        if ($request->featured_img) {
+          $old_file = 'images/upload/'.$post->image;
+          if(file_exists($old_file)) {
+              unlink($old_file);
+          }
+
+          $image = $request->file('featured_img');
+          $filename = time() . '.' . $image->getClientOriginalExtension();
+          $location = public_path('images/upload/' . $filename);
+          Image::make($image)->resize(750, 500)->save($location);
+
+          $post->image = $filename;
+        }
+
+        $post->touch();
+        $post->save();
+
+        //$post->tags()->sync($request->tags, false);
+        if($post->save()){
+            if($request->tags != null){
+                
+                //Remove all tag from existed table
+                $hotel_tags = PostTag::where('hotel_id', '=', $post->id)->get();
+                foreach ($hotel_tags as $hotel_tag){
+                    $hotel_tag->delete();
+                }
+                
+                //Create new record when updated
+                foreach($request->tags as $save_tag){
+                    $tags = new PostTag;
+                    $tags->hotel_id = $post->id;
+                    $tags->tag_id = $save_tag;
+                    $tags->save();
+                }
+            }
+        }
+        
+        
+        //Update Hotel Facilities in loop
+        $fac = HotelFacility::where('hotel_id', '=', $post->id)->first();
+        foreach ($hotel_facility_list as $sv_hotel_fac){
+            $fac->$sv_hotel_fac = $request->$sv_hotel_fac;
+        }
+        $fac->save();
+
+        Session::flash('success', 'The hotel was successfully updated!');
+
+        return redirect()->route('admin.hotel', $post->id);
+    }
 
 
 }

@@ -99,7 +99,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/images-save', 'UploadImagesController@store');
     Route::post('/images-delete', 'UploadImagesController@destroy');
     Route::get('/images-show', 'UploadImagesController@index');
-    Route::post('hotel/{id}/deleteimg','UploadImagesController@deleteimg');
+    Route::post('admin/hotel/{id}/deleteimg','UploadImagesController@deleteimg');
 
     //Backend Admin
     Route::get('admin/user', ['uses' => 'AdminController@user', 'as' => 'admin.user']);
@@ -107,4 +107,5 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('admin/hotel/create', ['uses' => 'AdminController@create', 'as' => 'hotel.create']);
     Route::post('admin/hotel', ['uses' => 'AdminController@store', 'as' => 'hotel.store']);
     Route::get('admin/hotel/{id}', ['uses' => 'AdminController@edit', 'as' => 'hotel.edit']);
+    Route::post('admin/hotel/{id}', ['uses' => 'AdminController@update', 'as' => 'hotel.update']);
 });
