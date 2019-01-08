@@ -53,7 +53,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::delete('comments/{id}', ['uses' => 'CommentsController@destroy', 'as' => 'comments.destroy']);
     Route::get('comments/{id}/delete', ['uses' => 'CommentsController@delete', 'as' => 'comments.delete']);
 
-
     Route::get('blog/{slug}', ['as' => 'blog.single', 'uses' => 'BlogController@getSingle'])->where('slug', '[\w\d\-\_]+');
     Route::get('blog', ['uses' => 'BlogController@getIndex', 'as' => 'blog.index']);
     Route::get('contact', 'PagesController@getContact');
@@ -65,41 +64,29 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('search', 'PagesController@getsearch');  //SEARCH QUERY
     Route::resource('posts', 'PostController');
 
-    //Hotel
-    Route::resource('hotel', 'HotelController');
-    Route::get('hotel/{id}/delete', ['uses' => 'HotelController@delete', 'as' => 'hotel.delete']);
-    Route::get('allhotels', ['uses' => 'HotelController@allhotels', 'as' => 'hotel.allhotels']);
-
+    //Image
+    Route::post('/images-save', 'UploadImagesController@store');
+    Route::post('/images-delete', 'UploadImagesController@destroy');
+    Route::get('/images-show', 'UploadImagesController@index');
+    Route::post('admin/hotel/{id}/deleteimg','UploadImagesController@deleteimg');
+    
     //Ajax
     Route::get('ajax', function(){ return view('ajax'); });
     Route::post('/searchbyajax','PagesController@searchbyajax');
     Route::post('/searchname','PagesController@searchname');
     Route::post('hotel/searchbyajax','PagesController@searchbyajax');
     Route::post('hotel/checkvalidation','PagesController@checkvalidation');
-
-    //Hotel Room
-    Route::get('hotel/{id}/room', ['uses' => 'HotelController@room', 'as' => 'hotel.room']);
-    Route::get('hotel/{id}/room/create', ['uses' => 'HotelController@roomcreate', 'as' => 'hotel.roomcreate']);
-    Route::post('hotel/{id}/room', ['uses' => 'HotelController@roomstore', 'as' => 'hotel.roomstore']);
-    Route::get('hotel/{id}/room/{roomid}/edit', ['uses' => 'HotelController@roomedit', 'as' => 'hotel.roomedit']);
-    Route::put('hotel/{id}/room/{roomid}', ['uses' => 'HotelController@roomupdate', 'as' => 'hotel.roomupdate']);
-    Route::get('hotel/{id}/room/{roomid}/delete', ['uses' => 'HotelController@roomdelete', 'as' => 'hotel.roomdelete']);
     
+    //Hotel
+    Route::resource('hotel', 'HotelController');
+    Route::get('allhotels', ['uses' => 'HotelController@allhotels', 'as' => 'hotel.allhotels']);
+    Route::post('comment/{id}', ['uses' => 'HotelController@comment', 'as' => 'hotel.comment']);
+
     //Hotel Booking
     Route::get('hotel/{id}/book/{roomid}', ['uses' => 'HotelController@book', 'as' => 'hotel.book']);
     Route::post('hotel/{id}/book/{roomid}', ['uses' => 'HotelController@booking', 'as' => 'hotel.booking']);
-
     Route::get('booklist', ['uses' => 'HotelController@booklist', 'as' => 'hotel.booklist']);
     Route::get('payment', ['uses' => 'HotelController@payment', 'as' => 'hotel.payment']);
-    
-    //Hotel Comment
-    Route::post('comment/{id}', ['uses' => 'HotelController@comment', 'as' => 'hotel.comment']);
-
-    //Image
-    Route::post('/images-save', 'UploadImagesController@store');
-    Route::post('/images-delete', 'UploadImagesController@destroy');
-    Route::get('/images-show', 'UploadImagesController@index');
-    Route::post('admin/hotel/{id}/deleteimg','UploadImagesController@deleteimg');
 
     //Backend Admin
     Route::get('admin/user', ['uses' => 'AdminController@user', 'as' => 'admin.user']);
@@ -108,4 +95,13 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('admin/hotel', ['uses' => 'AdminController@store', 'as' => 'hotel.store']);
     Route::get('admin/hotel/{id}', ['uses' => 'AdminController@edit', 'as' => 'hotel.edit']);
     Route::post('admin/hotel/{id}', ['uses' => 'AdminController@update', 'as' => 'hotel.update']);
+    Route::get('admin/hotel/{id}/delete', ['uses' => 'AdminController@delete', 'as' => 'hotel.delete']);
+    
+    //Hotel Room
+    Route::get('admin/hotel/{id}/room', ['uses' => 'AdminController@room', 'as' => 'hotel.room']);
+    Route::get('admin/hotel/{id}/room/create', ['uses' => 'AdminController@roomcreate', 'as' => 'hotel.roomcreate']);
+    Route::post('admin/hotel/{id}/room', ['uses' => 'AdminController@roomstore', 'as' => 'hotel.roomstore']);
+    Route::get('admin/hotel/{id}/room/{roomid}/edit', ['uses' => 'AdminController@roomedit', 'as' => 'hotel.roomedit']);
+    Route::put('admin/hotel/{id}/room/{roomid}', ['uses' => 'AdminController@roomupdate', 'as' => 'hotel.roomupdate']);
+    Route::get('admin/hotel/{id}/room/{roomid}/delete', ['uses' => 'AdminController@roomdelete', 'as' => 'hotel.roomdelete']);
 });

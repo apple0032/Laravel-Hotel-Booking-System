@@ -114,7 +114,7 @@
                                     <i class="fas fa-bed"></i>
                                 </a>
 
-                                <a href="hotel/{{ $hotel->id }}/delete" class="btn btn-default btn-sm"
+                                <a href="{{ route('hotel.delete', $hotel->id) }}" class="btn btn-default btn-sm"
                                    data-toggle="tooltip"
                                    title="Soft Delete">
                                     <i class="fas fa-trash"></i>

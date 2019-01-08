@@ -349,8 +349,240 @@ class AdminController extends Controller
 
         Session::flash('success', 'The hotel was successfully updated!');
 
-        return redirect()->route('admin.hotel', $post->id);
+        return redirect()->route('hotel.edit', $post->id);
+    }
+    
+    public function destroy($id)
+    {
+        $post = hotel::find($id);
+
+        $post->delete();
+
+        Session::flash('success', 'The hotel was successfully deleted.');
+        return redirect()->route('admin.hotel');
+    }
+    
+    public function delete($id)
+    {
+        $hotel = Hotel::find($id);
+
+        $hotel->soft_delete = 1;
+        $hotel->save();
+
+        Session::flash('success', 'The hotel was successfully deleted.');
+        return redirect()->route('admin.hotel');
     }
 
+    
+    public function room($id)
+    {
 
+        $hotel = Hotel::find($id);
+        $types = RoomType::all();
+          
+        $type_list = \App\Helpers\AppHelper::instance()->ObjectToArrayMap($types,'id','type');
+
+        $facility_table = new HotelRoomFacility;
+        $room_facility_list = $facility_table->getTableColumns();
+
+        $temp_fontawesome = $facility_table->getFontAwesome();
+
+        $room_facility_label = array();
+        foreach ($room_facility_list as $facilities){
+            $facilities = str_replace("_"," ",$facilities);
+            $room_facility_label[] = ucwords($facilities);
+        }
+
+//        print_r($room_facility_list);
+//        die();
+
+
+        return view('admin.room')
+            ->withHotel($hotel)
+            ->with('type_list',$type_list)
+            ->with('room_facility_list',$room_facility_list)
+            ->with('temp_fontawesome',$temp_fontawesome)
+            ->with('room_facility_label',$room_facility_label);
+    }
+    
+    
+    
+    public function roomcreate($id)
+    {
+        
+        $hotel = Hotel::find($id);
+        $types = RoomType::all();
+        $type_list = \App\Helpers\AppHelper::instance()->ObjectToArrayMap($types,'id','type');
+        
+        //print_r($types[0]['id']);die();
+        $type_lefts = array(); 
+        $counter = 0;
+        foreach($types as $key => $type){
+            $exist_room = HotelRoom::where('room_type_id','=',$type['id'])->where('hotel_id','=',$hotel->id)->get();
+            if(!count($exist_room)){
+                $type_lefts[$counter]['id'] = $type['id'];
+                $type_lefts[$counter]['type'] = $type['type'];
+                $counter++;
+            }
+        }
+        
+        $facility_table = new HotelRoomFacility;
+        $room_facility_list = $facility_table->getTableColumns();
+
+        $room_facility_label = array();
+        foreach ($room_facility_list as $facilities){
+            $facilities = str_replace("_"," ",$facilities);
+            $room_facility_label[] = ucwords($facilities);
+        }
+
+        $temp_fontawesome = $facility_table->getFontAwesome();
+        
+        return view('admin.roomcreate')
+                ->withHotel($hotel)
+                ->with('type_list',$type_list)
+                ->with('types',$types)
+                ->with('type_lefts',$type_lefts)
+                ->with('room_facility_list', $room_facility_list)
+                ->with('room_facility_label',$room_facility_label)
+                ->with('temp_fontawesome', $temp_fontawesome);
+    }
+
+    
+    public function roomstore(Request $request,$id)
+    {
+        // validate the data
+        $this->validate($request, array(
+                'room_type_id'         => 'required',
+                'ppl_limit'          => 'required|integer',
+                'price'         => 'required|integer',
+                'qty'   => 'required|integer',
+                'availability'          => 'required'
+            ));
+        
+        $room = new HotelRoom();
+        $room->hotel_id = $id;
+        $room->room_type_id = $request->room_type_id;
+        $room->ppl_limit = $request->ppl_limit;
+        $room->price = $request->price;
+        $room->qty = $request->qty;
+        $room->availability = $request->availability;
+        $room->promo = $request->promo;
+        $room->save();
+        
+        $facility_table = new HotelRoomFacility;
+        $room_facility_list = $facility_table->getTableColumns();
+        
+        $facility = new HotelRoomFacility();
+        $facility->hotel_room_id = $room->id;
+        foreach ($room_facility_list as $sv_room_fac){
+            $facility->$sv_room_fac = $request->$sv_room_fac;
+        }
+        $facility->save();
+      
+        Session::flash('success', 'The room was successfully created!');
+
+        return redirect()->route('hotel.room',$id);
+    }
+    
+    
+    
+    public function roomedit($id,$roomid)
+    {
+        $room = HotelRoom::find($roomid);
+        $hotel = Hotel::find($id);
+        $types = RoomType::all();
+        $type_list = \App\Helpers\AppHelper::instance()->ObjectToArrayMap($types,'id','type');
+        
+        //print_r($room->facility);die();
+        
+        $type_lefts = array(); 
+        $counter = 0;
+        foreach($types as $key => $type){
+            $exist_room = HotelRoom::where('room_type_id','=',$type['id'])->where('hotel_id','=',$hotel->id)->get();
+            if(!count($exist_room)){
+                $type_lefts[$counter]['id'] = $type['id'];
+                $type_lefts[$counter]['type'] = $type['type'];
+                $counter++;
+            }
+        }
+        
+        $room_facility_selected = HotelRoomFacility::where('hotel_room_id', '=', $roomid)->first();
+        
+        $facility_table = new HotelRoomFacility;
+        $room_facility_list = $facility_table->getTableColumns();
+
+        $room_facility_label = array();
+        foreach ($room_facility_list as $facilities){
+            $facilities = str_replace("_"," ",$facilities);
+            $room_facility_label[] = ucwords($facilities);
+        }
+
+        $temp_fontawesome = $facility_table->getFontAwesome();
+
+        //print_r($room_facility_label);die();
+        
+        
+        return view('admin.roomedit')
+                ->withHotel($hotel)
+                ->with('type_list',$type_list)
+                ->with('types',$types)
+                ->with('type_lefts',$type_lefts)
+                ->withRoom($room)
+                ->with('room_facility_list',$room_facility_list)
+                ->with('room_facility_selected',$room_facility_selected)
+                ->with('room_facility_label',$room_facility_label)
+                ->with('temp_fontawesome',$temp_fontawesome);
+    }
+    
+    
+    public function roomupdate(Request $request, $id, $roomid)
+    {
+        
+        // validate the data
+        $this->validate($request, array(
+                'room_type_id'         => 'required',
+                'ppl_limit'          => 'required|integer',
+                'price'         => 'required|integer',
+                'qty'   => 'required|integer',
+                'availability'          => 'required'
+            ));
+        
+        
+        $room = HotelRoom::find($roomid);
+        $room->room_type_id = $request->room_type_id;
+        $room->ppl_limit = $request->ppl_limit;
+        $room->price = $request->price;
+        $room->qty = $request->qty;
+        $room->availability = $request->availability;
+        $room->promo = $request->promo;
+        $room->save();
+        
+
+        //Update Romm Facilities in loop        
+        $facility_table = new HotelRoomFacility;
+        $room_facility_list = $facility_table->getTableColumns();
+        
+        $fac = HotelRoomFacility::where('hotel_room_id', '=', $roomid)->first();
+        foreach ($room_facility_list as $sv_room_fac){
+            $fac->$sv_room_fac = $request->$sv_room_fac;
+        }
+        $fac->save();
+        
+        
+        return redirect()->route('hotel.roomedit',['id'=> $id,'roomid' => $roomid]);
+    }
+    
+
+    public function roomdelete($id,$roomid)
+    {
+
+        $room = HotelRoom::find($roomid);
+        $room->delete();
+
+        Session::flash('success', 'The room was successfully deleted.');
+        return redirect()->route('hotel.room',$id);
+    }
+
+    
+    
 }
