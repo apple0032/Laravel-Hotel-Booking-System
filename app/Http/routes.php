@@ -75,7 +75,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/searchbyajax','PagesController@searchbyajax');
     Route::post('/searchname','PagesController@searchname');
     Route::post('hotel/searchbyajax','PagesController@searchbyajax');
-    Route::post('hotel/checkvalidation','PagesController@checkvalidation');
+    Route::post('book/checkvalidation','PagesController@checkvalidation');
     
     //Hotel
     Route::resource('hotel', 'HotelController');
@@ -83,10 +83,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('comment/{id}', ['uses' => 'HotelController@comment', 'as' => 'hotel.comment']);
 
     //Hotel Booking
-    Route::get('hotel/{id}/book/{roomid}', ['uses' => 'HotelController@book', 'as' => 'hotel.book']);
-    Route::post('hotel/{id}/book/{roomid}', ['uses' => 'HotelController@booking', 'as' => 'hotel.booking']);
-    Route::get('booklist', ['uses' => 'HotelController@booklist', 'as' => 'hotel.booklist']);
-    Route::get('payment', ['uses' => 'HotelController@payment', 'as' => 'hotel.payment']);
+    Route::get('book/hotel/{id}/{roomid}', ['uses' => 'BookingController@book', 'as' => 'hotel.book']);
+    Route::post('book/hotel/{id}/{roomid}', ['uses' => 'BookingController@booking', 'as' => 'hotel.booking']);
+    Route::get('book/booklist', ['uses' => 'BookingController@booklist', 'as' => 'hotel.booklist']);
+    Route::get('book/payment', ['uses' => 'BookingController@payment', 'as' => 'hotel.payment']);
 
     //Backend Admin
     Route::get('admin/user', ['uses' => 'AdminController@user', 'as' => 'admin.user']);

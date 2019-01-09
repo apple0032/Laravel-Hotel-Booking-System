@@ -1096,7 +1096,7 @@
                                     </div>
                                     <div class="hotel_page_room_book">
                                         <span>
-                                            <a href="{{$hotel->id}}/book/{{$room->id}}">選擇</a>
+                                            <a href="../book/hotel/{{$hotel->id}}/{{$room->id}}">選擇</a>
                                         </span>
                                     </div>
                                 </div>
