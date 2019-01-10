@@ -27,8 +27,8 @@
 
     .search_box {
         margin-bottom: 40px;
-        margin-left: 30%;
-        margin-right: 30%;
+        margin-left: 20%;
+        margin-right: 20%;
         padding-top: 30px;
         padding-bottom: 30px;
     }
@@ -503,6 +503,10 @@
         color: red;
         font-weight: bold;
     }
+
+    .daterangepicker td.in-range {
+        background-color: #ebf4f8 !important;
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -526,7 +530,7 @@
                         {!! Form::open(array('route' => 'pages.search', 'data-parsley-validate' => '')) !!}
 
                         <div class="row">
-                            <div class="col-md-4 search_hotelname">
+                            <div class="col-md-3 search_hotelname">
                                 {{ Form::label('name', 'Name -') }}
                                 <input class="form-control" maxlength="200" name="name" type="text"
                                        id="search_hotelname">
@@ -545,7 +549,7 @@
                                     {{--<li class="search_opt" value="value3">Option 3</li>--}}
                                 </ul>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 {{ Form::label('category_id', 'Category -') }}
                                 <select class="form-control" name="category_id">
                                     <option value="" selected> -</option>
@@ -554,7 +558,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 {{ Form::label('star', 'Star -') }}
                                 <select class="form-control" name="star">
                                     <option value="" selected> -</option>
@@ -563,10 +567,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 {{ Form::label('tags', 'Tags -') }}
                                 <select class="form-control select2-multi" name="tags[]" multiple="multiple"
                                         style="width:100%">
@@ -575,7 +576,10 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
                                 {{ Form::label('rome_type','Room Type -') }}
                                 <select class="form-control" name="room_type">
                                     <option value="" selected> -</option>
@@ -584,7 +588,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 {{ Form::label('people_limit', 'People -') }}
                                 <select class="form-control" name="people_limit">
                                     <option value="" selected> -</option>
@@ -593,11 +597,14 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="col-md-6">
+                                {{ Form::label('Date', 'Date - ') }}
+                                <input class="form-control" type="text" name="daterange" id="daterange" value="" />
+                            </div>
                         </div>
 
 
                         <div class="row">
-
                             <div class="col-md-6">
                                 {{ Form::label('Price', 'Price - ') }}
                                 <div id="slider"></div>
@@ -611,17 +618,10 @@
                                 <input class="form-control" maxlength="255" name="price_upper" type="text"
                                        id="price_upper"
                                        style="height: 20px; width:45%; display: inline-block">
-
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input class="form-control" type="text" name="daterange" id="daterange" value="" />
                             </div>
                         </div>
 
-                        {{ Form::submit('Search', array('class' => 'btn btn-action', 'style' => 'margin-top: 20px;')) }}
+                        {{ Form::submit('SEARCH', array('class' => 'btn btn-action', 'style' => 'margin-top: 20px;')) }}
                         {!! Form::close() !!}
 
                     </div>
@@ -891,12 +891,15 @@
     <script>
         $(function() {
           $('input[name="daterange"]').daterangepicker({
-            opens: 'left',
+            opens: 'right',
             minDate: new Date(),
+              defaultDate: '',
           }, function(start, end, label) {
             console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
           });
         });
+
+        setTimeout(function(){ $('#daterange').val(''); }, 1);
     </script>
 
 @endsection

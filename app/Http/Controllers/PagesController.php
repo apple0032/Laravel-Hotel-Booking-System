@@ -107,11 +107,17 @@ class PagesController extends Controller
         $request->name = str_replace(" "," ",$request->name);
         
         $range = $request->daterange;
-        $range = explode("-",$range);
-        $start = explode("/",$range[0]);
-        $end = explode("/",$range[1]);
-        $start = trim($start[2]).'-'.trim($start[0]).'-'.trim($start[1]);
-        $end = trim($end[2]).'-'.trim($end[0]).'-'.trim($end[1]);
+
+        if($range != null) {
+            $range = explode("-", $range);
+            $start = explode("/", $range[0]);
+            $end = explode("/", $range[1]);
+            $start = trim($start[2]) . '-' . trim($start[0]) . '-' . trim($start[1]);
+            $end = trim($end[2]) . '-' . trim($end[0]) . '-' . trim($end[1]);
+        } else {
+            $start = '';
+            $end = '';
+        }
 
         return redirect()->route('pages.search', [
             'name' => $request->name,
