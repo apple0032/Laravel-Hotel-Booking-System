@@ -105,6 +105,13 @@ class PagesController extends Controller
 
         //Session::flash('success', 'Search successful!');
         $request->name = str_replace(" "," ",$request->name);
+        
+        $range = $request->daterange;
+        $range = explode("-",$range);
+        $start = explode("/",$range[0]);
+        $end = explode("/",$range[1]);
+        $start = trim($start[2]).'-'.trim($start[0]).'-'.trim($start[1]);
+        $end = trim($end[2]).'-'.trim($end[0]).'-'.trim($end[1]);
 
         return redirect()->route('pages.search', [
             'name' => $request->name,
@@ -115,6 +122,8 @@ class PagesController extends Controller
             'people_limit' => $request->people_limit,
             'price_low' => $price_low,
             'price_up' => $price_up,
+            'start' => $start,
+            'end' => $end,
         ]);
     }
 
@@ -129,6 +138,10 @@ class PagesController extends Controller
         $people_limit = Input::get('people_limit');
         $price_low = Input::get('price_low');
         $price_up = Input::get('price_up');
+        $start = Input::get('start');
+        $end = Input::get('end');
+        
+        //print_r($start);print_r($end);die();
 
         $hotels = DB::table('hotel')
             ->select('hotel.id')

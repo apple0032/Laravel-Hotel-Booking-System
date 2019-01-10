@@ -614,6 +614,12 @@
 
                             </div>
                         </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input class="form-control" type="text" name="daterange" id="daterange" value="" />
+                            </div>
+                        </div>
 
                         {{ Form::submit('Search', array('class' => 'btn btn-action', 'style' => 'margin-top: 20px;')) }}
                         {!! Form::close() !!}
@@ -843,6 +849,10 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.1.0/nouislider.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.1.0/nouislider.js"></script>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <script>
         var slider = document.getElementById('slider');
@@ -876,6 +886,17 @@
         $("#star").val({{Input::get('star')}});
         $("#room_type").val({{Input::get('room_type')}});
         $("#people_limit").val({{Input::get('people_limit')}});
+    </script>
+    
+    <script>
+        $(function() {
+          $('input[name="daterange"]').daterangepicker({
+            opens: 'left',
+            minDate: new Date(),
+          }, function(start, end, label) {
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+          });
+        });
     </script>
 
 @endsection
