@@ -599,7 +599,7 @@
                             </div>
                             <div class="col-md-6">
                                 {{ Form::label('Date', 'Date - ') }}
-                                <input class="form-control" type="text" name="daterange" id="daterange" value="" />
+                                <input class="form-control" type="text" name="daterange" id="daterange" value="" readonly/>
                             </div>
                         </div>
 

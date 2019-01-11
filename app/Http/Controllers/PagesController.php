@@ -195,6 +195,50 @@ class PagesController extends Controller
         }
 
         $hotels = $hotels_arr;
+        
+        if( $start != null ){
+            $date_range = self::getDatesFromRange($start, $end);
+
+            $room_hotel = array();
+            foreach ($hotels_arr as $k => $ht){
+                $room = HotelRoom::select('*')
+                    ->where('hotel_id', '=', $ht['id'])->get()->toArray();
+
+                if ($room != null) {
+                    $room_hotel[$k]['hotel_id'] = $ht['id'];
+                    $room_hotel[$k]['room'] = $room;
+                }
+            }
+
+            $re_hotel = array();
+            $can_book_hotel = array();
+            foreach($room_hotel as $k1 => $hot){
+                $can_book = false;
+                
+                foreach ($hot['room'] as $k2 => $rh){
+                    foreach($date_range as $date){
+                        $re = Hotel::validateBooking($hot['hotel_id'],$rh['id'], $date);
+                        if($re == true){
+                            $re_hotel[] = $hot['hotel_id'];
+                            $can_book = true;
+                        }
+                    }
+                }
+                
+                if($can_book == true){
+                    $can_book_hotel[] = $hot['hotel_id'];
+                }
+            }
+        }
+        
+//            $arr[$k] = Hotel::validateBooking($hotel_id,$hotel_room_id, $date);
+//            if($arr[$k] == null){
+//                $unavailable++;
+//                $unavailable_array[] = $date;
+//            }
+
+        //print_r($can_book_hotel);
+        //die();
 
 
         if($hotels != null) {
