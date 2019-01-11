@@ -210,36 +210,35 @@ class PagesController extends Controller
                 }
             }
 
-            $re_hotel = array();
             $can_book_hotel = array();
             foreach($room_hotel as $k1 => $hot){
-                $can_book = false;
+                $can_book = true;
                 
                 foreach ($hot['room'] as $k2 => $rh){
                     foreach($date_range as $date){
                         $re = Hotel::validateBooking($hot['hotel_id'],$rh['id'], $date);
-                        if($re == true){
-                            $re_hotel[] = $hot['hotel_id'];
-                            $can_book = true;
+                        if($re == false){
+                            $can_book = false;
+                            break;
                         }
                     }
                 }
                 
                 if($can_book == true){
-                    $can_book_hotel[] = $hot['hotel_id'];
+                    $can_book_hotel[]['id'] = $hot['hotel_id'];
+                } else {
+                    break;
                 }
             }
+
+            if($can_book_hotel != null) {
+                $hotels = $can_book_hotel;
+            } else {
+                $hotels = null;
+            }
         }
-        
-//            $arr[$k] = Hotel::validateBooking($hotel_id,$hotel_room_id, $date);
-//            if($arr[$k] == null){
-//                $unavailable++;
-//                $unavailable_array[] = $date;
-//            }
 
-        //print_r($can_book_hotel);
-        //die();
-
+        //print_r($hotels);die();
 
         if($hotels != null) {
             $hotels_result = Hotel::select('*');
@@ -252,13 +251,12 @@ class PagesController extends Controller
             $hotels = $hotels_result;
         }
 
-        //print_r($hotels);die();
+        $rate = null;
+
         if($hotels != null) {
             foreach ($hotels as $k => $hotel) {
                 $rate[] = Hotel::rate($hotel->id);
             }
-        } else {
-            $rate = null;
         }
 
         //static
