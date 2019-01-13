@@ -232,6 +232,12 @@
         background-color: #37454d;
     }
 
+    @media (max-width: 990px) {
+        .small_search_index {
+            padding-bottom:  20px;
+        }
+    }
+
     .no_result {
         text-align: center;
         color: #0b1a27;
@@ -507,6 +513,34 @@
     .daterangepicker td.in-range {
         background-color: #ebf4f8 !important;
     }
+
+    .small_slider .noUi-horizontal .noUi-handle{
+        height: 40px !important;
+    }
+
+    .small_slider .noUi-handle:before , .small_slider .noUi-handle:after{
+        top:12px;
+        background: #8c9a9d;
+    }
+
+    @media (max-width: 990px) {
+        #sticky-wrapper{
+            display: none;
+        }
+    }
+
+    @media (min-width: 990px) {
+        .btn-search-small{
+            display: none !important;
+        }
+    }
+
+    .btn-search-small{
+        margin-bottom: 20px !important;
+        background-color: #42678a;
+        height: 40px;
+    }
+
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -515,7 +549,7 @@
     <style>
         @media (max-width: 992px) {
             .hotel_grid_container {
-                margin-top: 380px;
+                margin-top: 20px;
             }
         }
     </style>
@@ -534,20 +568,7 @@
                                 {{ Form::label('name', 'Name -') }}
                                 <input class="form-control" maxlength="200" name="name" type="text"
                                        id="search_hotelname">
-                                <ul class="list-unstyled">
-                                    {{--<li class="search_opt" value="value1">--}}
-                                        {{--<div class="row">--}}
-                                            {{--<div class="col-md-3 nopadding">--}}
-                                                {{--<img src="images/epic.jpg" style="width:60px; height:40px; margin-right: 8px;">--}}
-                                            {{--</div>--}}
-                                            {{--<div class="col-md-9 nopadding-left">--}}
-                                                {{--Bayshore Inn - Double Room with open view Balcony P9--}}
-                                            {{--</div>--}}
-                                        {{--</div>--}}
-                                    {{--</li>--}}
-                                    {{--<li class="search_opt" value="value2">Option 2</li>--}}
-                                    {{--<li class="search_opt" value="value3">Option 3</li>--}}
-                                </ul>
+                                <ul class="list-unstyled"></ul>
                             </div>
                             <div class="col-md-3">
                                 {{ Form::label('category_id', 'Category -') }}
@@ -621,7 +642,10 @@
                             </div>
                         </div>
 
-                        {{ Form::submit('SEARCH', array('class' => 'btn btn-action', 'style' => 'margin-top: 20px;')) }}
+                        <button type="submit" class="btn btn-action btn-search" style="margin-top: 20px">
+                            <i class="fab fa-searchengin"></i> SEARCH
+                        </button>
+
                         {!! Form::close() !!}
 
                     </div>
@@ -641,7 +665,7 @@
                         {{ Form::label('name', '酒店名稱') }}
                         {{ Form::text('name', null, array('class' => 'form-control', 'maxlength' => '255')) }}
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         {{ Form::label('category_id', '酒店類型') }}
                         <select class="form-control" name="category_id" id="cate">
                             <option value="" selected> -</option>
@@ -650,12 +674,30 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         {{ Form::label('star', '星級') }}
                         <select class="form-control" name="star" id="star">
                             <option value="" selected> -</option>
                             @foreach($stars as $star)
                                 <option value='{{ $star }}'>{{ $star }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        {{ Form::label('rome_type','房類') }}
+                        <select class="form-control" name="room_type" id="room_type">
+                            <option value="" selected> -</option>
+                            @foreach($room_types as $room_type)
+                                <option value='{{ $room_type['id'] }}'>{{ $room_type['type'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        {{ Form::label('people_limit', '人數') }}
+                        <select class="form-control" name="people_limit" id="people_limit">
+                            <option value="" selected> -</option>
+                            @foreach($people_limits as $people_limit)
+                                <option value='{{ $people_limit }}'>{{ $people_limit }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -681,22 +723,12 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        {{ Form::label('rome_type','房類') }}
-                        <select class="form-control" name="room_type" id="room_type">
-                            <option value="" selected> -</option>
-                            @foreach($room_types as $room_type)
-                                <option value='{{ $room_type['id'] }}'>{{ $room_type['type'] }}</option>
-                            @endforeach
-                        </select>
+                        {{ Form::label('Date', '預訂日期') }}
+                        <input class="form-control" type="text" name="daterange" id="daterange" value="" readonly/>
                     </div>
-                    <div class="col-md-2">
-                        {{ Form::label('people_limit', '人數') }}
-                        <select class="form-control" name="people_limit" id="people_limit">
-                            <option value="" selected> -</option>
-                            @foreach($people_limits as $people_limit)
-                                <option value='{{ $people_limit }}'>{{ $people_limit }}</option>
-                            @endforeach
-                        </select>
+                    <div class="col-md-2 small_slider">
+                        {{ Form::label('Price', '價錢') }}
+                        <div id="slider" style="height: 42%"></div>
                     </div>
                 </div>
 
@@ -728,12 +760,17 @@
         <div class="col-md-12 hotel_grid_container">
             @if($hotels != null)
                 @if($search_small == true)
+
+                    <div class="btn btn-action btn-search-small">
+                        <i class="fas fa-chevron-circle-down"></i> SEARCH
+                    </div>
+
                     <div class="total_result">
                         <i class="fas fa-search"></i> Totally <span>{{$hotels->total()}}</span> of hotels found.
                     </div>
                 @else
                     <div class="total_result result_mainpage">
-                        <i class="fas fa-list"></i> Showing RANDOM five hotels.
+                        <i class="fas fa-random"></i> Showing RANDOM <span>five</span> hotels.
                     </div>
                 @endif
                 @foreach($hotels as $k => $hotel)
@@ -893,13 +930,21 @@
           $('input[name="daterange"]').daterangepicker({
             opens: 'right',
             minDate: new Date(),
-              defaultDate: '',
+              //startDate: '01/13/2019',
+              showDropdowns: true,
+//              ranges: {
+//                  'Today': [moment(), moment()],
+//                  'This Month': [moment().startOf('month'), moment().endOf('month')],
+//                  'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+//              }
           }, function(start, end, label) {
             console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
           });
         });
 
-        setTimeout(function(){ $('#daterange').val(''); }, 1);
+        setTimeout(function(){ $('#daterange').val(''); }, 100);
+
     </script>
+
 
 @endsection

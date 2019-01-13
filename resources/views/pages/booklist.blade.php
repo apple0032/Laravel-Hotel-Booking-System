@@ -95,7 +95,7 @@
                                 <td>$ {{$bk->total_price}}</td>
                                 <td>@if($bk->status == 1) 正常 @endif</td>
                             </tr>
-                            <tr class="book_detail bk_detail{{$bk->id}} animated flipInX faster">
+                            <tr class="book_detail bk_detail{{$bk->id}} animated bounceInDown faster">
                                 <td colspan="9">
                                     <div class="row well" style="margin: 0px">
                                         <div class="col-md-4 col-sm-12 book_detail_col">

@@ -468,25 +468,10 @@ class PagesController extends Controller
 
         $hotels = $hotels->get()->toArray();
 
-        //$hotels = Hotel::where('id','=',2)->get()->toArray();
-
-//        if($hotels != null){
-//            foreach ($hotels as $key => $hotel){
-//                $hotel_info[$key]['basic'] = Hotel::select('id','name','star','category_id','image')->where('id','=',$hotel['id'])->first()->toArray();
-//                $hotel_info[$key]['facility'] = HotelFacility::select('*')->where('hotel_id','=',$hotel['id'])->get()->toArray();
-//                $hotel_info[$key]['tag'] = PostTag::select('hotel_id','tag_id')->where('hotel_id','=',$hotel['id'])->get()->toArray();
-//                $hotel_info[$key]['room'] = HotelRoom::select('hotel_id','room_type_id','ppl_limit','price','qty','availability')->where('hotel_id','=',$hotel['id'])->get()->toArray();
-//            }
-//        } else {
-//            $hotel_info = null;
-//        }
-
-        //print_r($hotel_info);die();
 
         $response = array(
             'status' => 'success',
             'hotels' => $hotels,
-            //'hotel_info' => $hotel_info,
         );
 
         return response()->json($response);

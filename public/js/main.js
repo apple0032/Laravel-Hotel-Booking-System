@@ -9,19 +9,23 @@ var lastScrollTop = 100;
 $(window).scroll(function (event) {
     var st = $(this).scrollTop();
     var scrollPercent = 100 * $(window).scrollTop() / ($(document).height() - $(window).height());
-    if (st > lastScrollTop) {
-        if ($(window).width() < 990) {
-            if (scrollPercent > 5) {
-                $('.small_search_container').fadeOut();
-            }
-        } else {
+    if ($(window).width() > 990) {
+        if (st > lastScrollTop) {
             if (scrollPercent > 30) {
                 $('.small_search_container').fadeOut();
             }
+        } else {
+            $('.small_search_container').fadeIn();
         }
-    } else {
-        $('.small_search_container').fadeIn();
     }
+
+    if ($(window).width() < 990) {
+        if (scrollPercent > 0) {
+            $('#sticky-wrapper').fadeOut();
+            $('.btn-search-small').show();
+        }
+    }
+
     lastScrollTop = st;
 });
 $(window).scroll(function () {
@@ -92,6 +96,13 @@ function SearchByAjax(name, category, star, room_type, ppl, tags) {
 
             $('.hotel_grid_container').load('search?name=' + name + '&category=' + category + etag + '&star=' + star + '&room_type=' + room_type + '&people_limit=' + ppl + '&price_low=&price_up=&page=1 .hotel_grid_container', function () {
                 $('[data-toggle="tooltip"]').tooltip();
+
+                $(".btn-search-small").click(function(){
+                    $('.btn-search-small').hide();
+                    $('#sticky-wrapper').fadeIn();
+                    //$(".hotel_grid_container").css("margin-top", "520px", "!important");
+                    $('#sticky-wrapper').css("height", "580px", "!important");
+                });
             });
         }
     });
@@ -177,4 +188,12 @@ $("#search_hotelname").keyup(function(){
             }
         });
     }
+});
+
+
+$(".btn-search-small").click(function(){
+    $('.btn-search-small').hide();
+    $('#sticky-wrapper').fadeIn();
+    //$(".hotel_grid_container").css("margin-top", "520px", "!important");
+    $('#sticky-wrapper').css("height", "580px", "!important");
 });
