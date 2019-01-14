@@ -110,12 +110,10 @@ class PagesController extends Controller
         
         $range = $request->daterange;
 
-        if($range != null) {
+        if($range != '') {
             $range = explode("-", $range);
-            $start = explode("/", $range[0]);
-            $end = explode("/", $range[1]);
-            $start = trim($start[2]) . '-' . trim($start[0]) . '-' . trim($start[1]);
-            $end = trim($end[2]) . '-' . trim($end[0]) . '-' . trim($end[1]);
+            $start = trim($range[0]) . '-' . trim($range[1]) . '-' . trim($range[2]);
+            $end = trim($range[3]) . '-' . trim($range[4]) . '-' . trim($range[5]);
         } else {
             $start = '';
             $end = '';

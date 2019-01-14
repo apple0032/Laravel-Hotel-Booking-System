@@ -541,6 +541,11 @@
         height: 40px;
     }
 
+    .clear_date{
+        float: right;
+        cursor: pointer;
+    }
+
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -723,8 +728,9 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        {{ Form::label('Date', '預訂日期') }}
+                        <label for="Date">預訂日期 </label> <span class="clear_date"><i class="fas fa-trash"></i> </span>
                         <input class="form-control" type="text" name="daterange" id="daterange" value="" readonly/>
+                        <input type="hidden" name="daterange_hidden" id="daterange_hidden" value="">
                     </div>
                     <div class="col-md-2 small_slider">
                         {{ Form::label('Price', '價錢') }}
@@ -932,6 +938,9 @@
         $(function() {
           $('input[name="daterange"]').daterangepicker({
             opens: 'right',
+            locale:{
+                format: 'YYYY-MM-DD'
+            },
             minDate: new Date(),
               //startDate: '01/13/2019',
               showDropdowns: true,
@@ -942,11 +951,31 @@
 //              }
           }, function(start, end, label) {
             console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+
+              var daterange_hidden = start.format('YYYY-MM-DD')+' - '+end.format('YYYY-MM-DD');
+              $('#daterange_hidden').val(daterange_hidden);
+
+              var small_search = '<?php print_r($search_small) ?>';
+              if(small_search == true) {
+                  var name = $("input[name='name']").val();
+                  name = name.replace(/ /g, "|");
+
+                  var category = $("select[name='category_id'] option:selected").val();
+                  var star = $("select[name='star'] option:selected").val();
+                  var room_type = $("select[name='room_type'] option:selected").val();
+                  var ppl = $("select[name='people_limit'] option:selected").val();
+                  var tags = $("#tags").val();
+                  SearchByAjax(name, category, star, room_type, ppl, tags, daterange_hidden);
+              }
           });
         });
 
         setTimeout(function(){ $('#daterange').val(''); }, 100);
 
+        $(".clear_date").click(function(){
+            $('#daterange_hidden').val('');
+            $('#daterange').val('');
+        });
     </script>
 
 

@@ -113,7 +113,7 @@ class HotelController extends Controller
         $hotel_fontawesome = $data['hotel_fontawesome'];
         $room_type_list = $data['room_type_list'];
         $search_small = true;
-
+        $daterange = null;
 
         return view('pages.welcome')
             ->with('hotels', $hotels)
@@ -129,6 +129,7 @@ class HotelController extends Controller
             ->with('hotel_fontawesome', $hotel_fontawesome)
             ->with('room_type_list', $room_type_list)
             ->with('rate',$rate)
+            ->with('daterange',$daterange)
             ->with('search_small', $search_small);
     }
 
