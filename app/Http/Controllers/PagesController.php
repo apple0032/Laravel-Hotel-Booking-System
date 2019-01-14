@@ -64,6 +64,7 @@ class PagesController extends Controller
         $hotel_fontawesome = $data['hotel_fontawesome'];
         $room_type_list = $data['room_type_list'];
         $search_small = false;
+        $daterange = null;
 
         return view('pages.welcome')
             ->with('hotels', $hotels)
@@ -79,6 +80,7 @@ class PagesController extends Controller
             ->with('hotel_fontawesome', $hotel_fontawesome)
             ->with('room_type_list', $room_type_list)
             ->with('rate',$rate)
+            ->with('daterange',$daterange)
             ->with('search_small', $search_small);
     }
 
@@ -273,6 +275,11 @@ class PagesController extends Controller
         $hotel_fontawesome = $data['hotel_fontawesome'];
         $room_type_list = $data['room_type_list'];
         $search_small = true;
+        
+        $input_start = Input::get('start');
+        $input_end = Input::get('end');
+        
+        $daterange = $input_start.' - '.$input_end;
 
         return view('pages.welcome')
             ->with('hotels', $hotels)
@@ -288,6 +295,7 @@ class PagesController extends Controller
             ->with('hotel_fontawesome', $hotel_fontawesome)
             ->with('room_type_list', $room_type_list)
             ->with('rate',$rate)
+            ->with('daterange',$daterange)
             ->with('search_small', $search_small);
     }
 
@@ -385,93 +393,25 @@ class PagesController extends Controller
 
 
     public function searchbyajax(Request $request){
+        
+        //Replaced by ajax load.();
+        //Search engine handled in self::getsearch();
+        
+        $range = trim($request->daterange);
 
-        $name = $request->name;
-        $category = $request->category;
-        $star = $request->star;
-        $room_type = $request->room_type;
-        $tags = $request->tags;
-        $people_limit = $request->ppl;
-
-
-        //Query logic
-        $hotels = Hotel::select('id');
-
-        if ($name != null) {
-            $name = str_replace("|"," ",$name);
-            $hotels = $hotels->Where('name', 'like', '%' . $name . '%');
+        if($range != '-') {
+            $range = explode("-", $range);
+            $start = trim($range[0]) . '-' . trim($range[1]) . '-' . trim($range[2]);
+            $end = trim($range[3]) . '-' . trim($range[4]) . '-' . trim($range[5]);
+        } else {
+            $start = '';
+            $end = '';
         }
-
-        if ($category != null) {
-            $hotels = $hotels->Where('category_id', '=', $category);
-        }
-
-        if ($tags != null) {
-            $tag_array = array();
-
-            foreach ($tags as $key => $tag) {
-                $hotel_tags[$key] = PostTag::select('hotel_id')->where('tag_id', '=', $tag)->get()->toArray();
-            }
-
-            foreach ($hotel_tags as $key => $hotel_tag) {
-                foreach ($hotel_tag as $ht) {
-                    if (!in_array($ht['hotel_id'], $tag_array)) {
-                        array_push($tag_array, $ht['hotel_id']);
-                    }
-                }
-            }
-
-            if ($tag_array == null) {
-                $hotels = $hotels->where('name', '=', 'no_hotel');
-            } else {
-
-                $hotels = $hotels->where(function ($query) use ($tag_array) {
-                    foreach ($tag_array as $ta) {
-                        $query->orWhere('id', '=', $ta);
-                    }
-                });
-            }
-        }
-
-        if ($star != null) {
-            $hotels = $hotels->where('star', '=', $star);
-        }
-
-
-        if ($room_type != null) {
-            $hotel_room = HotelRoom::select('hotel_id')->where('room_type_id', '=', $room_type)->get()->toArray();
-
-            $hotels = $hotels->where(function ($query) use ($hotel_room) {
-                foreach ($hotel_room as $hr) {
-                    $query->orWhere('id', '=', $hr);
-                }
-            });
-        }
-
-        if ($people_limit != null) {
-            $limited_hotel = HotelRoom::select('hotel_id')
-                ->where('ppl_limit', '>=', $people_limit);
-
-            if ($room_type != null) {
-                $limited_hotel = $limited_hotel
-                    ->where('room_type_id', '=', $room_type);
-            }
-            $limited_hotel =
-                $limited_hotel->distinct('hotel_id')->get()->toArray();
-
-            $hotels = $hotels->where(function ($query) use ($limited_hotel) {
-                foreach ($limited_hotel as $lh) {
-                    $query->orWhere('id', '=', $lh);
-                }
-            });
-        }
-
-        $hotels = $hotels->get()->toArray();
-
 
         $response = array(
             'status' => 'success',
-            'hotels' => $hotels,
+            'start' => $start,
+            'end' => $end,
         );
 
         return response()->json($response);

@@ -923,6 +923,9 @@
         $("#star").val({{Input::get('star')}});
         $("#room_type").val({{Input::get('room_type')}});
         $("#people_limit").val({{Input::get('people_limit')}});
+        var daterange = '<?php print_r($daterange) ?>';
+        
+        setTimeout(function(){ $("#daterange").val(daterange); }, 1000);
     </script>
     
     <script>
