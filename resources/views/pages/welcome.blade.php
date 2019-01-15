@@ -973,8 +973,9 @@
         setTimeout(function(){ $('#daterange').val(''); }, 100);
 
         $(".clear_date").click(function(){
-            $('#daterange_hidden').val('');
-            $('#daterange').val('');
+            $('#daterange_hidden').val('-');
+            $('#daterange').val('-');
+            $(".small_search_container input[name='name']").trigger('change');
         });
     </script>
 
