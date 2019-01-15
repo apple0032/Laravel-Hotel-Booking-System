@@ -53,10 +53,12 @@ $(".small_search_container input[name='name'],.small_search_container select[nam
     var ppl = $("select[name='people_limit'] option:selected").val();
     var tags = $("#tags").val();
     var daterange = $('#daterange').val();
-    SearchByAjax(name, category, star, room_type, ppl, tags, daterange);
+    var p_low = $('#hide_price_from').val();
+    var p_up = $('#hide_price_to').val();
+    SearchByAjax(name, category, star, room_type, ppl, tags, daterange, p_low, p_up);
 });
 
-function SearchByAjax(name, category, star, room_type, ppl, tags, daterange) {
+function SearchByAjax(name, category, star, room_type, ppl, tags, daterange, p_low, p_up) {
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     $.ajax({
         url: 'searchbyajax',
@@ -96,7 +98,7 @@ function SearchByAjax(name, category, star, room_type, ppl, tags, daterange) {
 
             name = name.split("|").join("%20");
 
-            $('.hotel_grid_container').load('search?name=' + name + '&category=' + category + etag + '&star=' + star + '&room_type=' + room_type + '&people_limit=' + ppl + '&price_low=&price_up=&page=1&start='+data['start']+'&end='+data['end']+' .hotel_grid_container', function () {
+            $('.hotel_grid_container').load('search?name=' + name + '&category=' + category + etag + '&star=' + star + '&room_type=' + room_type + '&people_limit=' + ppl + '&price_low='+p_low+'&price_up='+p_up+'&page=1&start='+data['start']+'&end='+data['end']+' .hotel_grid_container', function () {
                 $('[data-toggle="tooltip"]').tooltip();
 
                 $(".btn-search-small").click(function(){

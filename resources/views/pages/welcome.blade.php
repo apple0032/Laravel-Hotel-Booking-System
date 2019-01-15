@@ -541,7 +541,7 @@
         height: 40px;
     }
 
-    .clear_date{
+    .clear_date , .clear_price{
         float: right;
         cursor: pointer;
     }
@@ -734,6 +734,17 @@
                     </div>
                     <div class="col-md-2 small_slider">
                         {{ Form::label('Price', '價錢') }}
+                        <span class="display_price">
+                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-dollar-sign"></i>
+                            <span class="price_from"> {{Input::get('price_low')}} </span> -
+                            <span class="price_to"> {{Input::get('price_up')}} </span>
+                        </span>
+
+                        <span class="clear_price"><i class="fas fa-trash"></i> </span>
+
+                        <input type="hidden" name="hide_price_from" id="hide_price_from" value="@php if(Input::get('price_low') != ''){ echo Input::get('price_low'); } @endphp">
+                        <input type="hidden" name="hide_price_to" id="hide_price_to" value="@php if(Input::get('price_up') == ''){ echo Input::get('price_up'); } @endphp">
+
                         <div id="slider" style="height: 42%"></div>
                     </div>
                 </div>
@@ -830,7 +841,7 @@
                                     <h5>Room Supply</h5>
                                     @if(count($hotel->room)>0)
                                         @foreach($hotel->room as $room)
-                                            @if(($room['availability'] == 1) && ($room['qty'] > 1) )
+                                            @if(($room['availability'] == 1) && ($room['qty'] >= 1) )
                                                 <div class="hotel_grid_roombox" data-toggle="tooltip"
                                                      title="剩餘房數: {{$room['qty']}}">
                                                     {{$room_type_list[$room['room_type_id']]}}
@@ -892,15 +903,20 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.1.0/nouislider.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.1.0/nouislider.js"></script>
-    
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <script>
+        var p_low = '{{Input::get('price_low')}}';
+        var p_up = '{{Input::get('price_up')}}';
+        if(p_low == ''){    p_low = 1000;   }
+        if(p_up == ''){     p_up = 4000;    }
+
         var slider = document.getElementById('slider');
         noUiSlider.create(slider, {
-            start: [1000, 4000],
+            start: [p_low, p_up],
             step: 100,
             connect: true,
             range: {
@@ -914,6 +930,11 @@
         slider.noUiSlider.on('change.one', function (values) {
             $('#price_lower').val(values[0]);
             $('#price_upper').val(values[1]);
+            $('.display_price .price_from').html(values[0]);
+            $('.display_price .price_to').html(values[1]);
+            $('#hide_price_from').val(values[0]);
+            $('#hide_price_to').val(values[1]);
+            $("#cate").trigger('change');
         });
         $("#price_lower").change(function () {
             slider.noUiSlider.set([$(this).val(), null]);
@@ -930,10 +951,10 @@
         $("#room_type").val({{Input::get('room_type')}});
         $("#people_limit").val({{Input::get('people_limit')}});
         var daterange = '<?php print_r($daterange) ?>';
-        
+
         setTimeout(function(){ $("#daterange").val(daterange); }, 1000);
     </script>
-    
+
     <script>
         $(function() {
           $('input[name="daterange"]').daterangepicker({
@@ -965,7 +986,9 @@
                   var room_type = $("select[name='room_type'] option:selected").val();
                   var ppl = $("select[name='people_limit'] option:selected").val();
                   var tags = $("#tags").val();
-                  SearchByAjax(name, category, star, room_type, ppl, tags, daterange_hidden);
+                  var p_low = $('#hide_price_from').val();
+                  var p_up = $('#hide_price_to').val();
+                  SearchByAjax(name, category, star, room_type, ppl, tags, daterange_hidden,p_low, p_up);
               }
           });
         });
@@ -975,8 +998,17 @@
         $(".clear_date").click(function(){
             $('#daterange_hidden').val('-');
             $('#daterange').val('-');
-            $(".small_search_container input[name='name']").trigger('change');
+            $("#cate").trigger('change');
         });
+
+        $(".clear_price").click(function(){
+            $('.price_from').html('沒有設定');
+            $('.price_to').html('');
+            $('#hide_price_from').val('');
+            $('#hide_price_to').val('');
+            $("#cate").trigger('change');
+        });
+
     </script>
 
 

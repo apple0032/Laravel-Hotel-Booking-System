@@ -195,6 +195,8 @@ class PagesController extends Controller
         }
 
         $hotels = $hotels_arr;
+
+        //print_r($hotels);die();
         
         if( $start != null ){
             $date_range = self::getDatesFromRange($start, $end);
@@ -397,13 +399,13 @@ class PagesController extends Controller
         
         $range = trim($request->daterange);
 
-        if($range != '-') {
+        if($range == '-' || $range == '' || $range == NULL) {
+            $start = '';
+            $end = '';
+        } else {
             $range = explode("-", $range);
             $start = trim($range[0]) . '-' . trim($range[1]) . '-' . trim($range[2]);
             $end = trim($range[3]) . '-' . trim($range[4]) . '-' . trim($range[5]);
-        } else {
-            $start = '';
-            $end = '';
         }
 
         $response = array(
