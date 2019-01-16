@@ -780,6 +780,10 @@
         color: red;
         font-weight: bold;
     }
+
+    .btn-search-small{
+        display:none !important;
+    }
 </style>
 
 
