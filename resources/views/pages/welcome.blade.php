@@ -911,8 +911,8 @@
     <script>
         var p_low = '{{Input::get('price_low')}}';
         var p_up = '{{Input::get('price_up')}}';
-        if(p_low == ''){    p_low = 1000;   }
-        if(p_up == ''){     p_up = 4000;    }
+        if(p_low == ''){    p_low = 500;   }
+        if(p_up == ''){     p_up = 4500;    }
 
         var slider = document.getElementById('slider');
         noUiSlider.create(slider, {
@@ -1004,8 +1004,8 @@
         $(".clear_price").click(function(){
             $('.price_from').html('沒有設定');
             $('.price_to').html('');
-            $('#hide_price_from').val('');
-            $('#hide_price_to').val('');
+            $('#hide_price_from').val('10');
+            $('#hide_price_to').val('8000');
             $("#cate").trigger('change');
         });
 

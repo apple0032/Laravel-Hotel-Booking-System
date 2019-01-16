@@ -175,8 +175,10 @@ class PagesController extends Controller
         }
 
         if (($price_low != null) || ($price_up != null)) {
-            $hotels->where('hotel_room.price', '>=', $price_low);
-            $hotels->where('hotel_room.price', '<=', $price_up);
+            if($price_low != '10'){
+                $hotels->where('hotel_room.price', '>=', $price_low);
+                $hotels->where('hotel_room.price', '<=', $price_up);
+            }
         }
 
         if ($tags != null) {
@@ -187,6 +189,7 @@ class PagesController extends Controller
                 });
         }
 
+        $hotels = $hotels->where('soft_delete','=','0');
         $hotels = $hotels->distinct('hotel.id')->get();
 
         $hotels_arr = array();
@@ -211,27 +214,42 @@ class PagesController extends Controller
                     $room_hotel[$k]['room'] = $room;
                 }
             }
+            
+            //print_r($room_hotel);die();
 
             $can_book_hotel = array();
+            $c = 0;
             foreach($room_hotel as $k1 => $hot){
                 $can_book = true;
                 
                 foreach ($hot['room'] as $k2 => $rh){
                     foreach($date_range as $date){
-                        $re = Hotel::validateBooking($hot['hotel_id'],$rh['id'], $date);
-                        if($re == false){
+                        $re[$c]['hotel'] = $hot['hotel_id'];
+                        $re[$c]['room'] = $rh['id'];
+                        $re[$c]['date'] = $date;
+                        $re[$c]['valid'] = Hotel::validateBooking($hot['hotel_id'],$rh['id'], $date);
+                        $valid = $re[$c]['valid'];
+                        $c++;
+                        
+                        if($valid == false){
                             $can_book = false;
                             break;
                         }
                     }
+                    
+                    if($can_book == false){
+                        break;
+                    }
                 }
+                
+                //print_r($re);die();
                 
                 if($can_book == true){
                     $can_book_hotel[]['id'] = $hot['hotel_id'];
-                } else {
-                    break;
-                }
+                } 
             }
+            
+            //print_r($re);die();
 
             if($can_book_hotel != null) {
                 $hotels = $can_book_hotel;
