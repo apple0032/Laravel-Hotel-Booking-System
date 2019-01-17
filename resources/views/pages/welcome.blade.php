@@ -624,8 +624,15 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                {{ Form::label('Date', 'Date - ') }}
-                                <input class="form-control" type="text" name="daterange" id="daterange" value="" readonly/>
+                                {{ Form::label('Date', 'Date - ') }}                                
+                                <div class="form-group">
+                                    <div class="input-group date" id="datetimepicker">
+                                        <input class="form-control" type="text" name="daterange" id="daterange" value="" readonly/>
+                                        <span class="input-group-addon">
+                                         <span class="glyphicon-calendar glyphicon"></span>
+                                       </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -729,7 +736,14 @@
                     </div>
                     <div class="col-md-2">
                         <label for="Date">預訂日期 </label> <span class="clear_date"><i class="fas fa-trash"></i> </span>
-                        <input class="form-control" type="text" name="daterange" id="daterange" value="" readonly/>
+                        <div class="form-group">
+                            <div class="input-group date" id="datetimepicker">
+                                <input class="form-control" type="text" name="daterange" id="daterange" value="" readonly/>
+                                <span class="input-group-addon">
+                                 <span class="glyphicon-calendar glyphicon"></span>
+                               </span>
+                            </div>
+                        </div>
                         <input type="hidden" name="daterange_hidden" id="daterange_hidden" value="">
                     </div>
                     <div class="col-md-2 small_slider">
