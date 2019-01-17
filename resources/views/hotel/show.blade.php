@@ -457,7 +457,7 @@
     @media (max-width: 400px) {
         .hotel_page_img {
             width: 1200px !important;
-            height: 200px !important;
+            height: 200px;
         }
     }
 
@@ -472,9 +472,11 @@
         margin-right: -5px;
     }
 
-    .hotel_page_img {
-        width: 1200px;
-        height: 500px !important;
+    @media (min-width: 600px) {
+        .hotel_page_img {
+            width: 1200px;
+            height: 500px !important;
+        }
     }
 
     .hotel_page_map, .hotel_page_details, .hotel_page_body_b, .hotel_page_comment {
@@ -910,14 +912,14 @@
                         </div>
                     @else
                         <div class="item active">
-                            <img src="http://photo.hotellook.com/image_v2/limit/h{{$hotel['default_image']}}_0/750/480.jpg">
+                            <img src="http://photo.hotellook.com/image_v2/limit/h{{$hotel['default_image']}}_0/750/480.jpg" class="hotel_page_img">
                         </div>
                     @endif
 
                     @if($hotel->new != 1)
                         <?php for ($x = 1; $x <= 5; $x++) { ?>
                         <div class="item">
-                            <img src="http://photo.hotellook.com/image_v2/limit/h{{$hotel['default_image']}}_<?= $x ?>/750/480.jpg">
+                            <img src="http://photo.hotellook.com/image_v2/limit/h{{$hotel['default_image']}}_<?= $x ?>/750/480.jpg" class="hotel_page_img">
                         </div>
                         <?php } ?>
                     @endif

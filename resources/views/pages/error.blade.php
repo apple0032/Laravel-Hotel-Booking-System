@@ -141,7 +141,7 @@
     a.more-link {
         text-transform: uppercase;
         font-size: 13px;
-        background-color: #de7e85;
+        background-color: #2d6098;
         padding: 10px 15px;
         border-radius: 0;
         color: #fff;
