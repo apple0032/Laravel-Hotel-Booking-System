@@ -53,12 +53,13 @@ Route::group(['middleware' => ['web']], function () {
     Route::delete('comments/{id}', ['uses' => 'CommentsController@destroy', 'as' => 'comments.destroy']);
     Route::get('comments/{id}/delete', ['uses' => 'CommentsController@delete', 'as' => 'comments.delete']);
 
-    Route::get('blog/{slug}', ['as' => 'blog.single', 'uses' => 'BlogController@getSingle'])->where('slug', '[\w\d\-\_]+');
-    Route::get('blog', ['uses' => 'BlogController@getIndex', 'as' => 'blog.index']);
+    // Static pages
     Route::get('contact', 'PagesController@getContact');
     Route::post('contact', 'PagesController@postContact');
     Route::get('about', 'PagesController@getAbout');
-    Route::get('article', 'PagesController@getArticle');
+    Route::get('error', ['uses' => 'PagesController@getError', 'as' => 'pages.error']);
+    
+    // Index routes
     Route::get('/', 'PagesController@getIndex'); //PROJECT INDEX
     Route::post('search', ['uses' => 'PagesController@search', 'as' => 'pages.search']); //INDEX SEARCH FORM
     Route::get('search', 'PagesController@getsearch');  //SEARCH QUERY

@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Session;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +47,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        //Disable in development, Enable in production.
+        //return redirect()->route('pages.error');
+        
         return parent::render($request, $e);
     }
 }

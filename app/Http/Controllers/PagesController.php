@@ -329,6 +329,11 @@ class PagesController extends Controller
         $data['fullname'] = $fullname;
         return view('pages.about')->withData($data);
     }
+    
+    public function getError()
+    {
+        return view('pages.error');
+    }
 
     public function getArticle()
     {
