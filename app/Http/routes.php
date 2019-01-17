@@ -39,8 +39,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('password/reset', 'Auth\PasswordController@reset');
 
     //Account
-    Route::get('account', ['uses' => 'PagesController@AccountCenter', 'as' => 'account']);
-    Route::post('update', ['uses' => 'PagesController@AccountUpdate', 'as' => 'update']);
+    Route::get('account/edit', ['uses' => 'AccountController@AccountCenter', 'as' => 'account']);
+    Route::post('account/update', ['uses' => 'AccountController@AccountUpdate', 'as' => 'update']);
 
     // Categories
     Route::resource('categories', 'CategoryController', ['except' => ['create']]);
