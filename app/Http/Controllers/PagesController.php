@@ -319,11 +319,11 @@ class PagesController extends Controller
 
     public function getAbout()
     {
-        $first = 'Alex';
-        $last = 'Curtis';
+        $first = 'Ken';
+        $last = 'Ip';
 
         $fullname = $first . " " . $last;
-        $email = 'alex@jacurtis.com';
+        $email = 'kenip0813@gmail.com';
         $data = [];
         $data['email'] = $email;
         $data['fullname'] = $fullname;
@@ -332,7 +332,7 @@ class PagesController extends Controller
 
     public function getArticle()
     {
-
+        
         $data = 'example';
 
         return view('pages.article')->withData($data);
@@ -358,7 +358,7 @@ class PagesController extends Controller
 
         Mail::send('emails.contact', $data, function ($message) use ($data) {
             $message->from($data['email']);
-            $message->to('hello@devmarketer.io');
+            $message->to('kenip0813@gmail.com');
             $message->subject($data['subject']);
         });
 
