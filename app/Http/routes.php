@@ -105,4 +105,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('admin/hotel/{id}/room/{roomid}/edit', ['uses' => 'AdminController@roomedit', 'as' => 'hotel.roomedit']);
     Route::put('admin/hotel/{id}/room/{roomid}', ['uses' => 'AdminController@roomupdate', 'as' => 'hotel.roomupdate']);
     Route::get('admin/hotel/{id}/room/{roomid}/delete', ['uses' => 'AdminController@roomdelete', 'as' => 'hotel.roomdelete']);
+
+    //Documentation
+    Route::get('article', 'PagesController@getArticle');
 });
