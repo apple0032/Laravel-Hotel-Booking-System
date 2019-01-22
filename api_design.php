@@ -60,8 +60,35 @@
  *  [GET]/hotel/search              //searching hotel by input params
  *  [GET]/hotel/advanced_search     //searching hotel by advanced options
  *  
- *  
+ *  Category-Admin
+ *  [GET]/admin/category                    //get all hotel categories
+ *  [POST]/admin/category                   //create new category
+ *  [PUT]/admin/category/{category_id}      //update a category name
+ *  [DELETE]/admin/category/{category_id}   //delete a category name
  * 
+ *  Tags-Admin
+ *  [GET]/admin/tags                        //get all hotel categories
+ *  [POST]/admin/tags                       //create new tags
+ *  [PUT]/admin/tags/{tags_id}              //update a tag name
+ *  [DELETE]/admin/tags/{tags_id}           //delete a tag name
+ *  [POST]/admin/tags/hotel/{hotel_id}      //Add tags into hotel
+ *  [DELETE]/admin/tags/hotel/{hotel_id}    //Delete tags from hotel
+ *  
+ *  Payment method-Admin
+ *  [GET]/admin/paymentMethod                       //get all payment method
+ *  [POST]/admin/paymentMethod                      //create new paymentMethod
+ *  [PUT]/admin/paymentMethod/{category_id}         //update a paymentMethod
+ *  [DELETE]/admin/paymentMethod/{category_id}      //delete a paymentMethod
+ * 
+ *  Statistic API
+ *  [GET]/admin/stat/bookingStatus      //get all hotel all booking status by a specific period
+ *  [GET]/admin/stat/rank               //get the rank list of all hotel
+ *  [GET]/admin/stat/invoice            //get the total invoice/income by a specific period
+ *  [GET]/admin/stat/searching          //return statistic data which calculated by user input
+ *  
+ *  Config API
+ *  [PUT]/admin/config/pageno       //config the number of hotels displayed in one page
+ *  [PUT]/admin/config/about        //config about page content
  * 
  * 
  */
