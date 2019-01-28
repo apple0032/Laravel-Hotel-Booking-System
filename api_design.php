@@ -33,16 +33,6 @@
  *  [GET]/hotel/comment/{hotel_id}      //get hotel all comment
  *  [GET]/hotel/room/{hotel_id}         //get hotel all room information
  * 
- *  Hotel-admin
- *  [POST]/hotel                    //create hotel
- *  [POST]/hotel/fac                //create hotel facilities
- *  [PUT]/hotel/{hotel_id}          //update hotel information
- *  [PUT]/hotel/fac/{hotel_id}      //update hotel facilities
- *  [DELETE]/hotel/{hotel_id}       //delete hotel
- *  [POST]/hotel/room/{hotel_id}    //create hotel room by specific hotel id
- *  [PUT]/hotel/room/{room_id}      //update hotel room information
- *  [DELETE]/hotel/room/{room_id}   //delete a room from a specific room_id
- * 
  *  Hotel-Booking&Payment
  *  [GET]/hotel/room/status/{room_id}   //get room booking status by date
  *  [GET]/hotel/room/validation         //valid room booking status
@@ -50,15 +40,25 @@
  *  [GET]/hotel/payment/{user_id}       //get all payment by a user
  *  [POST]/hotel/booking/{room_id}      //Create a booking&payment
  * 
- *  Hotel-Booking&Payment-Admin
- *  [PUT]/hotel/booking/{booking_id}        //update a booking information by booking_id
- *  [PUT]/hotel/payment/{payment_id}        //update a payment information by payment_id
- *  [PUT]/hotel/guest/{booking_id}          //update all booking's guest information by specific booking_id
- *  [DELETE]/hotel/booking/{booking_id}     //delete a set(booking,payment,guest) of booking
- * 
  *  Searching
  *  [GET]/hotel/search              //searching hotel by input params
  *  [GET]/hotel/advanced_search     //searching hotel by advanced options
+ * 
+ *  Hotel-admin
+ *  [POST]/admin/hotel                    //create hotel
+ *  [POST]/admin/hotel/fac                //create hotel facilities
+ *  [PUT]/admin/hotel/{hotel_id}          //update hotel information
+ *  [PUT]/admin/hotel/fac/{hotel_id}      //update hotel facilities
+ *  [DELETE]/admin/hotel/{hotel_id}       //delete hotel
+ *  [POST]/admin/hotel/room/{hotel_id}    //create hotel room by specific hotel id
+ *  [PUT]/admin/hotel/room/{room_id}      //update hotel room information
+ *  [DELETE]/admin/hotel/room/{room_id}   //delete a room from a specific room_id
+ * 
+ *  Hotel-Booking&Payment-Admin
+ *  [PUT]/admin/hotel/booking/{booking_id}        //update a booking information by booking_id
+ *  [PUT]/admin/hotel/payment/{payment_id}        //update a payment information by payment_id
+ *  [PUT]/admin/hotel/guest/{booking_id}          //update all booking's guest information by specific booking_id
+ *  [DELETE]/admin/hotel/booking/{booking_id}     //delete a set(booking,payment,guest) of booking
  *  
  *  Category-Admin
  *  [GET]/admin/category                    //get all hotel categories

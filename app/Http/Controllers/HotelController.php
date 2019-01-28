@@ -114,6 +114,10 @@ class HotelController extends Controller
         $room_type_list = $data['room_type_list'];
         $search_small = true;
         $daterange = null;
+        
+        //Three table relationship
+        //$hotels = Hotel::select('*')->where('id', '=', '40')->first();
+        //print_r($hotels->booking[0]->guest);die();
 
         return view('pages.welcome')
             ->with('hotels', $hotels)
