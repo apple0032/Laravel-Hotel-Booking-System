@@ -35,7 +35,7 @@
  * 
  *  Hotel-Booking&Payment
  *  [GET]/hotel/room/status/{room_id}   //get room booking status by date
- *  [GET]/hotel/room/validation         //valid room booking status
+ *  [GET]/hotel/room/validation         //validate room booking status
  *  [GET]/hotel/booking/{user_id}       //get all booking by a user
  *  [GET]/hotel/payment/{user_id}       //get all payment by a user
  *  [POST]/hotel/booking/{room_id}      //Create a booking&payment

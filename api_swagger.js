@@ -717,7 +717,7 @@
                 "tags": [
                     "booking"
                 ],
-                "summary": "Get hotel room by id",
+                "summary": "Get room booking status by date",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -773,21 +773,41 @@
                             "status": "success",
                             "hotel_id": "{hotel_id}",
                             "room_id": "{room_id}",
-                            "date": "{date}",
+                            "from_date": "{from_date}", #2018-01-28 as example
+                            "to_date": "{to_date}",  #2018-01-29 as example
                             "hotel_room": [
                               {
                                 "id": "1",
                                 "hotel_id": "40",
-                                "book_status": "20%",
-                                "date": "2019-01-28 17:12:06",
-                                "available": "1"
+                                "dayslot": [
+                                  {
+                                  "date": "2019-01-28",
+                                  "book_status": "40%",
+                                  "availability" : "1"
+                                  },
+                                  {
+                                  "date": "2019-01-29",
+                                  "book_status": "100%",
+                                  "availability" : "0"
+                                  },
+                                ]
                               },
+                              
                               {
-                                "id": "2",
-                                "hotel_id": "40",
-                                "book_status": "100%",
-                                "date": "2019-01-28 17:12:06",
-                                "available": "0"
+                                "id": "5",
+                                "hotel_id": "320",
+                                "dayslot": [
+                                  {
+                                  "date": "2019-01-28",
+                                  "book_status": "0%",
+                                  "availability" : "1"
+                                  },
+                                  {
+                                  "date": "2019-01-29",
+                                  "book_status": "45%",
+                                  "availability" : "0"
+                                  },
+                                ]
                               },
                             ]
                         }
@@ -797,7 +817,243 @@
             },
         },
         
+        
+        "/hotel/room/validation": {
+            "get": {
+                "tags": [
+                    "booking"
+                ],
+                "summary": "Validate room booking status",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "room_id",
+                        "type": "integer",
+                        "description": "Search all room if not provided",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "from_date",
+                        "type": "string",
+                        "description": "Give a date to search booking status",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "to_date",
+                        "type": "string",
+                        "description": "Give a date to search booking status",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "room_id": "{room_id}",
+                            "from_date": "{from_date}", #2018-01-28 as example
+                            "to_date": "{to_date}",  #2018-01-29 as example
+                            "hotel_room": [
+                              {
+                                "id": "1", #room_id
+                                "hotel_id": "40", #hotel_id
+                                "dayslot": [
+                                  {
+                                  "date": "2019-01-28",
+                                  "availability" : "1"
+                                  },
+                                  {
+                                  "date": "2019-01-29",
+                                  "availability" : "0"
+                                  },
+                                ]
+                              },
+                            ]
+                        }
+                      }
+                    }
+                }
+            },
+        },
       
+        "/hotel/booking/{user_id}": {
+            "get": {
+                "tags": [
+                    "booking"
+                ],
+                "summary": "Get all booking by a user",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "type": "integer",
+                        "description": "user_id for generated user_id",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "in_date",
+                        "type": "string",
+                        "description": "Give a date to search booking status",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "out_date",
+                        "type": "string",
+                        "description": "Give a date to search booking status",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "hotel_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "status",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "user_id": "{user_id}",
+                            "payment": [],
+                        }
+                      }
+                    }
+                }
+            },
+        },
+
+        "/hotel/payment/{user_id}": {
+            "get": {
+                "tags": [
+                    "booking"
+                ],
+                "summary": "Get all payment by a user",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "type": "integer",
+                        "description": "user_id for generated user_id",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "in_date",
+                        "type": "string",
+                        "description": "Give a date to search booking status",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "out_date",
+                        "type": "string",
+                        "description": "Give a date to search booking status",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "hotel_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "payment_method_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "status",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "user_id": "{user_id}",
+                            "payment": [],
+                        }
+                      }
+                    }
+                }
+            },
+        },
+        
+        
 
     }
 }
