@@ -27,22 +27,23 @@
  *  [PUT]/account/{user_id}     //update user details
  * 
  *  Hotel-User
- *  [GET]/hotel                         //get All hotel information
+ *  [GET]/hotel/list                    //get All hotel information
  *  [GET]/hotel/{hotel_id}              //get hotel information by specific id
  *  [POST]/hotel/comment/{hotel_id}     //create hotel comment
  *  [GET]/hotel/comment/{hotel_id}      //get hotel all comment
  *  [GET]/hotel/room/{hotel_id}         //get hotel all room information
  * 
  *  Hotel-Booking&Payment
- *  [GET]/hotel/room/status/{room_id}   //get room booking status by date
- *  [GET]/hotel/room/validation         //validate room booking status
- *  [GET]/hotel/booking/{user_id}       //get all booking by a user
- *  [GET]/hotel/payment/{user_id}       //get all payment by a user
- *  [POST]/hotel/booking/{room_id}      //Create a booking&payment
+ *  [GET]/hotel/room/status/{room_id}       //get room booking status by date
+ *  [GET]/hotel/room/validation             //validate room booking status
+ *  [GET]/hotel/booking/{user_id}           //get all booking by a user
+ *  [GET]/hotel/payment/{user_id}           //get all payment by a user
+ *  [POST]/hotel/booking/{room_id}          //Create a booking&payment
+ *  [POST]/hotel/booking/guest/{booking_id} //Add guest to a booking
  * 
  *  Searching
- *  [GET]/hotel/search              //searching hotel by input params
- *  [GET]/hotel/advanced_search     //searching hotel by advanced options
+ *  [GET]/hotel/search/normal       //searching hotel by input params
+ *  [GET]/hotel/search/advanced     //searching hotel by advanced options and include algorithm search later
  * 
  *  Hotel-admin
  *  [POST]/admin/hotel                    //create hotel
@@ -58,6 +59,7 @@
  *  [PUT]/admin/hotel/booking/{booking_id}        //update a booking information by booking_id
  *  [PUT]/admin/hotel/payment/{payment_id}        //update a payment information by payment_id
  *  [PUT]/admin/hotel/guest/{booking_id}          //update all booking's guest information by specific booking_id
+ *  [DELETE]/admin/hotel/guest/{booking_id}       //delete a guest by specific booking_id
  *  [DELETE]/admin/hotel/booking/{booking_id}     //delete a set(booking,payment,guest) of booking
  *  
  *  Category-Admin
