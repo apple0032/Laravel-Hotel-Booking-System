@@ -37,6 +37,10 @@
             "name": "search",
             "description": "Searching API"
         },
+        {
+            "name": "admin-hotel",
+            "description": "Admin manages hotel information"
+        },        
     ],
     "schemes": [
         "https",
@@ -1179,7 +1183,7 @@
                 "tags": [
                     "booking"
                 ],
-                "summary": "Get all payment by a user",
+                "summary": "Create a guest for a booking",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -1520,5 +1524,131 @@
                 }
             },
         },   
+        
+        "/admin/hotel": {
+            "post": {
+                "tags": [
+                    "admin-hotel"
+                ],
+                "summary": "Create hotel",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "phone",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "category_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "star",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "tags",
+                        "type": "integer",
+                        "description": "This field should be a comma string",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "featured-img",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "handling_price",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "body",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "coordi_x",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "coordi_y",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "new",
+                        "type": "string",
+                        "description": "Check the hotel from API or from custom create",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "soft_delete",
+                        "type": "string",
+                        "description": "",
+                        "required": false,                        
+                        "default" : '0',
+                        "enum":["1","0"]
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+        },           
+        
+        
     }
 }
