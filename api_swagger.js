@@ -19,7 +19,7 @@
     "tags": [
         {
             "name": "admin-user",
-            "description": "Admin manages the user's actions, which are located in the AdminController"
+            "description": "Admin manages user's actions"
         },
         {
             "name": "account",
@@ -40,7 +40,31 @@
         {
             "name": "admin-hotel",
             "description": "Admin manages hotel information"
-        },        
+        },
+        {
+            "name": "admin-booking-payment",
+            "description": "Admin manages client Booking & Payment"
+        },
+        {
+            "name": "admin-category",
+            "description": "Admin manages hotel categories"
+        },
+        {
+            "name": "admin-tags",
+            "description": "Admin manages hotel tags"
+        },
+        {
+            "name": "admin-paymethod",
+            "description": "Admin manages payment methods"
+        },
+        {
+            "name": "admin-statistic",
+            "description": "Admin get statistic"
+        },
+        {
+            "name": "admin-config",
+            "description": "Admin manages config"
+        },
     ],
     "schemes": [
         "https",
@@ -276,7 +300,7 @@
                 "tags": [
                     "admin-user"
                 ],
-                "summary": "Delete",
+                "summary": "Delete a user",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -1642,12 +1666,2143 @@
                       "examples": {
                         "application/json": {
                             "status": "success",
+                            "hotel" :                     
+                            {
+                                "id": "40",
+                                "name": "Peninsula",
+                                "star": "4",
+                                "category_id": "5",
+                            },
                         }
                       }
                     }
                 }
             },
         },           
+
+
+        "/admin/hotel/{hotel_id}": {
+            "put": {
+                "tags": [
+                    "admin-hotel"
+                ],
+                "summary": "Update hotel info",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "hotel_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "phone",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "category_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "star",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "tags",
+                        "type": "integer",
+                        "description": "This field should be a comma string",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "featured-img",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "handling_price",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "body",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "coordi_x",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "coordi_y",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "new",
+                        "type": "string",
+                        "description": "Check the hotel from API or from custom create",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "soft_delete",
+                        "type": "string",
+                        "description": "",
+                        "required": false,                        
+                        "default" : '0',
+                        "enum":["1","0"]
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "hotel" :                     
+                            {
+                                "id": "40",
+                                "name": "Peninsula",
+                                "star": "4",
+                                "category_id": "5",
+                            },
+                        }
+                      }
+                    }
+                }
+            },
+            
+            "delete": {
+                "tags": [
+                    "admin-hotel"
+                ],
+                "summary": "Hard Delete Hotel",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "hotel_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "hotel" :                     
+                            {
+                                "id": "40",
+                                "name": "Peninsula",
+                            },
+                        }
+                      }
+                    }
+                }
+            },
+        }, 
+
+        "/admin/hotel/fac/{hotel_id}": {
+            "post": {
+                "tags": [
+                    "admin-hotel"
+                ],
+                "summary": "Create Hotel Facilities",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "hotel_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "free_cancel",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                        
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "all_day_services",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "wifi",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "restaurant",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "washing_service",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "car_park",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "meeting_room",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "bar",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "gym_room",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "swim_pool",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "hotel" :                     
+                            {
+                                "id": "40",
+                            },
+                        }
+                      }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "admin-hotel"
+                ],
+                "summary": "Update Hotel Facilities",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "hotel_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "free_cancel",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                        
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "all_day_services",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "wifi",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "restaurant",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "washing_service",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "car_park",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "meeting_room",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "bar",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "gym_room",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "swim_pool",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "hotel" :                     
+                            {
+                                "id": "40",
+                            },
+                        }
+                      }
+                    }
+                }
+            },
+        },         
+        
+
+       "/admin/hotel/room": {
+            "post": {
+                "tags": [
+                    "admin-hotel"
+                ],
+                "summary": "Create Hotel Room",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "hotel_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "room_type_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ppl_limit",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                    },
+                    {
+                        "in": "formData",
+                        "name": "price",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,                      
+                    },
+                    {
+                        "in": "formData",
+                        "name": "qty",
+                        "type": "integer",
+                        "description": "Number of room supply",
+                        "required": true,                      
+                    },
+                    {
+                        "in": "formData",
+                        "name": "availability",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "promo",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "hotel" :                     
+                            {
+                                "id": "40",
+                            },
+                            "room" :                     
+                            {
+                                "id": "40",
+                                "price" : "200",
+                                "qty" : "20"
+                            },
+                        }
+                      }
+                    }
+                }
+            },
+        },        
+        
+       "/admin/hotel/room/{room_id}": {
+            "put": {
+                "tags": [
+                    "admin-hotel"
+                ],
+                "summary": "Update Hotel Room",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "room_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "room_type_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ppl_limit",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                    },
+                    {
+                        "in": "formData",
+                        "name": "price",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,                      
+                    },
+                    {
+                        "in": "formData",
+                        "name": "qty",
+                        "type": "integer",
+                        "description": "Number of room supply",
+                        "required": false,                      
+                    },
+                    {
+                        "in": "formData",
+                        "name": "availability",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "promo",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                        "default" : '1',
+                        "enum":["1","0"]
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "hotel" :                     
+                            {
+                                "id": "40",
+                            },
+                            "room" :                     
+                            {
+                                "id": "40",
+                                "price" : "200",
+                                "qty" : "20"
+                            },
+                        }
+                      }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "admin-hotel"
+                ],
+                "summary": "Delete Hotel Room",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "room_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "hotel" :                     
+                            {
+                                "id": "40",
+                            },
+                            "room" :                     
+                            {
+                                "id": "40",
+                                "price" : "200",
+                                "qty" : "20"
+                            },
+                        }
+                      }
+                    }
+                }
+            },
+        },             
+  
+        "/admin/hotel/booking/{booking_id}": {
+            "put": {
+                "tags": [
+                    "admin-booking-payment"
+                ],
+                "summary": "Update Client Booking",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "booking_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "user_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "in_date",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "out_date",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "book_date",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "hotel_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "hotel_room_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "people",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "total_price",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "payment_method_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "approved",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "status",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "admin-booking-payment"
+                ],
+                "summary": "Delete Booking + Payment + Guest",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "booking_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+        },      
+        
+        
+        "/admin/hotel/payment/{payment_id}": {
+            "put": {
+                "tags": [
+                    "admin-booking-payment"
+                ],
+                "summary": "Update Client Payment",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "payment_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "user_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "single_price",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "handling_price",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "total_price",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "payment_method_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "card_number",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "expired_date",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "security_number",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "status",
+                        "type": "integer",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+        },
+       
+        "/admin/hotel/guest/{booking_id}": {
+            "put": {
+                "tags": [
+                    "admin-booking-payment"
+                ],
+                "summary": "Update Client Booking's guest",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "booking_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "phone",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "gender",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "email",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+
+            "delete": {
+                "tags": [
+                    "admin-booking-payment"
+                ],
+                "summary": "Delete guest from a booking",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "booking_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "phone",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "gender",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "email",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },            
+        },
+        
+      "/admin/category": {
+            "get": {
+                "tags": [
+                    "admin-category"
+                ],
+                "summary": "List all categories",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string",
+                        "description": "Search with LIKE %{string}%",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+
+            "post": {
+                "tags": [
+                    "admin-category"
+                ],
+                "summary": "Create a new category",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "id" : "5",
+                            "name" : "category"
+                        }
+                      }
+                    }
+                }
+            },
+        },  
+        
+      "/admin/category/{category_id}": {
+            "put": {
+                "tags": [
+                    "admin-category"
+                ],
+                "summary": "Update a category",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "category_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string",
+                        "description": "",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "id" : "5",
+                            "name" : "category"
+                        }
+                      }
+                    }
+                }
+            },
+            
+            "delete": {
+                "tags": [
+                    "admin-category"
+                ],
+                "summary": "Delete a category",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "category_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "id" : "5",
+                            "name" : "category"
+                        }
+                      }
+                    }
+                }
+            },            
+      },          
+        
+
+      "/admin/tags": {
+            "get": {
+                "tags": [
+                    "admin-tags"
+                ],
+                "summary": "List all tags",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string",
+                        "description": "Search with LIKE %{string}%",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+
+            "post": {
+                "tags": [
+                    "admin-tags"
+                ],
+                "summary": "Create a new tag",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "id" : "15",
+                            "name" : "marvelous"
+                        }
+                      }
+                    }
+                }
+            },
+        },         
+
+      "/admin/tags/{tag_id}": {
+            "put": {
+                "tags": [
+                    "admin-tags"
+                ],
+                "summary": "Update a tag",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "tag_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string",
+                        "description": "",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "id" : "5",
+                            "name" : "tag"
+                        }
+                      }
+                    }
+                }
+            },
+            
+            "delete": {
+                "tags": [
+                    "admin-tags"
+                ],
+                "summary": "Delete a tag",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "tag_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "id" : "5",
+                            "name" : "tag"
+                        }
+                      }
+                    }
+                }
+            },            
+      },
+      
+
+      "/admin/tags/hotel/{hotel_id}": {
+            "post": {
+                "tags": [
+                    "admin-tags"
+                ],
+                "summary": "Add tags into hotel",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "hotel_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "tag_id",
+                        "type": "integer",
+                        "description": "This field support comma string",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "hotel_id" : "5",
+                            "tag_id" : "10"
+                        }
+                      }
+                    }
+                }
+            },
+            
+            "delete": {
+                "tags": [
+                    "admin-tags"
+                ],
+                "summary": "Remove tags from hotel",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "hotel_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "tag_id",
+                        "type": "integer",
+                        "description": "This field support comma string",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "hotel_id" : "5",
+                            "tag_id" : "10"
+                        }
+                      }
+                    }
+                }
+            },            
+      },
+      
+      
+      "/admin/paymentMethod": {
+            "get": {
+                "tags": [
+                    "admin-paymethod"
+                ],
+                "summary": "List all payment method",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "type",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+
+            "post": {
+                "tags": [
+                    "admin-paymethod"
+                ],
+                "summary": "Create a new payment method",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "type",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "id" : "15",
+                            "type" : "visa"
+                        }
+                      }
+                    }
+                }
+            },
+        },         
+
+      "/admin/paymentMethod/{method_id}": {
+            "put": {
+                "tags": [
+                    "admin-paymethod"
+                ],
+                "summary": "Update a payment method",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "method_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "type",
+                        "type": "string",
+                        "description": "",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "id" : "5",
+                            "type" : "visa"
+                        }
+                      }
+                    }
+                }
+            },
+            
+            "delete": {
+                "tags": [
+                    "admin-paymethod"
+                ],
+                "summary": "Delete a payment method",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "path",
+                        "name": "method_id",
+                        "type": "integer",
+                        "description": "",
+                        "required": true,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                            "id" : "5",
+                            "type" : "visa"
+                        }
+                      }
+                    }
+                }
+            },            
+      },
+      
+      
+      "/admin/stat/bookingStatus": {
+            "get": {
+                "tags": [
+                    "admin-statistic"
+                ],
+                "summary": "Get all hotel all booking status by a specific period",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "from_date",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "to_date",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "hotel_id",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+        },      
+      
+        "/admin/stat/rank": {
+            "get": {
+                "tags": [
+                    "admin-statistic"
+                ],
+                "summary": "Get the rank list of all hotel",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "star",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "category_id",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+        },    
+
+        "/admin/stat/invoice": {
+            "get": {
+                "tags": [
+                    "admin-statistic"
+                ],
+                "summary": "Get the total invoice/income by a specific period",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "from_date",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "to_date",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "hotel_id",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+        },  
+      
+        "/admin/stat/searching": {
+            "get": {
+                "tags": [
+                    "admin-statistic"
+                ],
+                "summary": "Return statistic data which calculated by user input",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "from_date",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "to_date",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+        },  
+
+        "/admin/config/pageno": {
+            "put": {
+                "tags": [
+                    "admin-config"
+                ],
+                "summary": "Config the number of hotels displayed in one page",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "page_no",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+        },          
+        
+        "/admin/config/about": {
+            "put": {
+                "tags": [
+                    "admin-config"
+                ],
+                "summary": "Config about page content",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api-key",
+                        "type": "string",
+                        "description": "For authentication",
+                        "required": true,
+                    },
+                    {
+                        "in": "formData",
+                        "name": "about",
+                        "type": "string",
+                        "description": "",
+                        "required": false,
+                    },
+                ],
+                "responses": {
+                    "500": {
+                        "description": "\"status\": \"error\","
+                    },
+                    "200": {
+                      "description": "Success output",
+                      "examples": {
+                        "application/json": {
+                            "status": "success",
+                        }
+                      }
+                    }
+                }
+            },
+        },
+        
         
         
     }

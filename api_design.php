@@ -1,6 +1,6 @@
 <?php
 
-/* API Design (GET/POST/PUT/DELETE) 
+/* NODE.JS RESTFUL API Design (GET/POST/PUT/DELETE) 
  * 
  * keyword: node sequelize rest api mysql express epilogue
  * 
@@ -47,11 +47,11 @@
  * 
  *  Hotel-admin
  *  [POST]/admin/hotel                    //create hotel
- *  [POST]/admin/hotel/fac                //create hotel facilities
  *  [PUT]/admin/hotel/{hotel_id}          //update hotel information
- *  [PUT]/admin/hotel/fac/{hotel_id}      //update hotel facilities
  *  [DELETE]/admin/hotel/{hotel_id}       //delete hotel
- *  [POST]/admin/hotel/room/{hotel_id}    //create hotel room by specific hotel id
+ *  [POST]/admin/hotel/fac/{hotel_id}     //create hotel facilities
+ *  [PUT]/admin/hotel/fac/{hotel_id}      //update hotel facilities
+ *  [POST]/admin/hotel/room               //create hotel room by specific hotel id
  *  [PUT]/admin/hotel/room/{room_id}      //update hotel room information
  *  [DELETE]/admin/hotel/room/{room_id}   //delete a room from a specific room_id
  * 
@@ -71,16 +71,16 @@
  *  Tags-Admin
  *  [GET]/admin/tags                        //get all hotel categories
  *  [POST]/admin/tags                       //create new tags
- *  [PUT]/admin/tags/{tags_id}              //update a tag name
- *  [DELETE]/admin/tags/{tags_id}           //delete a tag name
+ *  [PUT]/admin/tags/{tag_id}              //update a tag name
+ *  [DELETE]/admin/tags/{tag_id}           //delete a tag name
  *  [POST]/admin/tags/hotel/{hotel_id}      //Add tags into hotel
  *  [DELETE]/admin/tags/hotel/{hotel_id}    //Delete tags from hotel
  *  
  *  Payment method-Admin
  *  [GET]/admin/paymentMethod                       //get all payment method
  *  [POST]/admin/paymentMethod                      //create new paymentMethod
- *  [PUT]/admin/paymentMethod/{category_id}         //update a paymentMethod
- *  [DELETE]/admin/paymentMethod/{category_id}      //delete a paymentMethod
+ *  [PUT]/admin/paymentMethod/{method_id}           //update a paymentMethod
+ *  [DELETE]/admin/paymentMethod/{method_id}        //delete a paymentMethod
  * 
  *  Statistic API
  *  [GET]/admin/stat/bookingStatus      //get all hotel all booking status by a specific period
