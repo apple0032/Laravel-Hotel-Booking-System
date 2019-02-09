@@ -27,6 +27,7 @@ use Image;
 use Auth;
 use Redirect;
 use DB;
+use DateTime;
 
 class BookingController extends Controller
 {
@@ -37,11 +38,6 @@ class BookingController extends Controller
     
     public function book($id,$roomid)
     {
-        //$id = hotel's id;
-        if(!Auth::check()){
-            Session::flash('success', 'Please login!');
-            return redirect('auth/login');
-        }
         
         $hotel = Hotel::where('id','=',$id)->first();
         $room = HotelRoom::where('id','=',$roomid)->where('hotel_id','=',$id)->first();
@@ -71,12 +67,32 @@ class BookingController extends Controller
     public function booking(Request $request,$id,$roomid)
     {
 
-        //$post->name = $request->title;
         $this->validate($request, array(
             'name'         => 'required',
         ));
 
-        sleep(5);
+        //Wait for process preparation
+        sleep(4);
+
+        //Validation & calculation backend process
+        $valid = self::BookingValidation($request);
+        if($valid == false){
+            return redirect()->route('pages.error');
+        }
+
+        $total_price = self::BookingCalculation($request,$id,$roomid);
+        if($total_price != $request->total_price){
+            return redirect()->route('pages.error');
+        }
+
+        //If finished validation & calculation, then handle credit card payment here
+        $payment = self::BookingPayment($request,$total_price);
+
+        if($payment == false){
+            return redirect()->route('pages.error');
+        }
+
+        //If payment settled, then handle data storage in local db
 
         $booking = new Booking;
         $booking->user_id = Auth::user()->id;
@@ -143,12 +159,7 @@ class BookingController extends Controller
 
     public function booklist()
     {
-
-        if(!Auth::check()){
-            return redirect('auth/login');
-        } else {
-            $user_id = Auth::user()->id;
-        };
+        $user_id = Auth::user()->id;
 
         $booking = Booking::where('user_id', '=', $user_id)->orderby('in_date','DESC')->get();
         $room_type_list = \App\Helpers\AppHelper::instance()->ObjectToArrayMap(RoomType::all(),'id','type');
@@ -176,12 +187,7 @@ class BookingController extends Controller
 
     public function Payment()
     {
-
-        if(!Auth::check()){
-            return redirect('auth/login');
-        } else {
-            $user_id = Auth::user()->id;
-        };
+        $user_id = Auth::user()->id;
 
         $booking = Booking::where('user_id', '=', $user_id)->orderby('in_date','DESC')->get();
         $room_type_list = \App\Helpers\AppHelper::instance()->ObjectToArrayMap(RoomType::all(),'id','type');
@@ -206,7 +212,118 @@ class BookingController extends Controller
             ->with('pay_method', $pay_method)
             ->with('booking', $booking);
     }
-    
+
+
+    protected function BookingValidation($request){
+
+        foreach ($request->email as $guest_email){
+            if($guest_email != null) {
+                if (!filter_var($guest_email, FILTER_VALIDATE_EMAIL)) {
+                    return false;
+                }
+            }
+        }
+
+        foreach ($request->phone as $guest_phone) {
+            if($guest_phone != null) {
+                if (!filter_var($guest_phone, FILTER_VALIDATE_INT)) {
+                    return false;
+                }
+            }
+        }
+
+        foreach ($request->name as $guest_name) {
+            if($guest_name == null) {
+                return false;
+            }
+        }
+
+        $in_date = self::validateDate($request->in_date);
+        if($in_date == false){
+            return false;
+        }
+
+        $out_date = self::validateDate($request->out_date);
+        if($out_date == false){
+            return false;
+        }
+
+        if (!filter_var($request->single_price, FILTER_VALIDATE_INT)) {
+            return false;
+        }
+
+        if (!filter_var($request->handling_price, FILTER_VALIDATE_INT)) {
+            if($request->handling_price != '0') {
+                return false;
+            }
+        }
+
+        if (!filter_var($request->total_price, FILTER_VALIDATE_INT)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function BookingCalculation($request,$id,$roomid){
+
+        $hotel = Hotel::where('id','=',$id)->first();
+        $room = HotelRoom::where('id','=',$roomid)->where('hotel_id','=',$id)->first();
+
+        $hand = $hotel['handling_price'];
+        $rm_price = $room['price'];
+
+        $start = strtotime($request->in_date);
+        $end = strtotime($request->out_date);
+        $days = ceil(abs($end - $start) / 86400);
+
+        $total_price = ($rm_price * $days) + $hand;
+
+        return $total_price;
+    }
+
+    protected function BookingPayment($request,$price){
+
+        if($request->payment_method == '5'){
+            return true; //payment will settled at hotel, return true to skip payment process.
+        } else {
+
+            //Validate credit card input type
+            if (!filter_var($request->card_number, FILTER_VALIDATE_INT)) {
+                return false;
+            }
+
+            if (!filter_var($request->card_number, FILTER_VALIDATE_INT)) {
+                return false;
+            }
+
+            //If credit card info basically ok
+            //Then validate credit card info via calling those credit card company APIs.
+            /*
+             * Pseudo Process
+             * 1. Call credit card authentication api to check the card is suit for payment
+             * 2. if(return = true) -> call credit card payment api to request payment
+             * 3. if request payment api return true and/or return a api payment token, then we get token for temp
+             * 4. use that temp api token to request a payment, wait for that company to process payment
+             * 5. if payment api return success, then we got successful payment status, thus process local db storage
+             * 6. if payment api return fail/error/exception/reject etc.. then we stop booking process, break out of the program.
+             *
+             * Noted that payment price = $price that validated anc calculated before run this function.
+             */
+
+            //The payment gateway is still under developing now, so always return true.
+            return true;
+        }
+
+    }
+
+
+    function validateDate($date, $format = 'Y-m-d')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        // The Y ( 4 digits year ) returns TRUE for any integer with any number of digits so changing the comparison from == to === fixes the issue.
+        return $d && $d->format($format) === $date;
+    }
 
 
 }
