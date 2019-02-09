@@ -273,7 +273,7 @@
 
     .loading_icon {
         display: none;
-        margin-top: 20px;
+        margin-top: 60px;
         margin-bottom: 20px;
         text-align: center;
     }
@@ -381,6 +381,26 @@
         100% {
             transform: rotate(360deg);
         }
+    }
+
+    .loading_text{
+        padding-top: 90px;
+        padding-left: 60px;
+        font-family: 'Noto Sans TC', sans-serif !important;
+        font-size: 18px;
+        color: #2d6098;
+        animation: flash linear 3s infinite;
+    }
+
+    @-webkit-keyframes flash {
+        0% { opacity: 1; }
+        50% { opacity: .3; }
+        100% { opacity: 1; }
+    }
+    @keyframes flash {
+        0% { opacity: 1; }
+        50% { opacity: .3; }
+        100% { opacity: 1; }
     }
 
     .total_result {
@@ -785,7 +805,9 @@
                     <div></div>
                     <div></div>
                 </div>
+                <div class="loading_text">正在讀取資料，請稍候....</div>
             </div>
+
 
         @endif
         <div class="col-md-12 hotel_grid_container">

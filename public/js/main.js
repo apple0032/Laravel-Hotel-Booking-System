@@ -79,7 +79,13 @@ function SearchByAjax(name, category, star, room_type, ppl, tags, daterange, p_l
             $(".hotel_grid_container").css("opacity", "0.4");
         },
         success: function (data) {
-            $('.loading_icon').hide();
+
+            $( document ).ajaxStop(function() {
+                //hide loading gif if finished ajax call
+                $('.loading_icon').hide();
+            });
+
+            //$('.loading_icon').hide();
             $(".hotel_grid_container").css("opacity", "1");
             $('.total_result').remove();
             $('.hotel_grid_index').remove();

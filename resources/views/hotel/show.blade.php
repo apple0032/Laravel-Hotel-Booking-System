@@ -1156,7 +1156,7 @@
 
     <form method="POST" action="../comment/{{$hotel->id}}" accept-charset="UTF-8">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-        <textarea rows="4" cols="50" class="form-control" name="comment" id="comment" placeholder="留下評論"></textarea>
+        <textarea rows="10" cols="50" class="form-control" name="comment" id="comment" placeholder="留下評論"></textarea>
 
         <fieldset class="rating">
             <input type="radio" id="star5" name="rating" value="5"/><label class="full" for="star5"
