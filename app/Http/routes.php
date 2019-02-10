@@ -70,6 +70,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/images-delete', 'UploadImagesController@destroy');
     Route::get('/images-show', 'UploadImagesController@index');
     Route::post('admin/hotel/{id}/deleteimg','UploadImagesController@deleteimg');
+    Route::post('/fb-images-save', 'FacebookController@store');
     
     //Ajax
     Route::get('ajax', function(){ return view('ajax'); });
@@ -108,4 +109,8 @@ Route::group(['middleware' => ['web']], function () {
 
     //Documentation
     Route::get('article', 'PagesController@getArticle');
+
+    //Facebook
+    Route::get('facebook', 'FacebookController@getFacebook');
+    Route::post('facebook', ['uses' => 'FacebookController@post', 'as' => 'facebook.post']);
 });
