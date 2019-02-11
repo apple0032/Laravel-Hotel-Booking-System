@@ -293,7 +293,7 @@ class BookingController extends Controller
                 return false;
             }
 
-            if (!filter_var($request->card_number, FILTER_VALIDATE_INT)) {
+            if (!filter_var($request->security_number, FILTER_VALIDATE_INT)) {
                 return false;
             }
 

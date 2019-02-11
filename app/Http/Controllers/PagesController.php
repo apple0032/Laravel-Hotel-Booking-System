@@ -524,4 +524,56 @@ class PagesController extends Controller
         return $array;
     }
     
+    public function FlightIndex(){
+        
+        /*
+         * The actual operation of Aviation industry - 
+         * 
+         * N kinds of Country * N kinds of City * N kinds of Airports * N kinds of Airlines * N kinds of Flights * N kinds of Price * N kinds of Price Source
+         * 
+         * Country code : https://countrycode.org/
+         * Coutrty search api : https://restcountries.eu/#api-endpoints-language
+         * 
+         * Flight search process (draft at 2019-02-11)
+         * 1. User typing keywords on searchbar will trigger ajax call -> country code search api
+         * 2. User click to select right country , get country code (HK,US,GB)
+         * 3. Also get from_date & to_date from user input
+         * 3. Call Scheduled Flight(s) Api , requested params should be: addid,addkey,'HKG',arrivalAirportCode,Y-M-D
+         * 4. Get scheduled flight data in json format
+         * 5. In json->scheduledFlights, we got all of the flight,plane_eq,time,terminal..etc
+         * 6. We only need the price of flight code!
+         * 
+         * 
+         */
+        
+        $country = 'HK';
+        $appId = '*hidden*';
+        $appKey = '*hidden*';
+        
+        $host = 'https://api.flightstats.com/flex/airports/rest/v1/json/countryCode/'.$country.'?appId='.$appId.'&appKey='.$appKey;
+
+//        $post = array(
+//                'username' => $data['username'],
+//                'password' => $data['password'],
+//                'code' => $code,
+//        );
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, $post); //formdata with post method
+
+        // execute api
+        $response = curl_exec($ch);
+
+        // close the connection, release resources used
+        curl_close($ch);
+
+        //return result
+        $arr = json_decode($response);
+        print_r($arr->airports);
+       
+        die();
+    }
+    
 }

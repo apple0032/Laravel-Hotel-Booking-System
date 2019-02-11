@@ -64,6 +64,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('search', ['uses' => 'PagesController@search', 'as' => 'pages.search']); //INDEX SEARCH FORM
     Route::get('search', 'PagesController@getsearch');  //SEARCH QUERY
     Route::resource('posts', 'PostController');
+    Route::get('/flight', ['uses' => 'PagesController@flightIndex', 'as' => 'flight.index']);
 
     //Image
     Route::post('/images-save', 'UploadImagesController@store');
