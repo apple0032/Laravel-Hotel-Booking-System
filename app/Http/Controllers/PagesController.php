@@ -535,20 +535,21 @@ class PagesController extends Controller
          * Coutrty search api : https://restcountries.eu/#api-endpoints-language
          * 
          * Flight search process (draft at 2019-02-11)
-         * 1. User typing keywords on searchbar will trigger ajax call -> country code search api
+         * 1. User typing keywords on searchbar will trigger ajax call -> country code search api   //done
          * 2. User click to select right country , get country code (HK,US,GB)
-         * 3. Also get from_date & to_date from user input
-         * 3. Call Scheduled Flight(s) Api , requested params should be: addid,addkey,'HKG',arrivalAirportCode,Y-M-D
-         * 4. Get scheduled flight data in json format
-         * 5. In json->scheduledFlights, we got all of the flight,plane_eq,time,terminal..etc
-         * 6. We only need the price of flight code!
+         * 3. Popup a input text, call search-airport by country code API to list out all airport from selected country
+         * 4. Also get from_date & to_date from user input
+         * 5. Call Scheduled Flight(s) Api , requested params should be: addid,addkey,'HKG',arrivalAirportCode,Y-M-D
+         * 6. Get scheduled flight data in json format
+         * 7. In json->scheduledFlights, we got all of the flight,plane_eq,time,terminal..etc
+         * 8. We only need the price of flight code!
          * 
          * 
          */
         
         $country = 'HK';
-        $appId = '*hidden*';
-        $appKey = '*hidden*';
+        $appId = '';
+        $appKey = '';
         
         $host = 'https://api.flightstats.com/flex/airports/rest/v1/json/countryCode/'.$country.'?appId='.$appId.'&appKey='.$appKey;
 
@@ -571,9 +572,49 @@ class PagesController extends Controller
 
         //return result
         $arr = json_decode($response);
-        print_r($arr->airports);
-       
-        die();
+        //print_r($arr);
+        //die();
+        
+        return view('pages.flight');
+    }
+    
+    public function searchcountry(Request $request){
+
+        $name = $request->name;
+
+        if($name == ''){
+            $country = null;
+            $status = 'error';
+        } else {
+            
+            $host = 'https://restcountries.eu/rest/v2/name/'.$name;
+
+            $ch = curl_init($host);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $arr = json_decode($response);
+            
+            $country = $arr;
+            
+            $status = 'success';
+            
+            if (array_key_exists('status', $country)) {
+                $status = 'error';
+            } else {
+                $status = 'success';
+            }
+        }
+
+        $response = array(
+            'status' => $status,
+            'country' => $country,
+        );
+
+        return response()->json($response);
     }
     
 }

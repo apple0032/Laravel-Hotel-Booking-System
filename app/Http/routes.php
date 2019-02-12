@@ -77,6 +77,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('ajax', function(){ return view('ajax'); });
     Route::post('/searchbyajax','PagesController@searchbyajax');
     Route::post('/searchname','PagesController@searchname');
+    Route::post('/searchcountry','PagesController@searchcountry');
     Route::post('hotel/searchbyajax','PagesController@searchbyajax');
     Route::post('book/checkvalidation','PagesController@checkvalidation');
     
