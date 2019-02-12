@@ -8,8 +8,10 @@
         position: absolute;
         z-index: 10;
         background-color: white;
-        /*display: none;*/
+        display: none;
         margin-top: -7px;
+        border: 1px solid #b4b4b4;
+        padding:7px;
     }
 
     .list-unstyled li {
@@ -41,7 +43,15 @@
                         <ul class="list-unstyled"></ul>
                         
                         <label name="subject">CountryCode:</label>
-                        <input id="countrycode" name="countrycode" class="form-control" type="text" maxlength="30">
+                        <input id="countrycode" name="countrycode" class="form-control" type="text" maxlength="30" readonly>
+
+                        <label name="subject">Departure  Airport:</label>
+                        <select id="departure-airport" name="departure-airport" class="form-control">
+                            <option value="HKG">Hong Kong International Airport</option>
+                        </select>
+
+                        <label name="subject">Arrival Airport:</label>
+                        <select id="airport" name="airport" class="form-control"></select>
                     </div>
 
                     <input type="submit" value="Search" class="btn btn-success">
@@ -86,21 +96,27 @@
                             $.each( data['country'], function( key, value ) {
                                 if(key>5){ return false; };
                                 $('.list-unstyled').append('' +
-                                '<li class="search_opt" value="value55">' + 
-                                '<div class="row"><div class="col-md-12">' +
-                                data['country'][key]["name"] + '</div>' +
-                                '</div></li>');
+                                '<li class="search_opt">' +
+                                '<div class="row">' +
+                                    '<div class="col-md-12">' +
+                                    data['country'][key]["name"] +
+                                    '</div>' +
+                                '</div><input type="hidden" class="list-code" id="c-'+data['country'][key]["name"]+'" name="code" value="'+data['country'][key]["alpha2Code"]+'"></li>');
                             });
                             
                             $(".list-unstyled").fadeIn();
                         } else {
                             $(".list-unstyled").fadeOut();
+                            $('#countrycode').val('');
                         }
                         
                         $(".search_opt").each(function (index) {
                             $(this).on("click", function () {
                                 var name = $(this).text();
-                                console.log(name);
+                                var code = $(this).find('.list-code').val();
+                                console.log(code);
+                                $('#countrycode').val(code);
+                                GetAirports(code,CSRF_TOKEN); //Trigger get airport api
                             });
                         });
                     }
@@ -109,6 +125,33 @@
             }, doneTypingInterval);
         }
     });
+
+    function GetAirports(code,token){
+
+        //Ajax call api
+        $.ajax({
+            url: 'searchairport',
+            async: false,
+            type: 'POST',
+            data: {
+                _token: token,
+                code: code
+            },
+            dataType: 'JSON',
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+                //<option value="HKG">Hong Kong International Airport</option>
+
+                $.each( data, function( key, value ) {
+                    $('#airport').append('<option value="'+value['code']+'">'+value['name']+'</option>');
+                });
+            }
+        });
+
+
+    }
 
 
     $("#country").focus(function () {

@@ -536,8 +536,8 @@ class PagesController extends Controller
          * 
          * Flight search process (draft at 2019-02-11)
          * 1. User typing keywords on searchbar will trigger ajax call -> country code search api   //done
-         * 2. User click to select right country , get country code (HK,US,GB)
-         * 3. Popup a input text, call search-airport by country code API to list out all airport from selected country
+         * 2. User click to select right country , get country code (HK,US,GB)  //done
+         * 3. Popup a input text, call search-airport by country code API to list out all airport from selected country   //done
          * 4. Also get from_date & to_date from user input
          * 5. Call Scheduled Flight(s) Api , requested params should be: addid,addkey,'HKG',arrivalAirportCode,Y-M-D
          * 6. Get scheduled flight data in json format
@@ -562,6 +562,8 @@ class PagesController extends Controller
         $ch = curl_init($host);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         //curl_setopt($ch, CURLOPT_POSTFIELDS, $post); //formdata with post method
 
         // execute api
@@ -592,6 +594,8 @@ class PagesController extends Controller
             $ch = curl_init($host);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
             $response = curl_exec($ch);
             curl_close($ch);
@@ -615,6 +619,46 @@ class PagesController extends Controller
         );
 
         return response()->json($response);
+    }
+
+
+    public function searchairport(Request $request){
+
+        $code = $request->code;
+
+        if($code == ''){
+            $airport = null;
+        } else {
+
+            $country = $code;
+            $appId = '';
+            $appKey = '';
+
+            $host = 'https://api.flightstats.com/flex/airports/rest/v1/json/countryCode/'.$country.'?appId='.$appId.'&appKey='.$appKey.'&extendedOptions=languageCode%3Azh';
+
+            $ch = curl_init($host);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+            $response = curl_exec($ch);
+
+            curl_close($ch);
+
+            $arr = json_decode($response,true);
+
+            $airport = array();
+            foreach ($arr['airports'] as $k => $obj){
+                if($obj['active'] == 'true'){
+                    $airport[$k]['code'] = $obj['fs'];
+                    $airport[$k]['name'] = $obj['name'];
+                }
+            }
+
+        }
+
+        return response()->json($airport);
     }
     
 }
