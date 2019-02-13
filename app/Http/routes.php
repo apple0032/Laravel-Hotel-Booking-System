@@ -64,7 +64,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('search', ['uses' => 'PagesController@search', 'as' => 'pages.search']); //INDEX SEARCH FORM
     Route::get('search', 'PagesController@getsearch');  //SEARCH QUERY
     Route::resource('posts', 'PostController');
-    Route::get('/flight', ['uses' => 'PagesController@flightIndex', 'as' => 'flight.index']);
+    Route::get('/flight', ['uses' => 'FlightController@flightIndex', 'as' => 'flight.index']);
+    Route::post('/flightsearch', ['uses' => 'FlightController@search', 'as' => 'flight.search']);
+    Route::get('/flight-result', ['uses' => 'FlightController@getSearchFlightPage', 'as' => 'flight.result']);
 
     //Image
     Route::post('/images-save', 'UploadImagesController@store');
@@ -77,8 +79,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('ajax', function(){ return view('ajax'); });
     Route::post('/searchbyajax','PagesController@searchbyajax');
     Route::post('/searchname','PagesController@searchname');
-    Route::post('/searchcountry','PagesController@searchcountry');
-    Route::post('/searchairport','PagesController@searchairport');
+    Route::post('/searchcountry','FlightController@searchcountry');
+    Route::post('/searchairport','FlightController@searchairport');
     Route::post('hotel/searchbyajax','PagesController@searchbyajax');
     Route::post('book/checkvalidation','PagesController@checkvalidation');
     

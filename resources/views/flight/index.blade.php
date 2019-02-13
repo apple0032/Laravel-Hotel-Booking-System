@@ -35,7 +35,7 @@
             <div class="col-md-12">
                 <h1>Flight Search</h1>
                 <hr>
-                <form action="{{ route('pages.search') }}" method="POST">
+                <form action="{{ route('flight.search') }}" method="POST">
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label name="subject">Country:</label>
@@ -46,12 +46,22 @@
                         <input id="countrycode" name="countrycode" class="form-control" type="text" maxlength="30" readonly>
 
                         <label name="subject">Departure  Airport:</label>
-                        <select id="departure-airport" name="departure-airport" class="form-control">
+                        <select id="departure_airport" name="departure_airport" class="form-control">
                             <option value="HKG">Hong Kong International Airport</option>
                         </select>
 
                         <label name="subject">Arrival Airport:</label>
                         <select id="airport" name="airport" class="form-control"></select>
+                        
+                        <label name="subject">Departure & Arrival Date:</label>
+                        <div class="form-group">
+                            <div class="input-group date" id="datetimepicker">
+                                <input class="form-control" type="text" name="daterange" id="daterange" value=""/>
+                                <span class="input-group-addon">
+                                 <span class="glyphicon-calendar glyphicon"></span>
+                               </span>
+                            </div>
+                        </div>
                     </div>
 
                     <input type="submit" value="Search" class="btn btn-success">
@@ -61,6 +71,10 @@
 @endsection
 
 @section('scripts')
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
     
     //setup before functions
@@ -108,6 +122,7 @@
                         } else {
                             $(".list-unstyled").fadeOut();
                             $('#countrycode').val('');
+                            $('#airport').html('');
                         }
                         
                         $(".search_opt").each(function (index) {
@@ -162,5 +177,26 @@
         $(".list-unstyled").fadeOut();
     });
 
+
+        $(function() {
+          $('input[name="daterange"]').daterangepicker({
+            opens: 'right',
+            locale:{
+                format: 'YYYY-MM-DD'
+            },
+            minDate: new Date(),
+              //startDate: '01/13/2019',
+              showDropdowns: true,
+              autoApply: true
+//              ranges: {
+//                  'Today': [moment(), moment()],
+//                  'This Month': [moment().startOf('month'), moment().endOf('month')],
+//                  'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+//              }
+          }, function(start, end, label) {
+            console.log("A date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+
+          });
+        });
 </script>
 @endsection
