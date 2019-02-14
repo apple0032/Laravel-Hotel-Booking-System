@@ -15,7 +15,7 @@ class TagController extends Controller
 {
 
     public function __construct() {
-        //$this->middleware('auth');
+        $this->middleware(['auth.admin']);
     }
 
     /**
@@ -25,8 +25,6 @@ class TagController extends Controller
      */
     public function index()
     {
-        if(self::CheckPermission() == false){ return redirect('auth/login');};
-
         $tags = Tag::all();
         return view('tags.index')->withTags($tags);
     }
@@ -57,8 +55,7 @@ class TagController extends Controller
      */
     public function show($id)
     {
-        if(self::CheckPermission() == false){ return redirect('auth/login');};
-
+        
         $tag = Tag::find($id);
 
         $hotel_tags_e = PostTag::where('tag_id', '=', $id)->orderBy('id', 'asc')->get()->toArray();
@@ -87,8 +84,6 @@ class TagController extends Controller
      */
     public function edit($id)
     {
-        if(self::CheckPermission() == false){ return redirect('auth/login');};
-
         $tag = Tag::find($id);
         return view('tags.edit')->withTag($tag);
     }
@@ -130,19 +125,4 @@ class TagController extends Controller
 
         return redirect()->route('tags.index');
     }
-
-    public function CheckPermission(){
-
-        if(Auth::check()){
-            if(Auth::user()->role != 'superadmin'){
-                return false;
-            }
-        } else {
-            return false;
-        }
-
-        return true;
-    }
-
-
 }

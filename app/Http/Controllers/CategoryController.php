@@ -13,7 +13,7 @@ class CategoryController extends Controller
 {
 
     public function __construct() {
-        //$this->middleware('auth');
+        $this->middleware(['auth.admin']);
     }
 
     /**
@@ -23,8 +23,6 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        if(self::CheckPermission() == false){ return redirect('auth/login');};
-
         // display a view of all of our categories
         // it will also have a form to create a new category
 
@@ -100,19 +98,5 @@ class CategoryController extends Controller
     {
         //
     }
-
-    public function CheckPermission(){
-
-        if(Auth::check()){
-            if(Auth::user()->role != 'superadmin'){
-                return false;
-            }
-        } else {
-            return false;
-        }
-
-        return true;
-    }
-
 
 }
