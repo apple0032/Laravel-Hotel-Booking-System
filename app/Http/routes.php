@@ -116,6 +116,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('article', 'PagesController@getArticle');
 
     //Facebook
-    Route::get('facebook', 'FacebookController@getFacebook');
+    Route::get('facebook/{user_id}', 'FacebookController@getFacebook');
     Route::post('facebook', ['uses' => 'FacebookController@post', 'as' => 'facebook.post']);
 });
