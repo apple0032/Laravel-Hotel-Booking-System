@@ -30,13 +30,14 @@
 			height: 100%;
 			margin: 0 auto;
 			margin-top: 40px;
+			margin-bottom: 50px;
 		}
 
 		#box {
 			width: 100%;
 			height: auto;
 			margin: 0 auto;
-			background: #fff;
+			background: #ffffff;
 			border: thin solid #ededed;
 		}
 
@@ -122,12 +123,12 @@
 			width: 100%;
 			height: auto;
 			border: none;
-			background: #f5f5f5;
+			background: #e2e2e2;
 			outline: none;
 			margin: 0 auto;
 			padding: 20px;
 			display: block;
-			color: #666;
+			color: #090909;
 			text-transform: uppercase;
 			text-align: center;
 			box-sizing: border-box;
@@ -171,6 +172,22 @@
 			width: 260px;
 			margin: 0 auto;
 		}
+
+		.profile_pic{
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		.profile_pic img{
+			width: 250px;
+			max-width: 100%;
+			height: auto;
+		}
+
+		.profile_img_upload{
+			background-color: #90dbf2 !important;
+			border: 1px solid black !important;
+		}
 	</style>
 
 	<meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -183,10 +200,19 @@
 			<br>
 			<h3>請填寫資料</h3>
 
-			<form method="POST" action="update" accept-charset="UTF-8">
+			<div class="profile_pic">
+				@if($user->profile_image == null)
+					<img src="{{URL::to('/')}}/images/no_profile_pic.jpg">
+				@else
+					<img src="{{URL::to('/')}}/images/users/profile_img/{{$user->id}}/{{$user->profile_image}}">
+				@endif
+			</div>
+
+			<form method="POST" action="update" accept-charset="UTF-8" data-parsley-validate="" enctype="multipart/form-data">
 
 				<input type="hidden" name="_token" value="{{ csrf_token() }}">
 
+				<input name="profile_img" type="file" class="profile_img_upload">
 				<input class="form-control reg_form" name="email" type="email" id="email" placeholder="登入電郵" value="{{$user->email}}" readonly style="cursor: no-drop; background-color: rgba(215,86,84,0.3) !important;">
 				<input class="form-control reg_form" name="name" type="text" id="name" placeholder="名稱" value="{{$user->name}}">
 				<input class="form-control reg_form" name="phone" type="text" id="phone" placeholder="電話" value="{{$user->phone}}">

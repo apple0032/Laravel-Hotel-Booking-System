@@ -176,6 +176,7 @@
 
                             <li role="separator" class="divider"></li>
                             <li><a href="{{ route('account') }}"><i class="fas fa-user-circle"></i> &nbsp; Account</a></li>
+                            <li><a href="{{ route('facebook') }}"><i class="fab fa-facebook"></i> &nbsp;Facebook</a></li>
                             <li><a href="{{ route('logout') }}"><i class="fas fa-sign-out-alt"></i> &nbsp; Logout</a></li>
                         </ul>
                     </li>

@@ -40,21 +40,39 @@ class AccountController extends Controller
             //'password' => 'required|confirmed|min:6'
         ]);
 
-        if($request->password != null){
-            if($request->password != $request->password_confirmation){
-                Session::flash('danger', '密碼不相符!');
-                return redirect('account/edit');
-            }
-        }
-
-        $password = bcrypt($request->password);
-
         $user = User::find($user_id);
         $user->name = $request->name;
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->gender = $request->gender;
-        $user->password = $password;
+
+        if($request->password != null){
+            if($request->password != $request->password_confirmation){
+                Session::flash('danger', '密碼不相符!');
+                return redirect('account/edit');
+            }
+
+            $password = bcrypt($request->password);
+            $user->password = $password;
+        }
+
+        if ($request->hasFile('profile_img')) {
+
+            if (!is_dir(public_path('images/users/profile_img/'.$user_id))) {
+                mkdir(public_path('images/users/profile_img/'.$user_id), 0777);
+            }
+
+            if($user->profile_image != null){
+                unlink('images/users/profile_img/'.$user_id.'/'.$user->profile_image);
+            }
+
+            $image = $request->file('profile_img');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $location = public_path('images/users/profile_img/'.$user_id.'/' . $filename);
+            Image::make($image)->save($location);
+            $user->profile_image = $filename;
+        }
+
         $user->save();
 
         if($user->save()){
