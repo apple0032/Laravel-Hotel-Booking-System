@@ -10,3 +10,6 @@ storage/
 /tests
 .idea
 /nbproject
+/app/Http/Controllers/FacebookController.php
+/resources/views/pages/facebook.blade.php
+/app/FlightStats.php
