@@ -29,7 +29,7 @@
         margin-bottom: 40px;
         margin-left: 20%;
         margin-right: 20%;
-        padding-top: 30px;
+        padding-top: 20px;
         padding-bottom: 30px;
     }
 
@@ -566,6 +566,40 @@
         cursor: pointer;
     }
 
+    .search_tab{
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+    .tab_type{
+        display: inline-block;
+        width:100px;
+        text-align: center;
+        padding: 7px;
+        cursor: pointer;
+    }
+
+    .tab_type i{
+        font-size: 20px;
+        color: white;
+    }
+
+    .tab_active{
+        background-color: #2d6098;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .tab_inactive{
+        background-color: rgba(107, 107, 107, 0.5);
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        transition: 0.2s all;
+    }
+
+    .tab_inactive:hover{
+        background-color: #1c8d98;
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -584,6 +618,14 @@
     @if($search_small == false)
         <div class="search_container">
             <div class="search_box">
+                <div class="search_tab">
+                    <div class="hotel_tab tab_type tab_active">
+                        <i class="fas fa-hotel"></i>
+                    </div>
+                    <div class="flight_tab tab_type tab_inactive">
+                        <i class="fas fa-plane-departure"></i>
+                    </div>
+                </div>
                 <div class="row search_index">
                     <div class="col-md-12">
                         {!! Form::open(array('route' => 'pages.search', 'data-parsley-validate' => '')) !!}
@@ -1046,6 +1088,10 @@
         });
 
     </script>
-
+    <script>
+        $('.flight_tab').click(function () {
+            window.location.href = 'flight';
+        })
+    </script>
 
 @endsection

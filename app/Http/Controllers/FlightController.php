@@ -19,6 +19,7 @@ use Purifier;
 use Image;
 use Auth;
 use Redirect;
+use App\FlightStats;
 use Illuminate\Support\Facades\Input;
 use DateTime;
 use DatePeriod;
@@ -43,8 +44,8 @@ class FlightController extends Controller
          * 2. User click to select right country , get country code (HK,US,GB)  //done
          * 3. Popup a input text, call search-airport by country code API to list out all airport from selected country   //done
          * 4. Also get from_date & to_date from user input  //done
-         * 5. Call Scheduled Flight(s) Api , requested params should be: addid,addkey,'HKG',arrivalAirportCode,Y-M-D
-         * 6. Get scheduled flight data in json format
+         * 5. Call Scheduled Flight(s) Api , requested params should be: addid,addkey,'HKG',arrivalAirportCode,Y-M-D    //done
+         * 6. Get scheduled flight data in json format  //done
          * 7. In json->scheduledFlights, we got all of the flight,plane_eq,time,terminal..etc
          * 8. We only need the price of flight code!
          * 
@@ -96,19 +97,32 @@ class FlightController extends Controller
         $to = Input::get('to');
         $start = Input::get('start');
         $end = Input::get('end');
-        
-//        print_r($code);
-//        die();
-        
-        //Call scheduled Flights Api to retrieve data from api source
-        
+
+        $start = explode('-',$start);
+        $start_y = $start[0];
+        $start_m = $start[1];
+        $start_d = $start[2];
+
+        $end = explode('-',$end);
+        $end_y = $end[0];
+        $end_m = $end[1];
+        $end_d = $end[2];
+
+        //print_r($end_d);
+        //die();
+
+        //Call Flight scheduled Api to retrieve data from api source
+        $departure = self::SchedulesAPI($from, $to,$start_y,$start_m,$start_d);
+        $arrival = self::SchedulesAPI($to,$from,$end_y,$end_m,$end_d);
 
         return view('flight.result')
             ->with('code', $code)
             ->with('from', $from)
             ->with('to', $to)
             ->with('start', $start)
-            ->with('end',$end);
+            ->with('end',$end)
+            ->with('departure',$departure)
+            ->with('arrival',$arrival);
     }
     
     public function searchcountry(Request $request){
@@ -156,7 +170,7 @@ class FlightController extends Controller
     public function searchairport(Request $request){
         
         //https://openflights.org/data.html
-        
+
         $code = $request->code;
 
         if($code == ''){
@@ -164,8 +178,9 @@ class FlightController extends Controller
         } else {
 
             $country = $code;
-            $appId = '';
-            $appKey = '';
+            $api_data = FlightStats::ApiData();
+            $appId = $api_data['appId'];
+            $appKey = $api_data['appKey'];
 
             $host = 'https://api.flightstats.com/flex/airports/rest/v1/json/countryCode/'.$country.'?appId='.$appId.'&appKey='.$appKey.'&extendedOptions=languageCode%3Azh';
 
@@ -193,5 +208,31 @@ class FlightController extends Controller
 
         return response()->json($airport);
     }
-    
+
+
+    protected function SchedulesAPI($departure, $arrival, $year, $month, $day){
+
+        $api_data = FlightStats::ApiData();
+        $appId = $api_data['appId'];
+        $appKey = $api_data['appKey'];
+
+        $host = 'https://api.flightstats.com/flex/schedules/rest/v1/json/from/'.$departure.'/to/'.$arrival.'/departing/'.$year.'/'.$month.'/'.$day.'/?appId='.$appId.'&appKey='.$appKey.'&extendedOptions=languageCode%3Azh';
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $response = curl_exec($ch);
+
+        curl_close($ch);
+
+        $arr = json_decode($response,true);
+
+        return $arr;
+    }
+
+
+
 }

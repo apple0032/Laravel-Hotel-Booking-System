@@ -145,6 +145,8 @@
                 <li class="{{ Request::is('/') ? "active" : "" }} cool-link"><a href="{{asset('/')}}">首頁</a></li>
                 <li class="{{ Request::is('allhotels') ? "active" : "" }} cool-link"><a href="{{asset('/allhotels')}}">酒店</a>
                 </li>
+                <li class="{{ Request::is('flight') ? "active" : "" }} cool-link"><a href="{{asset('/flight')}}">航班</a>
+                </li>
                 <li class="{{ Request::is('about') ? "active" : "" }} cool-link"><a href="{{asset('/about')}}">關於</a>
                 </li>
                 <li class="{{ Request::is('contact') ? "active" : "" }} cool-link"><a
