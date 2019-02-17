@@ -59,12 +59,13 @@ class FlightController extends Controller
     public function search(Request $request)
     {
 
-        $this->validate($request, array(
-            'daterange' => 'required',
-            'airport' => 'required',
-            'code' => 'required'
-        ));
-        
+        $required_fields = array('countrycode','airport','daterange');
+        foreach ($required_fields as $field){
+            if($request->$field == null){
+                return redirect()->route('pages.error');
+            }
+        }
+
         $country = $request->country;
         $code = $request->countrycode;
         $de_airport = $request->departure_airport;
@@ -81,6 +82,7 @@ class FlightController extends Controller
         }
         
         return redirect()->route('flight.result', [
+            'country' => $country,
             'code' => $code,
             'from' => $de_airport,
             'to' => $airport,
@@ -108,12 +110,14 @@ class FlightController extends Controller
         $end_m = $end[1];
         $end_d = $end[2];
 
-        //print_r($end_d);
-        //die();
+        //print_r($end_d);die();
 
         //Call Flight scheduled Api to retrieve data from api source
-        $departure = self::SchedulesAPI($from, $to,$start_y,$start_m,$start_d);
-        $arrival = self::SchedulesAPI($to,$from,$end_y,$end_m,$end_d);
+
+        $departure = self::SchedulesAPI($from, $to,$start_y,$start_m,$start_d)['scheduledFlights'];
+        $arrival = self::SchedulesAPI($to,$from,$end_y,$end_m,$end_d)['scheduledFlights'];
+        $airports = self::Airports($code);
+        //$departure = null; $arrival = null; $airports = null;
 
         return view('flight.result')
             ->with('code', $code)
@@ -122,7 +126,8 @@ class FlightController extends Controller
             ->with('start', $start)
             ->with('end',$end)
             ->with('departure',$departure)
-            ->with('arrival',$arrival);
+            ->with('arrival',$arrival)
+            ->with('airports',$airports);
     }
     
     public function searchcountry(Request $request){
@@ -176,37 +181,52 @@ class FlightController extends Controller
         if($code == ''){
             $airport = null;
         } else {
-
-            $country = $code;
-            $api_data = FlightStats::ApiData();
-            $appId = $api_data['appId'];
-            $appKey = $api_data['appKey'];
-
-            $host = 'https://api.flightstats.com/flex/airports/rest/v1/json/countryCode/'.$country.'?appId='.$appId.'&appKey='.$appKey.'&extendedOptions=languageCode%3Azh';
-
-            $ch = curl_init($host);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-            $response = curl_exec($ch);
-
-            curl_close($ch);
-
-            $arr = json_decode($response,true);
-
-            $airport = array();
-            foreach ($arr['airports'] as $k => $obj){
-                if($obj['active'] == 'true'){
-                    $airport[$k]['code'] = $obj['fs'];
-                    $airport[$k]['name'] = $obj['name'];
-                }
-            }
-
+            $airport = self::Airports($code);
         }
 
         return response()->json($airport);
+    }
+
+
+    protected function Airports($code){
+
+        $country = $code;
+
+//        $api_data = FlightStats::ApiData();
+//        $appId = $api_data['appId'];
+//        $appKey = $api_data['appKey'];
+//
+//        $host = 'https://api.flightstats.com/flex/airports/rest/v1/json/countryCode/'.$country.'?appId='.$appId.'&appKey='.$appKey.'&extendedOptions=languageCode%3Azh';
+//
+//        $ch = curl_init($host);
+//        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+//
+//        $response = curl_exec($ch);
+//
+//        curl_close($ch);
+//
+//        $arr = json_decode($response,true);
+//
+//        $airport = array();
+//        foreach ($arr['airports'] as $k => $obj){
+//            if($obj['active'] == 'true'){
+//                $airport[$k]['code'] = $obj['fs'];
+//                $airport[$k]['name'] = $obj['name'];
+//            }
+//        }
+
+        $airports = FlightStats::AirportsData($country,null);
+
+        $airport = array();
+        foreach ($airports as $k => $obj){
+            $airport[$k]['code'] = $obj['iata_code'];
+            $airport[$k]['name'] = $obj['name'];
+        }
+
+        return $airport;
     }
 
 

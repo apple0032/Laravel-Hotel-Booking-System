@@ -81,6 +81,7 @@
         width: 100%;
         color: #fff;
         box-shadow: 0 0 1.8823em 0 rgba(132, 203, 255, 0.3);
+        margin-top: 20px;
     }
 
     .btn-action {
@@ -186,7 +187,7 @@
                         </div>
 
 
-                        <button type="submit" class="btn btn-action btn-search" style="margin-top: 20px">
+                        <button type="submit" class="btn btn-action btn-search">
                             <i class="fab fa-searchengin"></i> SEARCH
                         </button>
 
@@ -283,7 +284,7 @@
             },
             dataType: 'JSON',
             beforeSend: function () {
-
+                $('#airport').html("");
             },
             success: function (data) {
                 //<option value="HKG">Hong Kong International Airport</option>

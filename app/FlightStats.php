@@ -1,6 +1,8 @@
 <?php
 
 namespace App;
+use App\Airlines;
+use App\Airports;
 
 class FlightStats
 {
@@ -15,4 +17,25 @@ class FlightStats
     	return $data;
     }
 
+    public static function AirlinesData($fs){
+        $airline = Airlines::Where('fs', '=', $fs)->where('active','=','1')->first();
+        return $airline->name;
+    }
+
+    public static function AirportsData($country,$iata){
+
+        $airports = Airports::select('*');
+
+        if($country != null) {
+            $airports = $airports->where('iso_country', '=', $country);
+        }
+
+        if($iata != null) {
+            $airports = $airports->where('iata_code', '=', $iata);
+        }
+
+        $airports = $airports->orderby('name')->get();
+
+        return $airports;
+    }
 }
