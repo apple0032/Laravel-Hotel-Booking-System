@@ -60,10 +60,25 @@ class FlightController extends Controller
     {
 
         $required_fields = array('countrycode','airport','daterange');
+        $missing_fields = array();
         foreach ($required_fields as $field){
             if($request->$field == null){
-                return redirect()->route('pages.error');
+                $missing_fields[] = $field;
             }
+        }
+        
+        if($missing_fields != null){
+            $missing= '';
+            foreach($missing_fields as $k => $miss){
+                if($k >0){
+                    $missing = $missing.' , '.$miss;
+                } else {
+                    $missing = $miss;
+                }
+            }
+            $error_msg = '搜索航班必須輸入以下資料: '.$missing;
+            Session::flash('danger', $error_msg);
+            return Redirect::route('pages.error');
         }
 
         $country = $request->country;

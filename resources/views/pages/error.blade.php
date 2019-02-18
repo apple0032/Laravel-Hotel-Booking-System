@@ -157,6 +157,9 @@
 
 <div class="row">
     <div class="col-md-12 content">
+        @if (Session::has('message'))
+            <li>{!! session('message') !!}</li>
+        @endif
         <h1>404 Error</h1>
         <p class="zoom-area"><b>Oops!</b> Some errors had been occurred :(</p>
         <section class="error-container">
