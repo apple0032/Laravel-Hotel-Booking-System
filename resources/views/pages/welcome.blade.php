@@ -278,6 +278,19 @@
         text-align: center;
     }
 
+    @media (min-width: 990px) {
+        .loading_icon {
+            margin-right: 150px;
+        }
+    }
+
+    @media (max-width: 990px) {
+        .loading_icon {
+            margin-right: 50px;
+        }
+    }
+
+
     .lds-roller {
         display: inline-block;
         position: absolute;

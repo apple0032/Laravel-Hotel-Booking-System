@@ -15,12 +15,13 @@
     }
 
     .list-unstyled li {
-        padding: 5px;
+        padding: 10px;
         cursor: pointer;
         background-color: #fff;
         border-bottom: 1px solid #d4d4d4;
         border-radius: 2px;
         color: #0b1a27;
+        font-size: 21px;
     }
 
     .list-unstyled li:hover {
@@ -209,7 +210,7 @@
     
     //setup before functions
     var typingTimer;                //timer identifier
-    var doneTypingInterval = 600;  //time in ms
+    var doneTypingInterval = 350;  //time in ms
 
     //on keyup, start the countdown
     $('#country').keyup(function(){
