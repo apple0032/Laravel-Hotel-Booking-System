@@ -70,8 +70,9 @@
     }
 
     .plane_title{
-        font-size: 26px;
+        font-size: 28px;
         border-bottom: 1px solid #5b5b5b;
+        background-color: white;
     }
 
     .plane_title i{
@@ -171,7 +172,7 @@
         margin-top: 20px;
     }
     
-    .arrival_section{
+    .arrival_section, .booking_section{
         display: none;
     }
 
@@ -190,20 +191,45 @@
         cursor: pointer;
     }
 
+    .selected_arr_flight{
+        font-size: 18px;
+        display: inline-block;
+        background-color: rgba(255, 43, 29, 0.84);
+        color: white;
+        border-radius: 5px;
+        padding: 5px;
+        cursor: pointer;
+    }
+
     @media (max-width: 990px) {
         .arrival_section .plane_title{
             margin-bottom: 100px;
         }
     }
 
-    .reselect_dep{
+    .reselect_dep, .reselect_arr{
         font-size: 22px;
         color: rgba(255, 43, 29, 0.84);
         margin-left: 4px;
         cursor: pointer;
     }
 
+    .arr_i{
+        transform: scaleX(-1);
+        margin-left: 10px
+    }
 
+    .arr_bk_i{
+        margin-right: 0px !important;
+    }
+
+    .reselect_arr{
+        margin-right: 5px;
+    }
+    
+    .reselect_arr i{
+        transform: scaleX(-1);
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -337,9 +363,9 @@
         <div class="plane_title">
             <i class="fas fa-plane-departure"></i>
             <div class="selected_dep_flight"></div>
-            <span class="reselect_dep"><i class="fas fa-arrow-circle-left"></i></span>
+            <span class="reselect_dep"><i class="fas fa-plane"></i></span>
 
-            <div class="arrival_title">選擇由 {{Input::get('country')}} 飛往 香港 HKG 的航班
+            <div class="arrival_title">選擇由 {{Input::get('country')}} 返回 香港 HKG 的航班
                 <i class="fas fa-plane-arrival" style="transform: scaleX(-1);"></i>
             </div>
         </div>
@@ -405,6 +431,28 @@
             @endif
         </div>
     </div>
+
+    <div class="booking_section plane_section">
+        <div class="plane_title">
+            <i class="fas fa-plane-departure"></i>
+            <div class="selected_dep_flight"></div>
+            <span class="reselect_dep"><i class="fas fa-plane"></i></span>
+            <div class="arrival_title">
+                <span class="reselect_arr"><i class="fas fa-plane arr_bk_i"></i></span>
+                <div class="selected_arr_flight reselect_arr_btn"></div>
+                <i class="fas fa-plane-arrival arr_i"></i>
+            </div>
+        </div>
+
+
+        <!-- The flight booking form will display here -->
+        <br>
+        Form here
+
+
+
+    </div>
+
 </div>
 
 
@@ -496,6 +544,7 @@
                         $(".search_opt").each(function (index) {
                             $(this).on("click", function () {
                                 var name = $(this).text();
+                                $("#country").val(name);
                                 var code = $(this).find('.list-code').val();
                                 console.log(code);
                                 $('#countrycode').val(code);
@@ -559,23 +608,43 @@
     }
 
     function clickArrival(fs,fno) {
-        alert(fs); alert(fno);
+        //alert(fs); alert(fno);
         $('#selected_arr_flight').val(fs+fno);
+        $('.selected_arr_flight').html('回程 - '+fs+fno);
+        $('.arrival_section').fadeOut();
+        $('.booking_section').fadeIn();
+        $("html, body").animate({ scrollTop: 0 }, "slow");
     }
 
     $('.reselect_dep, .selected_dep_flight').click(function () {
         $('.arrival_section').fadeOut();
+        $('.booking_section').fadeOut();
         $('.departure_section').fadeIn();
         $('#selected_dep_flight').val('');
         $('.selected_dep_flight').html('');
         $("html, body").animate({ scrollTop: 0 }, "slow");
-    })
+    });
+
+    $('.reselect_arr, .reselect_arr_btn').click(function () {
+        $('.arrival_section').fadeIn();
+        $('.departure_section').fadeOut();
+        $('.booking_section').fadeOut();
+        $('#selected_arr_flight').val('');
+        $('.selected_arr_flight').html('');
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+    });
 
     $('.flight_box_header').hover(function () {
         //$(this).click();
     })
 </script>
+<script>
+    $(".plane_title").sticky({
+        topSpacing:0,
+        zIndex : 100
+    });
 
+</script>
 
 
 

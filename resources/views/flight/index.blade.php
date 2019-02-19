@@ -259,6 +259,8 @@
                         $(".search_opt").each(function (index) {
                             $(this).on("click", function () {
                                 var name = $(this).text();
+                                $("#country").val(name);
+
                                 var code = $(this).find('.list-code').val();
                                 console.log(code);
                                 $('#countrycode').val(code);
