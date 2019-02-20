@@ -8,6 +8,12 @@ class FlightStats
 {
     public static function ApiData()
     {
+        /* UPDATE 2019-02-21 */
+        /*
+         * API source updated : https://developers.amadeus.com/my-account
+         *
+         */
+
         //Api data provided from flightstats.com
         //The api key auth data will hide in git server
 
