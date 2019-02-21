@@ -72,7 +72,7 @@
     .plane_title{
         font-size: 26px;
         border-bottom: 1px solid #afafaf;
-        background-color: #e0e0e0;
+        background-color: #ededed;
         font-family: 'Noto Sans TC', sans-serif;
         padding-right: 10%;
         padding-left: 10%;
@@ -691,7 +691,7 @@
         $('.plane_title').css("color", "#ffffff");
     });
     $('.plane_title').on('sticky-end', function() {
-        $('.plane_title').css("background-color", "#e0e0e0");
+        $('.plane_title').css("background-color", "#ededed");
         $('.plane_title').css("color", "#000000");
     });
 

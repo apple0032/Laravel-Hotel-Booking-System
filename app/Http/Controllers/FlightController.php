@@ -129,6 +129,9 @@ class FlightController extends Controller
 
         //Call Flight scheduled Api to retrieve data from api source
 
+        $res = self::FlightData();
+        print_r($res);die();
+
         //$departure = self::SchedulesAPI($from, $to,$start_y,$start_m,$start_d)['scheduledFlights'];
         //$arrival = self::SchedulesAPI($to,$from,$end_y,$end_m,$end_d)['scheduledFlights'];
         $airports = self::Airports($code);
@@ -213,33 +216,6 @@ class FlightController extends Controller
     protected function Airports($code){
 
         $country = $code;
-
-//        $api_data = FlightStats::ApiData();
-//        $appId = $api_data['appId'];
-//        $appKey = $api_data['appKey'];
-//
-//        $host = 'https://api.flightstats.com/flex/airports/rest/v1/json/countryCode/'.$country.'?appId='.$appId.'&appKey='.$appKey.'&extendedOptions=languageCode%3Azh';
-//
-//        $ch = curl_init($host);
-//        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
-//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-//        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-//
-//        $response = curl_exec($ch);
-//
-//        curl_close($ch);
-//
-//        $arr = json_decode($response,true);
-//
-//        $airport = array();
-//        foreach ($arr['airports'] as $k => $obj){
-//            if($obj['active'] == 'true'){
-//                $airport[$k]['code'] = $obj['fs'];
-//                $airport[$k]['name'] = $obj['name'];
-//            }
-//        }
-
         $airports = FlightStats::AirportsData($country,null);
 
         $airport = array();
@@ -275,6 +251,76 @@ class FlightController extends Controller
         return $arr;
     }
 
+
+
+    protected function FlightData(){
+
+        $access_token = self::GetAmadeusAccessToken();
+        $flightData = self::GetFlightOffers($access_token);
+
+        return json_decode($flightData,true);
+    }
+
+
+    protected function GetAmadeusAccessToken(){
+
+        $host = 'https://api.amadeus.com/v1/security/oauth2/token';
+
+        $post = array(
+            'grant_type' => 'client_credentials',
+            'client_id' => '/* HIDDEN */',
+            'client_secret' => '/* HIDDEN */',
+        );
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post)); //formdata with post method
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        // execute api
+        $response = curl_exec($ch);
+
+        // close the connection, release resources used
+        curl_close($ch);
+
+        //return result
+        $response = json_decode($response,true);
+        $access_token = $response['access_token'];
+
+        return $access_token;
+    }
+
+
+    protected function GetFlightOffers($access_token){
+
+        $post = array(
+            'origin' => 'HKG',
+            'destination' => 'KIX',
+            'departureDate' => '2019-02-22',
+            'nonStop' => 'true',
+            'currency' => 'HKD'
+        );
+
+        $host = 'https://api.amadeus.com/v1/shopping/flight-offers?'.http_build_query($post);
+
+        $ch = curl_init($host);
+        $headers = 'Authorization: Bearer '.$access_token;
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            $headers
+        ));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $response = curl_exec($ch);
+
+        curl_close($ch);
+
+        return $response;
+    }
 
 
 }
