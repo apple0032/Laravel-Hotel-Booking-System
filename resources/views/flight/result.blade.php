@@ -70,9 +70,15 @@
     }
 
     .plane_title{
-        font-size: 28px;
-        border-bottom: 1px solid #5b5b5b;
-        background-color: white;
+        font-size: 26px;
+        border-bottom: 1px solid #afafaf;
+        background-color: #e0e0e0;
+        font-family: 'Noto Sans TC', sans-serif;
+        padding-right: 10%;
+        padding-left: 10%;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        transition: 0.4s all;
     }
 
     .plane_title i{
@@ -230,6 +236,27 @@
     .reselect_arr i{
         transform: scaleX(-1);
     }
+
+    .title_selected{
+        display: none;
+    }
+
+    .plane_title_arrival{
+        display: inline-block;
+        float: right;
+    }
+
+    .dep_title_selected{
+        display: inline-block;
+    }
+
+    .arrival_title_selected{
+        display: none;
+    }
+
+    .plane_title img{
+        width:35px;
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -290,12 +317,41 @@
 
 <!-- Flight Search main content -->
 
+<div class="plane_title">
+    <div class="title_unselect">
+        <i class="fas fa-plane-departure"></i> 選擇由 香港 HKG 飛往 {{Input::get('country')}} 的航班
+    </div>
+    <div class="title_selected">
+        <div class="dep_title_selected">
+            <span class="dep_t">
+                <img src="https://countryflags.io/HK/flat/64.png">
+                <i class="fas fa-plane-departure"></i>
+                <span class="det_g">
+                    <div class="selected_dep_flight"></div>
+                    <span class="reselect_dep"><i class="fas fa-plane"></i></span>
+                </span>
+            </span>
+        </div>
+
+        <div class="plane_title_arrival">
+            <div class="arrival_title">選擇由 {{Input::get('country')}} 返回 香港 HKG 的航班
+                <i class="fas fa-plane-arrival" style="transform: scaleX(-1);"></i>
+            </div>
+
+            <div class="arrival_title_selected">
+                <span class="reselect_arr"><i class="fas fa-plane arr_bk_i"></i></span>
+                <div class="selected_arr_flight reselect_arr_btn"></div>
+                <i class="fas fa-plane-arrival arr_i"></i>
+                <img src="https://countryflags.io/{{Input::get('code')}}/flat/64.png">
+            </div>
+        </div>
+    </div>
+
+</div>
 
 <div class="flight_content_section">
     <div class="departure_section plane_section">
-        <div class="plane_title">
-            <i class="fas fa-plane-departure"></i> 選擇由 香港 HKG 飛往 {{Input::get('country')}} 的航班
-        </div>
+
 
         <input type="hidden" name="selected_dep_flight" id="selected_dep_flight" value="">
 
@@ -360,16 +416,6 @@
     </div>
 
     <div class="arrival_section plane_section">
-        <div class="plane_title">
-            <i class="fas fa-plane-departure"></i>
-            <div class="selected_dep_flight"></div>
-            <span class="reselect_dep"><i class="fas fa-plane"></i></span>
-
-            <div class="arrival_title">選擇由 {{Input::get('country')}} 返回 香港 HKG 的航班
-                <i class="fas fa-plane-arrival" style="transform: scaleX(-1);"></i>
-            </div>
-        </div>
-
         <input type="hidden" name="selected_arr_flight" id="selected_arr_flight" value="">
 
         <div class="departure_flight">
@@ -433,16 +479,6 @@
     </div>
 
     <div class="booking_section plane_section">
-        <div class="plane_title">
-            <i class="fas fa-plane-departure"></i>
-            <div class="selected_dep_flight"></div>
-            <span class="reselect_dep"><i class="fas fa-plane"></i></span>
-            <div class="arrival_title">
-                <span class="reselect_arr"><i class="fas fa-plane arr_bk_i"></i></span>
-                <div class="selected_arr_flight reselect_arr_btn"></div>
-                <i class="fas fa-plane-arrival arr_i"></i>
-            </div>
-        </div>
 
 
         <!-- The flight booking form will display here -->
@@ -450,8 +486,9 @@
         Form here
 
 
-
     </div>
+
+
 
 </div>
 
@@ -599,39 +636,44 @@
 
 <script>
     function clickDeparture(fs,fno) {
-        //alert(fs); alert(fno);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $('.title_selected').show();
+        $('.title_unselect').hide();
         $('#selected_dep_flight').val(fs+fno);
         $('.selected_dep_flight').html('出發 - '+fs+fno);
         $('.departure_section').fadeOut();
         $('.arrival_section').fadeIn();
-        $("html, body").animate({ scrollTop: 0 }, "slow");
     }
 
     function clickArrival(fs,fno) {
         //alert(fs); alert(fno);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
         $('#selected_arr_flight').val(fs+fno);
         $('.selected_arr_flight').html('回程 - '+fs+fno);
         $('.arrival_section').fadeOut();
+        $('.arrival_title_selected').show();
+        $('.plane_title_arrival .arrival_title').hide();
         $('.booking_section').fadeIn();
-        $("html, body").animate({ scrollTop: 0 }, "slow");
     }
 
     $('.reselect_dep, .selected_dep_flight').click(function () {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $('.arrival_title_selected').hide();
         $('.arrival_section').fadeOut();
         $('.booking_section').fadeOut();
         $('.departure_section').fadeIn();
         $('#selected_dep_flight').val('');
         $('.selected_dep_flight').html('');
-        $("html, body").animate({ scrollTop: 0 }, "slow");
     });
 
     $('.reselect_arr, .reselect_arr_btn').click(function () {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        //$('.dep_t').hide();
         $('.arrival_section').fadeIn();
         $('.departure_section').fadeOut();
         $('.booking_section').fadeOut();
         $('#selected_arr_flight').val('');
         $('.selected_arr_flight').html('');
-        $("html, body").animate({ scrollTop: 0 }, "slow");
     });
 
     $('.flight_box_header').hover(function () {
@@ -642,6 +684,15 @@
     $(".plane_title").sticky({
         topSpacing:0,
         zIndex : 100
+    });
+
+    $('.plane_title').on('sticky-start', function() {
+        $('.plane_title').css("background-color", "#37454d");
+        $('.plane_title').css("color", "#ffffff");
+    });
+    $('.plane_title').on('sticky-end', function() {
+        $('.plane_title').css("background-color", "#e0e0e0");
+        $('.plane_title').css("color", "#000000");
     });
 
 </script>
