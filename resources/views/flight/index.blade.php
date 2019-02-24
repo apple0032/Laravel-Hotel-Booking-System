@@ -133,6 +133,11 @@
     .footer_section{
          margin-bottom: 0px !important;
     }
+
+    .direct_check{
+        width: 20px;
+        height: 20px;
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -170,11 +175,11 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <label name="subject">Arrival Airport:</label>
                                 <select id="airport" name="airport" class="form-control"></select>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label name="subject">Departure & Arrival Date:</label>
                                 <div class="form-group">
                                     <div class="input-group date" id="datetimepicker">
@@ -184,6 +189,10 @@
                                </span>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label name="subject">Direct Route 直航</label> <br>
+                                <input name="direct" type="checkbox" class="direct_check" value="true" checked>
                             </div>
                         </div>
 

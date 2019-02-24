@@ -64,8 +64,8 @@
     }
 
     .plane_section{
-        margin-left: 10%;
-        margin-right: 10%;
+        margin-left: 5%;
+        margin-right: 5%;
         margin-bottom: 100px;
     }
 
@@ -168,6 +168,13 @@
     }
 
     @media (max-width: 990px) {
+        .flight_info_mobile{
+            margin-top: 40px;
+        }
+    }
+
+
+    @media (max-width: 990px) {
         .flight_box_details{
             margin-bottom: 100px;
         }
@@ -257,6 +264,60 @@
     .plane_title img{
         width:35px;
     }
+
+    .flight_price{
+        color: #4c9817;
+        font-size: 21px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .fly_detail{
+        font-size: 13px;
+        font-weight: bold;
+        margin-right: 20px;
+    }
+
+    .no_result {
+        text-align: center;
+        color: #0b1a27;
+        border-radius: 3px;
+        padding: 15px 15px 30px 15px;
+        margin-top: 10px;
+        font-size: 22px;
+        font-family: 'Noto Sans TC', sans-serif !important;
+        background-color: white;
+        box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
+    }
+
+    .no_result i {
+        font-size: 80px;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .no_result span {
+        font-family: 'Kanit', sans-serif;
+    }
+
+    #no_result_close {
+        float: right !important;
+        color: #37454d;
+        text-align: right;
+    }
+
+    #no_result_close i {
+        font-size: 23px;
+        cursor: pointer;
+    }
+
+    .flight_class{
+        font-size: 12px;
+    }
+
+    .flight_time{
+        font-size: 15px;
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -319,7 +380,11 @@
 
 <div class="plane_title">
     <div class="title_unselect">
-        <i class="fas fa-plane-departure"></i> 選擇由 香港 HKG 飛往 {{Input::get('country')}} 的航班
+        @if($departure != null)
+            <i class="fas fa-plane-departure"></i> 選擇由 香港 HKG 飛往 {{Input::get('country')}} ({{$departure_airport}}) 的航班
+        @else
+            <i class="fas fa-exclamation-circle"></i> 找不到任何由 香港 HKG 飛往 {{Input::get('country')}} ({{$departure_airport}}) 的航班
+        @endif
     </div>
     <div class="title_selected">
         <div class="dep_title_selected">
@@ -334,7 +399,7 @@
         </div>
 
         <div class="plane_title_arrival">
-            <div class="arrival_title">選擇由 {{Input::get('country')}} 返回 香港 HKG 的航班
+            <div class="arrival_title">選擇由 {{Input::get('country')}} ({{$departure_airport}}) 返回 香港 HKG 的航班
                 <i class="fas fa-plane-arrival" style="transform: scaleX(-1);"></i>
             </div>
 
@@ -359,58 +424,71 @@
             @if($departure != null)
                 @foreach($departure as $k => $dep)
                     <div class="flight_box">
-                        <div class="flight_box_header" data-toggle="collapse" data-target="#coll-{{$dep['flightNumber']}}">
+                        <div class="flight_box_header" data-toggle="collapse" data-target="#coll-{{$dep['number']}}">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <img src="http://pics.avs.io/250/40/{{$dep['carrierFsCode']}}.png">
+                                    <img src="http://pics.avs.io/250/40/{{$dep['carrier']}}.png">
                                 </div>
-                                <div class="col-md-3">
-                                    {{FlightStats::AirlinesData($dep['carrierFsCode'])}}
+                                <div class="col-md-2">
+                                    {{FlightStats::AirlinesData($dep['carrier'])}}
                                 </div>
                                 <div class="col-md-1">
-                                    {{$dep['carrierFsCode'].$dep['flightNumber']}}
+                                    {{$dep['carrier'].$dep['number']}}
                                 </div>
-
-                                <div class="col-md-3">
-                                    出發  <i class="fas fa-plane"></i> &nbsp;&nbsp; {{str_replace('.000','',str_replace("T"," ",$dep['departureTime']))}}
+                                <div class="col-md-2 flight_time">
+                                    <i class="far fa-clock"></i> {{$dep['departure_date'].' '.$dep['departure_time']}}
+                                </div>
+                                <div class="col-md-2 flight_price">
+                                    $ {{$dep['price_basic']}} <span class="flight_class">{{$dep['class']}}</span>
                                 </div>
                                 <div class="col-md-2 select_btn_col">
-                                    <span class="select_btn" onclick="clickDeparture('{{$dep['carrierFsCode']}}','{{$dep['flightNumber']}}')">選擇此航班</span>
+                                    <span class="select_btn" onclick="clickDeparture('{{$dep['carrier']}}','{{$dep['number']}}')">選擇此航班</span>
                                     <i class="fas fa-angle-double-down"></i>
                                 </div>
                             </div>
                         </div>
-                        <div class="flight_box_details collapse" id="coll-{{$dep['flightNumber']}}">
+                        <div class="flight_box_details collapse" id="coll-{{$dep['number']}}">
                             <div class="gws-flights-results__dotted-flight-icon"></div>
                             <div class="flight_info">
                                 <div class="flight_info_attr">
                                     出發 <i class="fas fa-plane-departure"></i>
-                                    {{str_replace('.000','',str_replace("T"," ",$dep['departureTime']))}} &nbsp;&nbsp;&nbsp;
+                                    {{$dep['departure_date'].' '.$dep['departure_time'].' (GMT'.$dep['departure_timezone'].')'}}
                                     <i class="fas fa-city"></i>
                                     由 {{Input::get('from')}}
                                     @php
                                         $from = FlightStats::AirportsData(null,Input::get('from'));
-                                        print_r('('.$from[0]['name'].')');
+                                        print_r('('.$from[0]['name'].') Terminal '.$dep['departure_terminal']);
                                     @endphp
                                 </div>
                                 <br><br>
-                                <div class="flight_info_attr">
+                                <div class="flight_info_attr flight_info_mobile">
                                     到達 <i class="fas fa-plane-arrival"></i>
-                                    {{str_replace('.000','',str_replace("T"," ",$dep['arrivalTime']))}} &nbsp;&nbsp;&nbsp;
+                                    {{$dep['arrival_date'].' '.$dep['arrival_time'].' (GMT'.$dep['arrival_timezone'].')'}}
                                     <i class="fas fa-city"></i>
                                     到 {{Input::get('to')}}
                                     @php
                                         $from = FlightStats::AirportsData(null,Input::get('to'));
-                                        print_r('('.$from[0]['name'].')');
+                                        print_r('('.$from[0]['name'].') Terminal '.$dep['arrival_terminal']);
                                     @endphp
                                 </div>
                             </div>
                             <div class="flight_info_equi">
-                                <i class="fas fa-fighter-jet"></i> 飛機型號 - {{$dep['flightEquipmentIataCode']}}
+                                <span class="fly_detail"><i class="fas fa-wind"></i> 飛行時間 - {{$dep['duration']}}</span>
+                                <span class="fly_detail"><i class="fas fa-fighter-jet"></i> 飛機型號 - {{$dep['aircraft_gp'][$dep['aircraft']]}}</span>
+                                <span class="fly_detail"><i class="fas fa-hand-holding-usd"></i> 燃油附加費 - $ {{$dep['price_taxes']}}</span>
                             </div>
                         </div>
                     </div>
                 @endforeach
+            @else
+                <div class="no_result">
+                    <div id="no_result_close">
+                        {{--<i class="fas fa-times-circle"></i>--}}
+                    </div>
+                    <i class="fas fa-plane"></i>
+                    找不到任何直航航班，請嘗試其他機場。<br>
+                    <span>No flight result found. Please try another airport.</span>
+                </div>
             @endif
         </div>
     </div>
@@ -419,57 +497,61 @@
         <input type="hidden" name="selected_arr_flight" id="selected_arr_flight" value="">
 
         <div class="departure_flight">
-            @if($departure != null)
+            @if($arrival != null)
                 @foreach($arrival as $k => $arr)
                     <div class="flight_box">
-                        <div class="flight_box_header" data-toggle="collapse" data-target="#coll-{{$arr['flightNumber']}}">
+                        <div class="flight_box_header" data-toggle="collapse" data-target="#coll-{{$arr['number']}}">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <img src="http://pics.avs.io/250/40/{{$arr['carrierFsCode']}}.png">
+                                    <img src="http://pics.avs.io/250/40/{{$arr['carrier']}}.png">
                                 </div>
-                                <div class="col-md-3">
-                                    {{FlightStats::AirlinesData($arr['carrierFsCode'])}}
+                                <div class="col-md-2">
+                                    {{FlightStats::AirlinesData($arr['carrier'])}}
                                 </div>
                                 <div class="col-md-1">
-                                    {{$arr['carrierFsCode'].$arr['flightNumber']}}
+                                    {{$arr['carrier'].$arr['number']}}
                                 </div>
-
-                                <div class="col-md-3">
-                                    出發  <i class="fas fa-plane"></i> &nbsp;&nbsp; {{str_replace('.000','',str_replace("T"," ",$arr['departureTime']))}}
+                                <div class="col-md-2 flight_time">
+                                    <i class="far fa-clock"></i> {{$arr['departure_date'].' '.$arr['departure_time']}}
+                                </div>
+                                <div class="col-md-2 flight_price">
+                                    $ {{$arr['price_basic']}} <span class="flight_class">{{$dep['class']}}</span>
                                 </div>
                                 <div class="col-md-2 select_btn_col">
-                                    <span class="select_btn" onclick="clickArrival('{{$arr['carrierFsCode']}}','{{$arr['flightNumber']}}')">選擇此航班</span>
+                                    <span class="select_btn" onclick="clickArrival('{{$arr['carrier']}}','{{$arr['number']}}')">選擇此航班</span>
                                     <i class="fas fa-angle-double-down"></i>
                                 </div>
                             </div>
                         </div>
-                        <div class="flight_box_details collapse" id="coll-{{$arr['flightNumber']}}">
+                        <div class="flight_box_details collapse" id="coll-{{$arr['number']}}">
                             <div class="gws-flights-results__dotted-flight-icon"></div>
                             <div class="flight_info">
                                 <div class="flight_info_attr">
                                     出發 <i class="fas fa-plane-departure"></i>
-                                    {{str_replace('.000','',str_replace("T"," ",$arr['departureTime']))}} &nbsp;&nbsp;&nbsp;
+                                    {{$arr['departure_date'].' '.$arr['departure_time'].' (GMT'.$arr['departure_timezone'].')'}}
                                     <i class="fas fa-city"></i>
                                     由 {{Input::get('from')}}
                                     @php
                                         $from = FlightStats::AirportsData(null,Input::get('to'));
-                                        print_r('('.$from[0]['name'].')');
+                                        print_r('('.$from[0]['name'].') Terminal '.$arr['departure_terminal']);
                                     @endphp
                                 </div>
                                 <br><br>
-                                <div class="flight_info_attr">
+                                <div class="flight_info_attr flight_info_mobile">
                                     到達 <i class="fas fa-plane-arrival"></i>
-                                    {{str_replace('.000','',str_replace("T"," ",$dep['arrivalTime']))}} &nbsp;&nbsp;&nbsp;
+                                    {{$arr['arrival_date'].' '.$arr['arrival_time'].' (GMT'.$arr['arrival_timezone'].')'}}
                                     <i class="fas fa-city"></i>
                                     到 {{Input::get('to')}}
                                     @php
                                         $from = FlightStats::AirportsData(null,Input::get('from'));
-                                        print_r('('.$from[0]['name'].')');
+                                        print_r('('.$from[0]['name'].') Terminal '.$arr['arrival_terminal']);
                                     @endphp
                                 </div>
                             </div>
                             <div class="flight_info_equi">
-                                <i class="fas fa-fighter-jet"></i> 飛機型號 - {{$arr['flightEquipmentIataCode']}}
+                                <span class="fly_detail"><i class="fas fa-wind"></i> 飛行時間 - {{$arr['duration']}}</span>
+                                <span class="fly_detail"><i class="fas fa-fighter-jet"></i> 飛機型號 - {{$dep['aircraft_gp'][$dep['aircraft']]}}</span>
+                                <span class="fly_detail"><i class="fas fa-hand-holding-usd"></i> 燃油附加費 - $ {{$dep['price_taxes']}}</span>
                             </div>
                         </div>
                     </div>

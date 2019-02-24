@@ -17,10 +17,15 @@ class FlightStats
         //Api data provided from flightstats.com
         //The api key auth data will hide in git server
 
-        $data['appId'] = '/* HIDDEN */';
-        $data['appKey'] = '/* HIDDEN */';
+        //$data['appId'] = '/* HIDDEN */';
+        //$data['appKey'] = '/* HIDDEN */';
 
-    	return $data;
+        //Amadeus API auth structure
+
+        $data['client_id'] = '/* HIDE */';
+        $data['client_secret'] = '/* HIDE */';
+
+        return $data;
     }
 
     public static function AirlinesData($fs){
