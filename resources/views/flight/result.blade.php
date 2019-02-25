@@ -423,8 +423,10 @@
         <div class="departure_flight">
             @if($departure != null)
                 @foreach($departure as $k => $dep)
-                    <div class="flight_box">
-                        <div class="flight_box_header" data-toggle="collapse" data-target="#coll-{{$dep['number']}}">
+                    <div class="flight_box" id="flight_{{$dep['carrier'].$dep['number']}}">
+                        <input type="hidden" id="price_{{$dep['carrier'].$dep['number']}}" value="{{$dep['price_basic']}}">
+                        <input type="hidden" id="taxes_{{$dep['carrier'].$dep['number']}}" value="{{$dep['price_taxes']}}">
+                        <div class="flight_box_header" data-toggle="collapse" data-target="#coll-{{$dep['carrier'].$dep['number']}}">
                             <div class="row">
                                 <div class="col-md-3">
                                     <img src="http://pics.avs.io/250/40/{{$dep['carrier']}}.png">
@@ -447,7 +449,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flight_box_details collapse" id="coll-{{$dep['number']}}">
+                        <div class="flight_box_details collapse" id="coll-{{$dep['carrier'].$dep['number']}}">
                             <div class="gws-flights-results__dotted-flight-icon"></div>
                             <div class="flight_info">
                                 <div class="flight_info_attr">
@@ -499,8 +501,10 @@
         <div class="departure_flight">
             @if($arrival != null)
                 @foreach($arrival as $k => $arr)
-                    <div class="flight_box">
-                        <div class="flight_box_header" data-toggle="collapse" data-target="#coll-{{$arr['number']}}">
+                    <div class="flight_box" id="flight_{{$arr['carrier'].$arr['number']}}">
+                        <input type="hidden" id="price_{{$arr['carrier'].$arr['number']}}" value="{{$arr['price_basic']}}">
+                        <input type="hidden" id="taxes_{{$arr['carrier'].$arr['number']}}" value="{{$arr['price_taxes']}}">
+                        <div class="flight_box_header" data-toggle="collapse" data-target="#coll-{{$arr['carrier'].$arr['number']}}">
                             <div class="row">
                                 <div class="col-md-3">
                                     <img src="http://pics.avs.io/250/40/{{$arr['carrier']}}.png">
@@ -515,7 +519,7 @@
                                     <i class="far fa-clock"></i> {{$arr['departure_date'].' '.$arr['departure_time']}}
                                 </div>
                                 <div class="col-md-2 flight_price">
-                                    $ {{$arr['price_basic']}} <span class="flight_class">{{$dep['class']}}</span>
+                                    $ {{$arr['price_basic']}} <span class="flight_class">{{$arr['class']}}</span>
                                 </div>
                                 <div class="col-md-2 select_btn_col">
                                     <span class="select_btn" onclick="clickArrival('{{$arr['carrier']}}','{{$arr['number']}}')">選擇此航班</span>
@@ -523,7 +527,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flight_box_details collapse" id="coll-{{$arr['number']}}">
+                        <div class="flight_box_details collapse" id="coll-{{$arr['carrier'].$arr['number']}}">
                             <div class="gws-flights-results__dotted-flight-icon"></div>
                             <div class="flight_info">
                                 <div class="flight_info_attr">
@@ -550,8 +554,8 @@
                             </div>
                             <div class="flight_info_equi">
                                 <span class="fly_detail"><i class="fas fa-wind"></i> 飛行時間 - {{$arr['duration']}}</span>
-                                <span class="fly_detail"><i class="fas fa-fighter-jet"></i> 飛機型號 - {{$dep['aircraft_gp'][$dep['aircraft']]}}</span>
-                                <span class="fly_detail"><i class="fas fa-hand-holding-usd"></i> 燃油附加費 - $ {{$dep['price_taxes']}}</span>
+                                <span class="fly_detail"><i class="fas fa-fighter-jet"></i> 飛機型號 - {{$arr['aircraft_gp'][$arr['aircraft']]}}</span>
+                                <span class="fly_detail"><i class="fas fa-hand-holding-usd"></i> 燃油附加費 - $ {{$arr['price_taxes']}}</span>
                             </div>
                         </div>
                     </div>
@@ -565,7 +569,64 @@
 
         <!-- The flight booking form will display here -->
         <br>
-        Form here
+        {!! Form::open(array('route' => 'flight.search', 'data-parsley-validate' => '')) !!}
+            <div class="row">
+                <div class="col-md-6">
+                    <label name="subject">Departure</label>
+                    <input id="form_departure" name="form_departure" class="form-control" type="text" maxlength="30" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label name="subject">Arrival</label>
+                    <input id="form_arrival" name="form_arrival" class="form-control" type="text" maxlength="30" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label name="subject">Departure Price</label>
+                    <input id="form_departure_price" name="form_departure_price" class="form-control" type="text" maxlength="30" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label name="subject">Arrival Price</label>
+                    <input id="form_arrival_price" name="form_arrival_price" class="form-control" type="text" maxlength="30" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label name="subject">Departure Taxes</label>
+                    <input id="form_departure_tax" name="form_departure_tax" class="form-control" type="text" maxlength="30" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label name="subject">Arrival Taxes</label>
+                    <input id="form_arrival_tax" name="form_arrival_tax" class="form-control" type="text" maxlength="30" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label name="subject">Basic price per person</label>
+                    <input id="form_basic_price" name="form_basic_price" class="form-control" type="text" maxlength="30" readonly>
+                </div>
+            </div>
+        
+            <br>
+            <label name="subject">People</label> 
+            <div class="row book_person" id="new_1">                 
+                <div class="col-md-3">
+                    Name
+                    <input id="people_name" name="people_name" class="form-control" type="text" maxlength="10">
+                </div>
+                <div class="col-md-3">
+                    Passport Number
+                    <input id="people_passport" name="people_passport" class="form-control" type="text" maxlength="10">
+                </div>
+            </div>
+            
+            <div class="button button-3d button-action button-rounded add_new_person" onclick="addNewPerson()">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+        
+        
+            <div class="row">
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-action" style="margin-top: 20px">
+                        <i class="fab fa-searchengin"></i> Confirm Booking
+                    </button>
+                </div>
+            </div>
+            {!! Form::close() !!}
 
 
     </div>
@@ -736,6 +797,25 @@
         $('.arrival_title_selected').show();
         $('.plane_title_arrival .arrival_title').hide();
         $('.booking_section').fadeIn();
+        
+        var dep_flight = $('#selected_dep_flight').val();
+        var arr_flight = fs+fno;
+        var dep_price = $('#price_'+dep_flight).val();
+        var arr_price = $('#price_'+arr_flight).val();
+        var dep_tax = $('#taxes_'+dep_flight).val();
+        var arr_tax = $('#taxes_'+arr_flight).val();
+        
+        $('#form_departure').val(dep_flight);
+        $('#form_arrival').val(arr_flight);
+        
+        $('#form_departure_price').val(dep_price);
+        $('#form_arrival_price').val(arr_price);
+        
+        $('#form_departure_tax').val(dep_tax);
+        $('#form_arrival_tax').val(arr_tax);
+        
+        var total = parseInt(dep_price)+parseInt(arr_price)+parseInt(dep_tax)+parseInt(arr_tax);
+        $('#form_basic_price').val(total);
     }
 
     $('.reselect_dep, .selected_dep_flight').click(function () {
