@@ -9,6 +9,48 @@
 
 @section('content')
 <style>
+    /* vietnamese */
+    @font-face {
+        font-family: 'Quicksand';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Quicksand Regular'), local('Quicksand-Regular'), url(https://fonts.gstatic.com/s/quicksand/v9/6xKtdSZaM9iE8KbpRA_hJFQNcOM.woff2) format('woff2');
+        unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+    }
+    /* latin-ext */
+    @font-face {
+        font-family: 'Quicksand';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Quicksand Regular'), local('Quicksand-Regular'), url(https://fonts.gstatic.com/s/quicksand/v9/6xKtdSZaM9iE8KbpRA_hJVQNcOM.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+        font-family: 'Quicksand';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Quicksand Regular'), local('Quicksand-Regular'), url(https://fonts.gstatic.com/s/quicksand/v9/6xKtdSZaM9iE8KbpRA_hK1QN.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    /* latin-ext */
+    @font-face {
+        font-family: 'Libre Baskerville';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Libre Baskerville'), local('LibreBaskerville-Regular'), url(https://fonts.gstatic.com/s/librebaskerville/v6/kmKnZrc3Hgbbcjq75U4uslyuy4kn0qNXaxMICA.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    /* latin */
+    @font-face {
+        font-family: 'Libre Baskerville';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Libre Baskerville'), local('LibreBaskerville-Regular'), url(https://fonts.gstatic.com/s/librebaskerville/v6/kmKnZrc3Hgbbcjq75U4uslyuy4kn0qNZaxM.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
     .list-unstyled {
         position: absolute;
         z-index: 10;
@@ -266,10 +308,11 @@
     }
 
     .flight_price{
-        color: #4c9817;
-        font-size: 21px;
+        color: #58a126;
+        font-size: 30px;
         font-weight: bold;
         text-align: center;
+        font-family: 'Quicksand', sans-serif;
     }
 
     .fly_detail{
@@ -317,6 +360,32 @@
 
     .flight_time{
         font-size: 15px;
+    }
+
+    .flight_airline{
+        font-weight: bold;
+        padding-right: 0px;
+        padding-left: 0px;
+        font-family: 'Libre Baskerville', serif;
+        text-align: left;
+    }
+
+    @media (max-width: 990px) {
+        .flight_airline{
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+    }
+
+    .flight_number{
+        font-size: 14px;
+    }
+
+    .booking_section .add_new_person{
+        line-height: 20px;
+        height: 20px;
+        padding: 0 20px;
     }
 </style>
 
@@ -431,10 +500,10 @@
                                 <div class="col-md-3">
                                     <img src="http://pics.avs.io/250/40/{{$dep['carrier']}}.png">
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 flight_airline">
                                     {{FlightStats::AirlinesData($dep['carrier'])}}
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 flight_number">
                                     {{$dep['carrier'].$dep['number']}}
                                 </div>
                                 <div class="col-md-2 flight_time">
@@ -509,10 +578,10 @@
                                 <div class="col-md-3">
                                     <img src="http://pics.avs.io/250/40/{{$arr['carrier']}}.png">
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 flight_airline">
                                     {{FlightStats::AirlinesData($arr['carrier'])}}
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 flight_number">
                                     {{$arr['carrier'].$arr['number']}}
                                 </div>
                                 <div class="col-md-2 flight_time">
@@ -614,7 +683,7 @@
                 </div>
             </div>
             
-            <div class="button button-3d button-action button-rounded add_new_person" onclick="addNewPerson()">
+            <div class="button button-3d button-caution button-rounded add_new_person" onclick="addNewPerson()">
                 <i class="fas fa-plus-circle"></i>
             </div>
         
@@ -622,7 +691,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <button type="submit" class="btn btn-action" style="margin-top: 20px">
-                        <i class="fab fa-searchengin"></i> Confirm Booking
+                        <i class="fas fa-check-circle"></i> Confirm Booking
                     </button>
                 </div>
             </div>
