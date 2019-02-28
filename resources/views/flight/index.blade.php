@@ -192,7 +192,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label name="subject">Direct Route 直航</label> <br>
-                                <input name="direct" type="checkbox" class="direct_check" value="true" checked>
+                                <input name="direct" type="checkbox" class="direct_check" value="true" onclick="return false" checked>
                             </div>
                         </div>
 

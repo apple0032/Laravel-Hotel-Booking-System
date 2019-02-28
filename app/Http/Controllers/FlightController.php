@@ -370,5 +370,13 @@ class FlightController extends Controller
         return $flight;
     }
 
+    public function booking(Request $request)
+    {
+        print_r($request->form_departure);
+        print_r($request->total_price);
+        print_r($request->people_name);
+        die('book process');
+
+    }
 
 }

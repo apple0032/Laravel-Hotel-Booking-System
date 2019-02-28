@@ -9,6 +9,10 @@
 
 @section('content')
 <style>
+    body{
+        background-image: url('') !important;
+    }
+
     /* vietnamese */
     @font-face {
         font-family: 'Quicksand';
@@ -90,6 +94,12 @@
     .flight_searchbar_row .btn-search{
         background: #4398e9;
         width: 100%;
+        color: #fff;
+        box-shadow: 0 0 1.8823em 0 rgba(132, 203, 255, 0.3);
+    }
+
+    .btn-submit{
+        background: rgba(6, 94, 147, 0.54);
         color: #fff;
         box-shadow: 0 0 1.8823em 0 rgba(132, 203, 255, 0.3);
     }
@@ -387,6 +397,11 @@
         height: 20px;
         padding: 0 20px;
     }
+
+    .booking_section{
+        display: block;
+        background-color: #9eabb33d;
+    }
     
     .book_form{
         box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
@@ -398,12 +413,41 @@
     }
     
     .deletePerson i{
-        font-size:23px;
-        color:red;
+        font-size: 19px;
+        color: #ffffff;
+        background-color: #f20000;
+        padding: 5px;
+        border-radius: 5px;
     }
     
     .total_price{
         margin-top: 30px;
+    }
+
+    .book_details{
+        background-color: #808b911f;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
+        margin-bottom: 5px;
+    }
+
+    .form_gp{
+        font-family: 'Noto Sans TC', sans-serif;
+        margin-bottom: 10px;
+        font-size: 15px;
+    }
+
+    .submit_error{
+        color: red;
+        margin-top: 10px;
+        display: none;
+    }
+
+    .submit_process{
+        color: #2c9554;
+        margin-top: 10px;
+        display: none;
     }
 </style>
 
@@ -656,50 +700,77 @@
 
         <!-- The flight booking form will display here -->
         <div class="book_form">
-            {!! Form::open(array('route' => 'flight.search', 'data-parsley-validate' => '')) !!}
+            {!! Form::open(array('route' => 'flight.book', 'data-parsley-validate' => '', 'id' => 'flight_form' )) !!}
             <div class="row">
-                <div class="col-md-6">
-                    <label name="subject">Departure</label>
-                    <input id="form_departure" name="form_departure" class="form-control" type="text" maxlength="30" readonly>
+                <div class="col-md-6 form_gp">
+                    <label name="subject">出發航班 Departure Flight</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-plane"></i></span>
+                        <input id="form_departure" name="form_departure" class="form-control" type="text" maxlength="30" readonly>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label name="subject">Arrival</label>
-                    <input id="form_arrival" name="form_arrival" class="form-control" type="text" maxlength="30" readonly>
+                <div class="col-md-6 form_gp">
+                    <label name="subject">回程航班 Arrival Flight</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-plane"></i></i></span>
+                        <input id="form_arrival" name="form_arrival" class="form-control" type="text" maxlength="30" readonly>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label name="subject">Departure Price</label>
-                    <input id="form_departure_price" name="form_departure_price" class="form-control" type="text" maxlength="30" readonly>
+                <div class="col-md-6 form_gp">
+                    <label name="subject">航班費用 Departure Price</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-dollar-sign"></i></span>
+                        <input id="form_departure_price" name="form_departure_price" class="form-control" type="text" maxlength="30" readonly>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label name="subject">Arrival Price</label>
-                    <input id="form_arrival_price" name="form_arrival_price" class="form-control" type="text" maxlength="30" readonly>
+                <div class="col-md-6 form_gp">
+                    <label name="subject">航班費用 Arrival Price</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-dollar-sign"></i></span>
+                        <input id="form_arrival_price" name="form_arrival_price" class="form-control" type="text" maxlength="30" readonly>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label name="subject">Departure Taxes</label>
-                    <input id="form_departure_tax" name="form_departure_tax" class="form-control" type="text" maxlength="30" readonly>
+                <div class="col-md-6 form_gp">
+                    <label name="subject">燃油附加費 Departure Taxes</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-dollar-sign"></i></span>
+                        <input id="form_departure_tax" name="form_departure_tax" class="form-control" type="text" maxlength="30" readonly>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label name="subject">Arrival Taxes</label>
-                    <input id="form_arrival_tax" name="form_arrival_tax" class="form-control" type="text" maxlength="30" readonly>
+                <div class="col-md-6 form_gp">
+                    <label name="subject">燃油附加費 Arrival Taxes</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-dollar-sign"></i></span>
+                        <input id="form_arrival_tax" name="form_arrival_tax" class="form-control" type="text" maxlength="30" readonly>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label name="subject">Basic price per person</label>
-                    <input id="form_basic_price" name="form_basic_price" class="form-control" type="text" maxlength="30" readonly>
+                <div class="col-md-6 form_gp">
+                    <label name="subject">每位乘客 Basic price per person</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-dollar-sign"></i></span>
+                        <input id="form_basic_price" name="form_basic_price" class="form-control" type="text" maxlength="30" readonly>
+                    </div>
                 </div>
             </div>
         
             <br>
-            <label name="subject">People</label> 
+            <label name="subject">乘客 Passenger</label>
             
             <div class="book_details">
                 <div class="row book_person" id="new_0">                 
                     <div class="col-md-3">
-                        Name
-                        <input id="people_name" name="people_name[]" class="form-control" type="text" maxlength="10">
+                        名稱 Name
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fas fa-user-alt"></i></span>
+                            <input id="people_name" name="people_name[]" class="form-control" type="text" maxlength="30">
+                        </div>
                     </div>
                     <div class="col-md-3">
-                        Passport Number
-                        <input id="people_passport" name="people_passport[]" class="form-control" type="text" maxlength="10">
+                        護照號碼 Passport Number
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fas fa-passport"></i></span>
+                            <input id="people_passport" name="people_passport[]" class="form-control" type="text" maxlength="30">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -710,18 +781,31 @@
             
             <div class="row total_price">
                 <div class="col-md-6">
-                    <label name="subject">Total Price</label>
+                    <label name="subject">總費用 Total Price</label>
                     <div class="input-group">
-                        <span class="input-group-addon">$</span>
+                        <span class="input-group-addon"><i class="fas fa-dollar-sign"></i></span>
                         <input id="total_price" name="total_price" class="form-control" type="text" maxlength="30" readonly>
                     </div>
                 </div>
             </div>
-        
+
+
+            <div class="row submit_error">
+                <div class="col-md-12">
+                    <span>*乘客資料輸入錯誤，請確保輸入所有乘客名稱及護照號碼 Please enter passenger data correctly.</span>
+                </div>
+            </div>
+
+            <div class="row submit_process">
+                <div class="col-md-12">
+                    <span><i class="fas fa-check-circle"></i> 已通過驗證！</span>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-action" style="margin-top: 20px">
-                        <i class="fas fa-check-circle"></i> Confirm Booking
+                    <button type="submit" class="btn btn-action btn-submit" style="margin-top: 20px">
+                        <i class="fas fa-check-circle"></i> 確認 Confirm
                     </button>
                 </div>
             </div>
@@ -916,6 +1000,8 @@
         var total = parseInt(dep_price)+parseInt(arr_price)+parseInt(dep_tax)+parseInt(arr_tax);
         $('#form_basic_price').val(total);
         $('#total_price').val(total);
+
+        $('#new_0 #people_name').focus();
     }
 
     $('.reselect_dep, .selected_dep_flight').click(function () {
@@ -962,7 +1048,27 @@
 <script>
     var ppl = 1;
     function addNewPerson(){
-        $('.book_details').append('<div class="row book_person" id="new_'+ppl+'"><div class="col-md-3">Name<input id="people_name" name="people_name[]" class="form-control" type="text" maxlength="10"></div><div class="col-md-3">Passport Number<input id="people_passport" name="people_passport[]" class="form-control" type="text" maxlength="10"></div><div class="col-md-1 deletePerson" onclick="deletePerson('+ppl+')"><br><i class="fas fa-trash-alt"></i></div></div>');
+        $('.book_details').append('' +
+            '<div class="row book_person" id="new_'+ppl+'">' +
+                '<div class="col-md-3">' +
+                    '名稱 Name' +
+                    '<div class="input-group">' +
+                        '<span class="input-group-addon"><i class="fas fa-user-alt"></i></span>' +
+                        '<input id="people_name" name="people_name[]" class="form-control" type="text" maxlength="30">' +
+                    '</div>' +
+                '</div>' +
+                '<div class="col-md-3">' +
+                    '護照號碼 Passport Number' +
+                    '<div class="input-group">' +
+                    '<span class="input-group-addon"><i class="fas fa-passport"></i></span>' +
+                        '<input id="people_passport" name="people_passport[]" class="form-control" type="text" maxlength="30">' +
+                    '</div>' +
+                '</div>' +
+            '<div class="col-md-1 deletePerson" onclick="deletePerson('+ppl+')">' +
+            '<br>' +
+            '<i class="fas fa-user-times"></i></div></div>' +
+        '');
+
         ppl++;
         var basic = $('#form_basic_price').val();
         var total_price = basic * ppl;
@@ -975,6 +1081,45 @@
         var new_price = parseInt($('#total_price').val()) - parseInt($('#form_basic_price').val());
         $('#total_price').val(new_price);
     }
+
+    function FormValidation(){
+
+        var pass = true;
+
+        $(".book_person").each(function(){
+            var bk_name = $(this).find('#people_name').val();
+            if(bk_name != null){
+                var bk_passport = $(this).find('#people_passport').val();
+                if(!(Math.floor(bk_passport) == bk_passport && $.isNumeric(bk_passport))){
+                    pass = false;
+                    return false;
+                }
+            } else {
+                pass = false;
+                return false;
+            }
+        });
+
+        return pass;
+    }
+
+    $(".btn-submit").click(function(e){
+
+        if(FormValidation() == false) {
+            e.preventDefault();
+            $('.submit_error').fadeIn();
+            setTimeout(function () {
+                $('.submit_error').fadeOut();
+            }, 2000);
+        } else {
+            e.preventDefault();
+            $('.submit_process').fadeIn();
+            setTimeout( function () {
+                $('#flight_form').submit();
+            }, 1500);
+        }
+
+    });
 </script>
 
 

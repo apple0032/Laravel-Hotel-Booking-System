@@ -64,9 +64,12 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('search', ['uses' => 'PagesController@search', 'as' => 'pages.search']); //INDEX SEARCH FORM
     Route::get('search', 'PagesController@getsearch');  //SEARCH QUERY
     Route::resource('posts', 'PostController');
+
+    // Flight
     Route::get('/flight', ['uses' => 'FlightController@flightIndex', 'as' => 'flight.index']);
     Route::post('/flightsearch', ['uses' => 'FlightController@search', 'as' => 'flight.search']);
     Route::get('/flight-result', ['uses' => 'FlightController@getSearchFlightPage', 'as' => 'flight.result']);
+    Route::post('/flight-book', ['uses' => 'FlightController@booking', 'as' => 'flight.book']);
 
     //Image
     Route::post('/images-save', 'UploadImagesController@store');
