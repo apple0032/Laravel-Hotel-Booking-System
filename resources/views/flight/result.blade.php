@@ -387,6 +387,24 @@
         height: 20px;
         padding: 0 20px;
     }
+    
+    .book_form{
+        box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
+        padding :20px;
+    }
+    
+    .deletePerson{
+        cursor: pointer;
+    }
+    
+    .deletePerson i{
+        font-size:23px;
+        color:red;
+    }
+    
+    .total_price{
+        margin-top: 30px;
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -637,8 +655,8 @@
 
 
         <!-- The flight booking form will display here -->
-        <br>
-        {!! Form::open(array('route' => 'flight.search', 'data-parsley-validate' => '')) !!}
+        <div class="book_form">
+            {!! Form::open(array('route' => 'flight.search', 'data-parsley-validate' => '')) !!}
             <div class="row">
                 <div class="col-md-6">
                     <label name="subject">Departure</label>
@@ -672,21 +690,33 @@
         
             <br>
             <label name="subject">People</label> 
-            <div class="row book_person" id="new_1">                 
-                <div class="col-md-3">
-                    Name
-                    <input id="people_name" name="people_name" class="form-control" type="text" maxlength="10">
-                </div>
-                <div class="col-md-3">
-                    Passport Number
-                    <input id="people_passport" name="people_passport" class="form-control" type="text" maxlength="10">
+            
+            <div class="book_details">
+                <div class="row book_person" id="new_0">                 
+                    <div class="col-md-3">
+                        Name
+                        <input id="people_name" name="people_name[]" class="form-control" type="text" maxlength="10">
+                    </div>
+                    <div class="col-md-3">
+                        Passport Number
+                        <input id="people_passport" name="people_passport[]" class="form-control" type="text" maxlength="10">
+                    </div>
                 </div>
             </div>
             
             <div class="button button-3d button-caution button-rounded add_new_person" onclick="addNewPerson()">
                 <i class="fas fa-plus-circle"></i>
             </div>
-        
+            
+            <div class="row total_price">
+                <div class="col-md-6">
+                    <label name="subject">Total Price</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input id="total_price" name="total_price" class="form-control" type="text" maxlength="30" readonly>
+                    </div>
+                </div>
+            </div>
         
             <div class="row">
                 <div class="col-md-4">
@@ -696,7 +726,7 @@
                 </div>
             </div>
             {!! Form::close() !!}
-
+        </div>
 
     </div>
 
@@ -885,6 +915,7 @@
         
         var total = parseInt(dep_price)+parseInt(arr_price)+parseInt(dep_tax)+parseInt(arr_tax);
         $('#form_basic_price').val(total);
+        $('#total_price').val(total);
     }
 
     $('.reselect_dep, .selected_dep_flight').click(function () {
@@ -926,6 +957,24 @@
         $('.plane_title').css("color", "#000000");
     });
 
+</script>
+
+<script>
+    var ppl = 1;
+    function addNewPerson(){
+        $('.book_details').append('<div class="row book_person" id="new_'+ppl+'"><div class="col-md-3">Name<input id="people_name" name="people_name[]" class="form-control" type="text" maxlength="10"></div><div class="col-md-3">Passport Number<input id="people_passport" name="people_passport[]" class="form-control" type="text" maxlength="10"></div><div class="col-md-1 deletePerson" onclick="deletePerson('+ppl+')"><br><i class="fas fa-trash-alt"></i></div></div>');
+        ppl++;
+        var basic = $('#form_basic_price').val();
+        var total_price = basic * ppl;
+        $('#total_price').val(total_price);
+    }
+    
+    function deletePerson(num){
+        $('#new_' + num).remove();
+        ppl--;
+        var new_price = parseInt($('#total_price').val()) - parseInt($('#form_basic_price').val());
+        $('#total_price').val(new_price);
+    }
 </script>
 
 
