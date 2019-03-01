@@ -511,7 +511,7 @@
         </div>
         <hr>
 
-        <label for="phone">付款方式</label>
+        <label for="method">付款方式</label>
         <select class="form-control" name="payment_method" id="payment_method">
             <option value="" selected> -</option>
             @foreach($payment_method as $pay)

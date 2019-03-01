@@ -422,6 +422,11 @@
     
     .total_price{
         margin-top: 30px;
+        margin-bottom: 20px;
+    }
+    
+    #total_price{
+        font-size:22px;
     }
 
     .book_details{
@@ -788,6 +793,49 @@
                     </div>
                 </div>
             </div>
+            
+            
+            <label for="method">付款方式</label>
+            <select class="form-control" name="payment_method" id="payment_method">
+                @foreach($payment_method as $pay)
+                    <option value='{{ $pay->id }}'>{{ $pay->type }}</option>
+                @endforeach
+            </select>
+
+            <div class="credit_card_form">
+                <div class="row">
+                    <div class="col-md-2 credit_card_img" style="text-align: center">
+                        <img src="images/visa.png">
+                    </div>
+                    <div class="col-md-6">
+                        信用卡資料
+
+                        <div class="credit_card_info well">
+                            <label for="card_number">信用卡號碼</label>
+                            <input class="form-control" maxlength="16" name="card_number" type="text"
+                                   id="card_number">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class='input-group'>
+                                        <label for='expired_date'>到期日子</label>
+                                        <input class="form-control" placeholder='' type='month' name="expired_date"
+                                               id="expired_date">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="security_number">安全碼</label>
+                                    <input class="form-control" maxlength="3" name="security_number" type="text"
+                                           id="security_number">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
 
 
             <div class="row submit_error">
@@ -1081,6 +1129,26 @@
         var new_price = parseInt($('#total_price').val()) - parseInt($('#form_basic_price').val());
         $('#total_price').val(new_price);
     }
+    
+    $("#payment_method").change(function () {
+
+    var type = $(this).val();
+
+        switch (type) {
+            case '1':
+                $('.credit_card_img').html('<img src="images/visa.png">');
+                break;
+            case '2':
+                $('.credit_card_img').html('<img src="images/mc.png">');
+                break;
+            case '3':
+                $('.credit_card_img').html('<img src="images/amex.png">');
+                break;
+            case '4':
+                $('.credit_card_img').html('<img src="images/discover.png">');
+                break;
+        }
+    });
 
     function FormValidation(){
 
@@ -1099,6 +1167,24 @@
                 return false;
             }
         });
+        
+        if(pass == true){
+            //Booking people data validation pass, now handle payment
+            console.log('pass bookng');
+            var card_number = $('#card_number').val();
+            var expired_date = $('#expired_date').val();
+            var security_number = $('#security_number').val();
+            
+            if(card_number == '' || expired_date == '' || security_number == ''){
+                pass = false;
+                console.log('null');
+            } else {
+                console.log('process payment');
+                //Call ajax handle credit card validation process
+            }
+        } else {
+            pass = false;
+        }
 
         return pass;
     }

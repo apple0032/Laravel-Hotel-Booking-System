@@ -4,14 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Post;
-use App\Hotel;
-use App\Category;
-use App\Tag;
-use App\PostTag;
-use App\RoomType;
-use App\HotelRoom;
-use App\HotelFacility;
 use App\User;
 use Mail;
 use Session;
@@ -20,6 +12,7 @@ use Image;
 use Auth;
 use Redirect;
 use App\FlightStats;
+use App\PaymentMethod;
 use Illuminate\Support\Facades\Input;
 use DateTime;
 use DatePeriod;
@@ -136,6 +129,7 @@ class FlightController extends Controller
         $arrival = self::ReformingJsonData($arrival);
 
         //print_r($arrival);die();
+        $payment_method = PaymentMethod::where('id','!=','5')->get();
 
         return view('flight.result')
             ->with('code', $code)
@@ -146,7 +140,8 @@ class FlightController extends Controller
             ->with('departure',$departure)
             ->with('arrival',$arrival)
             ->with('airports',$airports)
-            ->with('departure_airport',$departure_airport);
+            ->with('departure_airport',$departure_airport)
+            ->with('payment_method', $payment_method);
     }
     
     public function searchcountry(Request $request){
@@ -375,7 +370,10 @@ class FlightController extends Controller
         print_r($request->form_departure);
         print_r($request->total_price);
         print_r($request->people_name);
+        print_r($request->card_number);
         die('book process');
+        
+        
 
     }
 
