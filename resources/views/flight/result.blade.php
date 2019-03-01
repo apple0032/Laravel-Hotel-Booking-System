@@ -399,7 +399,6 @@
     }
 
     .booking_section{
-        display: block;
         background-color: #9eabb33d;
     }
     
@@ -418,6 +417,7 @@
         background-color: #f20000;
         padding: 5px;
         border-radius: 5px;
+        box-shadow: 0 1px 4px rgba(21, 13, 19, 0.83);
     }
     
     .total_price{
@@ -449,9 +449,64 @@
         display: none;
     }
 
+    .credit_card_error{
+        color: red;
+        margin-top: 10px;
+        display: none;
+    }
+
     .submit_process{
         color: #2c9554;
         margin-top: 10px;
+        display: none;
+    }
+
+    .credit_card_img{
+        padding-top:20px;
+    }
+
+    .book_person{
+        margin-bottom: 5px;
+    }
+
+    .lds-hourglass {
+        display: inline-block;
+        position: relative;
+        width: 64px;
+        height: 64px;
+    }
+    .lds-hourglass:after {
+        content: " ";
+        display: block;
+        border-radius: 50%;
+        width: 0;
+        height: 0;
+        margin: 6px;
+        box-sizing: border-box;
+        border: 30px solid #37454d;
+        border-color: rgba(55, 69, 77, 0.6) transparent #819da5 transparent;
+        animation: lds-hourglass 1.2s infinite;
+    }
+    @keyframes lds-hourglass {
+        0% {
+            transform: rotate(0);
+            animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+        }
+        50% {
+            transform: rotate(900deg);
+            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        100% {
+            transform: rotate(1800deg);
+        }
+    }
+
+    .px_loading{
+        text-align: center;
+        position: absolute;
+        left: 47%;
+        top: 30%;
+        z-index: 50;
         display: none;
     }
 </style>
@@ -754,6 +809,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fas fa-dollar-sign"></i></span>
                         <input id="form_basic_price" name="form_basic_price" class="form-control" type="text" maxlength="30" readonly>
+                        <input id="encrypted_code" name="encrypted_code" type="hidden">
                     </div>
                 </div>
             </div>
@@ -804,7 +860,7 @@
 
             <div class="credit_card_form">
                 <div class="row">
-                    <div class="col-md-2 credit_card_img" style="text-align: center">
+                    <div class="col-md-1 credit_card_img" style="text-align: center">
                         <img src="images/visa.png">
                     </div>
                     <div class="col-md-6">
@@ -833,9 +889,6 @@
                     </div>
                 </div>
             </div>
-            
-            
-            
 
 
             <div class="row submit_error">
@@ -843,10 +896,16 @@
                     <span>*乘客資料輸入錯誤，請確保輸入所有乘客名稱及護照號碼 Please enter passenger data correctly.</span>
                 </div>
             </div>
+            <div class="row credit_card_error">
+                <div class="col-md-12">
+                    <span>*請填寫信用卡資料 Please enter your credit card information.</span>
+                </div>
+            </div>
+
 
             <div class="row submit_process">
                 <div class="col-md-12">
-                    <span><i class="fas fa-check-circle"></i> 已通過驗證！</span>
+                    <span><i class="fas fa-check-circle"></i> 已通過驗證！ Validation passed!</span>
                 </div>
             </div>
 
@@ -862,7 +921,9 @@
 
     </div>
 
-
+    <div class="px_loading">
+        <div class="lds-hourglass"></div>
+    </div>
 
 </div>
 
@@ -1049,6 +1110,14 @@
         $('#form_basic_price').val(total);
         $('#total_price').val(total);
 
+        //Encryption process
+        var enc = window.btoa(total);
+        var dep = window.btoa(dep_flight);
+        var arr = window.btoa(arr_flight);
+        var token = '{{$token}}';
+        var etoken = token+','+enc+','+dep+','+arr;
+        $('#encrypted_code').val(etoken);
+
         $('#new_0 #people_name').focus();
     }
 
@@ -1169,7 +1238,7 @@
         });
         
         if(pass == true){
-            //Booking people data validation pass, now handle payment
+            //Booking people data validation pass, now validate payment method
             console.log('pass bookng');
             var card_number = $('#card_number').val();
             var expired_date = $('#expired_date').val();
@@ -1177,6 +1246,10 @@
             
             if(card_number == '' || expired_date == '' || security_number == ''){
                 pass = false;
+                $('.credit_card_error').fadeIn();
+                setTimeout(function () {
+                    $('.credit_card_error').fadeOut();
+                }, 2000);
                 console.log('null');
             } else {
                 console.log('process payment');
@@ -1184,6 +1257,10 @@
             }
         } else {
             pass = false;
+            $('.submit_error').fadeIn();
+            setTimeout(function () {
+                $('.submit_error').fadeOut();
+            }, 2000);
         }
 
         return pass;
@@ -1193,16 +1270,17 @@
 
         if(FormValidation() == false) {
             e.preventDefault();
-            $('.submit_error').fadeIn();
-            setTimeout(function () {
-                $('.submit_error').fadeOut();
-            }, 2000);
         } else {
+            //If basic check in frontend okay, delay form submit 1.5s to display successful message.
             e.preventDefault();
             $('.submit_process').fadeIn();
             setTimeout( function () {
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                $('.px_loading').show();
+                $(".booking_section , #sticky-wrapper , .flight_searchbar , .navbar").css("opacity", "0.2");
+                $(".booking_section , #sticky-wrapper , .flight_searchbar , .navbar").css("pointer-events", "none");
                 $('#flight_form').submit();
-            }, 1500);
+            }, 1000);
         }
 
     });

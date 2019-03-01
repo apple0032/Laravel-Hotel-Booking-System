@@ -21,7 +21,8 @@ use DB;
 
 class FlightController extends Controller
 {
-    
+    const token = "r3jjBWdKXrMzqMkc";
+
     public function FlightIndex(){
         
         /*
@@ -130,6 +131,7 @@ class FlightController extends Controller
 
         //print_r($arrival);die();
         $payment_method = PaymentMethod::where('id','!=','5')->get();
+        $token = $this->EncryptToken();
 
         return view('flight.result')
             ->with('code', $code)
@@ -141,7 +143,8 @@ class FlightController extends Controller
             ->with('arrival',$arrival)
             ->with('airports',$airports)
             ->with('departure_airport',$departure_airport)
-            ->with('payment_method', $payment_method);
+            ->with('payment_method', $payment_method)
+            ->with('token', $token);
     }
     
     public function searchcountry(Request $request){
@@ -367,14 +370,24 @@ class FlightController extends Controller
 
     public function booking(Request $request)
     {
-        print_r($request->form_departure);
-        print_r($request->total_price);
-        print_r($request->people_name);
-        print_r($request->card_number);
+
+        sleep(4);
+
+        $encrypted_code = $request->encrypted_code;
+        $encrypted_code = explode(",",$encrypted_code);
+
+        $token = base64_decode($encrypted_code[0]);
+        $en_total = base64_decode($encrypted_code[1]);
+        $en_dep = base64_decode($encrypted_code[2]);
+        $en_arr = base64_decode($encrypted_code[3]);
+
+        print_r($en_total);
         die('book process');
         
-        
+    }
 
+    protected function EncryptToken(){
+        return base64_encode($this::token);
     }
 
 }
