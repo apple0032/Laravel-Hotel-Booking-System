@@ -371,8 +371,9 @@ class FlightController extends Controller
     public function booking(Request $request)
     {
 
-        sleep(4);
+        sleep(2);
 
+        //Split encrypted code
         $encrypted_code = $request->encrypted_code;
         $encrypted_code = explode(",",$encrypted_code);
 
@@ -381,9 +382,27 @@ class FlightController extends Controller
         $en_dep = base64_decode($encrypted_code[2]);
         $en_arr = base64_decode($encrypted_code[3]);
 
+        //Basic Validation
+        $const_token = self::token;
+        if(
+            $token != $const_token || $en_total != $request->total_price ||
+            $en_dep != $request->form_departure || $en_arr != $request->form_arrival
+        ){
+            return redirect()->route('pages.error');
+        }
+
+        //Validate data
+        foreach ($request->people_name as $k => $name) {
+            if($name == null || $request->people_passport[$k] == null) {
+                return redirect()->route('pages.error');
+            }
+        }
+
+
+
+
         print_r($en_total);
         die('book process');
-        
     }
 
     protected function EncryptToken(){

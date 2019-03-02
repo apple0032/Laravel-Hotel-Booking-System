@@ -162,6 +162,21 @@
         box-shadow: 0 1px 4px rgba(10, 40, 58, 1);
     }
 
+
+    .flight_box_skip{
+        background-color: #3b6da3;
+        box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
+        margin-bottom: 10px;
+        padding: 20px;
+        border-radius: 5px;
+        transition: 0.2s all;
+        color:white;
+    }
+
+    .flight_box_skip:hover{
+        box-shadow: 0 1px 4px rgba(10, 40, 58, 1);
+    }
+
     .flight_box_header{
         font-size: 18px;
         padding-bottom: 15px;
@@ -427,6 +442,7 @@
     
     #total_price{
         font-size:22px;
+        font-weight:bold;
     }
 
     .book_details{
@@ -509,6 +525,31 @@
         z-index: 50;
         display: none;
     }
+
+    .credit_card_info{
+        margin-top: 10px;
+    }
+
+    .skip_flight{
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .skip_btn{
+        font-family: 'Noto Sans TC', sans-serif;
+        border: 1px solid #ffffff;
+        border-radius: 4px;
+        padding: 5px;
+        transition: 0.2s all;
+        cursor: pointer;
+    }
+
+    .skip_btn:hover{
+        background-color: #37454d;
+        color: white;
+        border: none;
+    }
+
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -612,6 +653,22 @@
         <input type="hidden" name="selected_dep_flight" id="selected_dep_flight" value="">
 
         <div class="departure_flight">
+
+            <div class="flight_box_skip" onclick="clickDeparture('','')">
+                <input type="hidden" id="price_" value="0">
+                <input type="hidden" id="taxes_" value="0">
+                <div class="flight_box_header">
+                    <div class="row">
+                        <div class="col-md-10 skip_flight">
+                            <i class="fas fa-times-circle"></i> 只預訂回程航班 Only book arrival flight.
+                        </div>
+                        <div class="col-md-2 select_btn_col">
+                            <span class="skip_btn">點選以跳過 SKIP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             @if($departure != null)
                 @foreach($departure as $k => $dep)
                     <div class="flight_box" id="flight_{{$dep['carrier'].$dep['number']}}">
@@ -690,6 +747,19 @@
         <input type="hidden" name="selected_arr_flight" id="selected_arr_flight" value="">
 
         <div class="departure_flight">
+
+            <div class="flight_box_skip" onclick="clickArrival('','')" style="background-color: #5f96a3">
+                <input type="hidden" id="price_" value="0">
+                <input type="hidden" id="taxes_" value="0">
+                <div class="flight_box_header">
+                    <div class="row">
+                        <div class="col-md-12 skip_flight">
+                            <i class="fas fa-times-circle"></i> 只預訂出發航班 Only book departure flight.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             @if($arrival != null)
                 @foreach($arrival as $k => $arr)
                     <div class="flight_box" id="flight_{{$arr['carrier'].$arr['number']}}">
@@ -762,6 +832,23 @@
         <div class="book_form">
             {!! Form::open(array('route' => 'flight.book', 'data-parsley-validate' => '', 'id' => 'flight_form' )) !!}
             <div class="row">
+
+                <div class="col-md-6 form_gp">
+                    <label name="subject">出發日期 Departure Date</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="far fa-calendar-alt"></i></span>
+                        <input value="{{Input::get('start')}}" id="form_departure_date" name="form_departure_date" class="form-control" type="text" readonly>
+                    </div>
+                </div>
+                <div class="col-md-6 form_gp">
+                    <label name="subject">回程日期 Arrival Date</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="far fa-calendar-alt"></i></span>
+                        <input value="{{Input::get('end')}}" id="form_arrival_date" name="form_arrival_date" class="form-control" type="text" readonly>
+                    </div>
+                </div>
+
+
                 <div class="col-md-6 form_gp">
                     <label name="subject">出發航班 Departure Flight</label>
                     <div class="input-group">
@@ -772,7 +859,7 @@
                 <div class="col-md-6 form_gp">
                     <label name="subject">回程航班 Arrival Flight</label>
                     <div class="input-group">
-                        <span class="input-group-addon"><i class="fas fa-plane"></i></i></span>
+                        <span class="input-group-addon"><i class="fas fa-plane"></i></span>
                         <input id="form_arrival" name="form_arrival" class="form-control" type="text" maxlength="30" readonly>
                     </div>
                 </div>
@@ -851,7 +938,7 @@
             </div>
             
             
-            <label for="method">付款方式</label>
+            <label for="method">付款方式 Payment Method</label>
             <select class="form-control" name="payment_method" id="payment_method">
                 @foreach($payment_method as $pay)
                     <option value='{{ $pay->id }}'>{{ $pay->type }}</option>
@@ -864,23 +951,23 @@
                         <img src="images/visa.png">
                     </div>
                     <div class="col-md-6">
-                        信用卡資料
+                        信用卡資料 Credit Card
 
                         <div class="credit_card_info well">
-                            <label for="card_number">信用卡號碼</label>
+                            <label for="card_number">信用卡號碼 Card Number</label>
                             <input class="form-control" maxlength="16" name="card_number" type="text"
                                    id="card_number">
 
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class='input-group'>
-                                        <label for='expired_date'>到期日子</label>
+                                        <label for='expired_date'>到期日子 Expired Date</label>
                                         <input class="form-control" placeholder='' type='month' name="expired_date"
                                                id="expired_date">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="security_number">安全碼</label>
+                                    <label for="security_number">安全碼 Security Number</label>
                                     <input class="form-control" maxlength="3" name="security_number" type="text"
                                            id="security_number">
                                 </div>
@@ -1078,6 +1165,12 @@
         $('.selected_dep_flight').html('出發 - '+fs+fno);
         $('.departure_section').fadeOut();
         $('.arrival_section').fadeIn();
+
+        if(fs == ''){
+            $('.arrival_section .flight_box_skip').hide();
+        } else {
+            $('.arrival_section .flight_box_skip').show();
+        }
     }
 
     function clickArrival(fs,fno) {
@@ -1096,13 +1189,13 @@
         var arr_price = $('#price_'+arr_flight).val();
         var dep_tax = $('#taxes_'+dep_flight).val();
         var arr_tax = $('#taxes_'+arr_flight).val();
-        
+
         $('#form_departure').val(dep_flight);
         $('#form_arrival').val(arr_flight);
-        
+
         $('#form_departure_price').val(dep_price);
         $('#form_arrival_price').val(arr_price);
-        
+
         $('#form_departure_tax').val(dep_tax);
         $('#form_arrival_tax').val(arr_tax);
         
