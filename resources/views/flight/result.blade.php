@@ -753,8 +753,11 @@
                 <input type="hidden" id="taxes_" value="0">
                 <div class="flight_box_header">
                     <div class="row">
-                        <div class="col-md-12 skip_flight">
+                        <div class="col-md-10 skip_flight">
                             <i class="fas fa-times-circle"></i> 只預訂出發航班 Only book departure flight.
+                        </div>
+                        <div class="col-md-2 select_btn_col">
+                            <span class="skip_btn">點選以跳過 SKIP</span>
                         </div>
                     </div>
                 </div>
@@ -795,7 +798,7 @@
                                     出發 <i class="fas fa-plane-departure"></i>
                                     {{$arr['departure_date'].' '.$arr['departure_time'].' (GMT'.$arr['departure_timezone'].')'}}
                                     <i class="fas fa-city"></i>
-                                    由 {{Input::get('from')}}
+                                    由 {{Input::get('to')}}
                                     @php
                                         $from = FlightStats::AirportsData(null,Input::get('to'));
                                         print_r('('.$from[0]['name'].') Terminal '.$arr['departure_terminal']);
@@ -806,7 +809,7 @@
                                     到達 <i class="fas fa-plane-arrival"></i>
                                     {{$arr['arrival_date'].' '.$arr['arrival_time'].' (GMT'.$arr['arrival_timezone'].')'}}
                                     <i class="fas fa-city"></i>
-                                    到 {{Input::get('to')}}
+                                    到 {{Input::get('from')}}
                                     @php
                                         $from = FlightStats::AirportsData(null,Input::get('from'));
                                         print_r('('.$from[0]['name'].') Terminal '.$arr['arrival_terminal']);
