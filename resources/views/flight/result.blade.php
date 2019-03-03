@@ -672,6 +672,7 @@
             @if($departure != null)
                 @foreach($departure as $k => $dep)
                     <div class="flight_box" id="flight_{{$dep['carrier'].$dep['number']}}">
+                        <input type="hidden" id="source_{{$dep['carrier'].$dep['number']}}" value="{{$k}}">
                         <input type="hidden" id="price_{{$dep['carrier'].$dep['number']}}" value="{{$dep['price_basic']}}">
                         <input type="hidden" id="taxes_{{$dep['carrier'].$dep['number']}}" value="{{$dep['price_taxes']}}">
                         <div class="flight_box_header" data-toggle="collapse" data-target="#coll-{{$dep['carrier'].$dep['number']}}">
@@ -766,6 +767,7 @@
             @if($arrival != null)
                 @foreach($arrival as $k => $arr)
                     <div class="flight_box" id="flight_{{$arr['carrier'].$arr['number']}}">
+                        <input type="hidden" id="source_{{$arr['carrier'].$arr['number']}}" value="{{$k}}">
                         <input type="hidden" id="price_{{$arr['carrier'].$arr['number']}}" value="{{$arr['price_basic']}}">
                         <input type="hidden" id="taxes_{{$arr['carrier'].$arr['number']}}" value="{{$arr['price_taxes']}}">
                         <div class="flight_box_header" data-toggle="collapse" data-target="#coll-{{$arr['carrier'].$arr['number']}}">
@@ -1006,6 +1008,15 @@
                     </button>
                 </div>
             </div>
+            @php
+                $departure = json_encode($departure,true);
+                $arrival = json_encode($arrival, true);
+            @endphp
+            <input type="hidden" name="source_dep" id="source_dep" value="{{$departure}}">
+            <input type="hidden" name="source_arr" id="source_arr" value="{{$arrival}}">
+
+            <input type="hidden" name="source_dep_num" id="source_dep_num">
+            <input type="hidden" name="source_arr_num" id="source_arr_num">
             {!! Form::close() !!}
         </div>
 
@@ -1169,10 +1180,13 @@
         $('.departure_section').fadeOut();
         $('.arrival_section').fadeIn();
 
+        var dep_source = $('#source_'+fs+fno).val();
         if(fs == ''){
             $('.arrival_section .flight_box_skip').hide();
+            $('#source_dep_num').val('');
         } else {
             $('.arrival_section .flight_box_skip').show();
+            $('#source_dep_num').val(dep_source);
         }
     }
 
@@ -1192,6 +1206,13 @@
         var arr_price = $('#price_'+arr_flight).val();
         var dep_tax = $('#taxes_'+dep_flight).val();
         var arr_tax = $('#taxes_'+arr_flight).val();
+
+        var arr_source = $('#source_'+fs+fno).val();
+        if(fs == ''){
+            $('#source_arr_num').val('');
+        } else {
+            $('#source_arr_num').val(arr_source);
+        }
 
         $('#form_departure').val(dep_flight);
         $('#form_arrival').val(arr_flight);
