@@ -1,6 +1,6 @@
 @extends('index')
 
-@section('title', '| Flight')
+@section('title', '| Flight Result')
 
 @php
     use Illuminate\Support\Facades\Input;

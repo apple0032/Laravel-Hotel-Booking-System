@@ -478,4 +478,10 @@ class FlightController extends Controller
         return base64_encode($this::token);
     }
 
+
+    public function FlightSeat(){
+
+        return view('flight.seat');
+    }
+
 }
