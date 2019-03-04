@@ -1401,6 +1401,13 @@
         }
 
     });
+    
+    $(".btn-search").click(function(){
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $('.px_loading').show();
+        $(".plane_section , #sticky-wrapper , .flight_searchbar , .navbar").css("opacity", "0.2");
+        $(".plane_section , #sticky-wrapper , .flight_searchbar , .navbar").css("pointer-events", "none");
+    });
 </script>
 
 
