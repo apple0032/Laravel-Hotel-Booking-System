@@ -19,6 +19,8 @@ use DatePeriod;
 use DateInterval;
 use DB;
 use App\FlightBooking;
+use App\FlightPayment;
+use App\FlightPassenger;
 
 class FlightController extends Controller
 {
@@ -49,7 +51,7 @@ class FlightController extends Controller
          *
          * Git category [UI][FIX][DOC][TEST][NEW][ENHANCE][REWRITE][MOVE]
          */
-   
+
         
         return view('flight.index');
     }
@@ -416,59 +418,118 @@ class FlightController extends Controller
             $source_dep = json_decode($request->source_dep, true);
             $source_dep = $source_dep[$request->source_dep_num];
 
-            $bk = new FlightBooking();
-            $bk->user_id = Auth::user()->id;
-            $bk->related_flight_id = $related_flight_id;
-            $bk->country = 'Hong Kong';
-            $bk->country_code = 'HK';
-            $bk->dep_airport = 'HKG';
-            $bk->arr_airport = $source_dep['arrival_airport'];
-            $bk->dep_date = $source_dep['departure_date'];
-            $bk->airline_name = FlightStats::AirlinesData($source_dep['carrier']);
-            $bk->airline_code = $source_dep['carrier'];
-            $bk->flight_code = $source_dep['carrier'].$source_dep['number'];
-            $bk->flight_start = $source_dep['departure_time'];
-            $bk->flight_end = $source_dep['arrival_time'];
-            $bk->duration = $source_dep['duration'];
-            $bk->plane = $source_dep['aircraft'];
-            $bk->price = $source_dep['price_basic'];
-            $bk->tax = $source_dep['price_taxes'];
-            $bk->class = $source_dep['class'];
+            try
+            {
+                $bk = new FlightBooking();
+               $bk->user_id = Auth::user()->id;
+               $bk->related_flight_id = $related_flight_id;
+               $bk->country = 'Hong Kong';
+               $bk->country_code = 'HK';
+               $bk->dep_airport = 'HKG';
+               $bk->arr_airport = $source_dep['arrival_airport'];
+               $bk->dep_date = $source_dep['departure_date'];
+               $bk->airline_name = FlightStats::AirlinesData($source_dep['carrier']);
+               $bk->airline_code = $source_dep['carrier'];
+               $bk->flight_code = $source_dep['carrier'].$source_dep['number'];
+               $bk->flight_start = $source_dep['departure_time'];
+               $bk->flight_end = $source_dep['arrival_time'];
+               $bk->duration = $source_dep['duration'];
+               $bk->plane = $source_dep['aircraft'];
+               $bk->price = $source_dep['price_basic'];
+               $bk->tax = $source_dep['price_taxes'];
+               $bk->class = $source_dep['class'];
 
-            $request->form_arrival == '' ? $bk->is_single_way = '1' : $bk->is_single_way = '0';
-
-            $bk->save();
+               $request->form_arrival == '' ? $bk->is_single_way = '1' : $bk->is_single_way = '0';
+                
+                if(!$bk->save())
+                 {
+                 throw new Exception();
+                 }
+            }
+           catch(Exception $e)
+            {
+                return redirect()->route('pages.error');
+            }
         }
 
         if($request->form_arrival != null) {
             $source_arr = json_decode($request->source_arr, true);
             $source_arr = $source_arr[$request->source_arr_num];
             $country = FlightStats::AirportsData(null,$source_arr['departure_airport']);
+            
+            try
+            {
+                $bk = new FlightBooking();
+                $bk->user_id = Auth::user()->id;
+                $bk->related_flight_id = $related_flight_id;
+                $bk->country = $country[0]['municipality'];
+                $bk->country_code = $country[0]['iso_country'];
+                $bk->dep_airport = $source_arr['departure_airport'];
+                $bk->arr_airport = $source_arr['arrival_airport'];
+                $bk->dep_date = $source_arr['departure_date'];
+                $bk->airline_name = FlightStats::AirlinesData($source_arr['carrier']);
+                $bk->airline_code = $source_arr['carrier'];
+                $bk->flight_code = $source_arr['carrier'].$source_arr['number'];
+                $bk->flight_start = $source_arr['departure_time'];
+                $bk->flight_end = $source_arr['arrival_time'];
+                $bk->duration = $source_arr['duration'];
+                $bk->plane = $source_arr['aircraft'];
+                $bk->price = $source_arr['price_basic'];
+                $bk->tax = $source_arr['price_taxes'];
+                $bk->class = $source_arr['class'];
 
-            $bk = new FlightBooking();
-            $bk->user_id = Auth::user()->id;
-            $bk->related_flight_id = $related_flight_id;
-            $bk->country = $country[0]['municipality'];
-            $bk->country_code = $country[0]['iso_country'];
-            $bk->dep_airport = $source_arr['departure_airport'];
-            $bk->arr_airport = $source_arr['arrival_airport'];
-            $bk->dep_date = $source_arr['departure_date'];
-            $bk->airline_name = FlightStats::AirlinesData($source_arr['carrier']);
-            $bk->airline_code = $source_arr['carrier'];
-            $bk->flight_code = $source_arr['carrier'].$source_arr['number'];
-            $bk->flight_start = $source_arr['departure_time'];
-            $bk->flight_end = $source_arr['arrival_time'];
-            $bk->duration = $source_arr['duration'];
-            $bk->plane = $source_arr['aircraft'];
-            $bk->price = $source_arr['price_basic'];
-            $bk->tax = $source_arr['price_taxes'];
-            $bk->class = $source_arr['class'];
-
-            $request->form_departure == '' ? $bk->is_single_way = '1' : $bk->is_single_way = '0';
-
-            $bk->save();
+                $request->form_departure == '' ? $bk->is_single_way = '1' : $bk->is_single_way = '0';
+                
+                if(!$bk->save())
+                 {
+                 throw new Exception();
+                 }
+            }
+           catch(Exception $e)
+            {
+                return redirect()->route('pages.error');
+            }
         }
 
+        /* Create payment after booking */
+        if($en_total != 0 && $en_total != null && is_numeric($en_total) ){
+            
+            /* Handle real payment process here (ref to hotel booking) */
+            /* If payment status reture true, process to store in locala DB */
+            
+            try
+            {
+                $pay = new FlightPayment;
+                $pay->flight_booking_id = $bk->id;
+                $pay->related_flight_id = $related_flight_id;
+                $pay->total_price = $en_total;
+                $pay->payment_method = $request->payment_method;
+                $pay->card_number = $request->card_number;
+                $pay->expired_date = $request->expired_date;
+                $pay->security_number = $request->security_number;
+                $pay->is_single_way = $bk->is_single_way;
+                $pay->status = 1;
+                $pay->user_id = Auth::user()->id;
+            
+                if(!$pay->save()){
+                    throw new Exception();
+                }
+            }
+           catch(Exception $e)
+            {
+                return redirect()->route('pages.error');
+            }            
+            
+        } else {
+            return redirect()->route('pages.error');
+        }
+        
+        
+        /* Create passenger data after payment */
+        
+        
+        
+        
 
         print_r($en_total);
         die('book process');

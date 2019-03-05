@@ -529,11 +529,23 @@
 @section('scripts')
     <script>
         var seat = [];
+        var limit = 3;
+        var c = 0;
         $(".seat input[type=checkbox]").click(function(){
+            console.log(c);
             if(seat.indexOf(this.id) == -1) {
-                seat.push(this.id);
+                if(c < limit){
+                    seat.push(this.id);
+                    c++;
+                    $(this).closest('.seat').find('label').css("background", "#bada55");
+                } else {
+                    $(this).closest('.seat').find('label').css("background", "#F42536");
+                }
             } else {
-                
+                c--;
+                $(this).closest('.seat').find('label').css("background", "#F42536");
+                var removeItem = this.id;
+                seat.splice( $.inArray(removeItem,seat) ,1 );
             }
             console.log(seat);
         });
