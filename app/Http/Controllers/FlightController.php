@@ -395,7 +395,7 @@ class FlightController extends Controller
         //Basic Validation
         $const_token = self::token;
         if(
-            $token != $const_token || $en_total != $request->total_price ||
+            $token != $const_token || $en_total != $request->form_basic_price ||
             $en_dep != $request->form_departure || $en_arr != $request->form_arrival
         ){
             return redirect()->route('pages.error');
@@ -408,11 +408,9 @@ class FlightController extends Controller
             }
         }
 
-
+        $related_flight_id = uniqid();
 
         //******** Create booking process ******** //
-
-        $related_flight_id = uniqid();
 
         if($request->form_departure != null) {
             $source_dep = json_decode($request->source_dep, true);
@@ -420,7 +418,7 @@ class FlightController extends Controller
 
             try
             {
-                $bk = new FlightBooking();
+               $bk = new FlightBooking();
                $bk->user_id = Auth::user()->id;
                $bk->related_flight_id = $related_flight_id;
                $bk->country = 'Hong Kong';
@@ -491,11 +489,11 @@ class FlightController extends Controller
             }
         }
 
-        /* Create payment after booking */
+        //******** Create payment after booking ******** //
         if($en_total != 0 && $en_total != null && is_numeric($en_total) ){
             
-            /* Handle real payment process here (ref to hotel booking) */
-            /* If payment status reture true, process to store in locala DB */
+            /* Handle real payment process here (ref to BookingController::BookingPayment) */
+            /* If payment status return true, process to store in local DB */
             
             try
             {
@@ -523,16 +521,35 @@ class FlightController extends Controller
         } else {
             return redirect()->route('pages.error');
         }
-        
-        
-        /* Create passenger data after payment */
-        
-        
-        
+
+
+        //******** Create passenger data after payment ******** //
+
+        $num_of_ppl = count($request->people_name);
+        if($num_of_ppl > 0){
+            try{
+
+                foreach ($request->people_name as $k => $n) {
+                    $ppl = new FlightPassenger();
+                    $ppl->related_flight_id = $related_flight_id;
+                    $ppl->people_name = $n;
+                    $ppl->people_passport = $request->people_passport[$k];
+                    if(!$ppl->save())
+                    {
+                        throw new Exception();
+                    }
+                }
+
+            } catch(Exception $e)
+            {
+                return redirect()->route('pages.error');
+            }
+        } else {
+            return redirect()->route('pages.error');
+        }
         
 
-        print_r($en_total);
-        die('book process');
+        die('success');
     }
 
     protected function EncryptToken(){
@@ -540,9 +557,20 @@ class FlightController extends Controller
     }
 
 
-    public function FlightSeat(){
+    public function FlightSummary(){
 
+        $user_id = Auth::user()->id;
+        $booking = FlightBooking::where('user_id', '=', $user_id)->orderby('dep_date','DESC')->get();
+
+        return view('flight.summary')
+            ->with('booking',$booking);
+
+    }
+
+
+    public function FlightSeat(){
         return view('flight.seat');
     }
+
 
 }

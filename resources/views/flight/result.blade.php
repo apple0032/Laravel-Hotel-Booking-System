@@ -956,7 +956,7 @@
                         <img src="images/visa.png">
                     </div>
                     <div class="col-md-6">
-                        信用卡資料 Credit Card
+                        <i class="far fa-credit-card"></i> 信用卡資料 Credit Card
 
                         <div class="credit_card_info well">
                             <label for="card_number">信用卡號碼 Card Number</label>

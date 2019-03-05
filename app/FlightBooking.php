@@ -3,10 +3,23 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\FlightPassenger;
+use App\FlightPayment;
 
 class FlightBooking extends Model
 {
     protected $table = 'flight_booking';
+
+    //Relationship
+    public static function payment($related_flight_id)
+    {
+        return FlightPayment::where('related_flight_id', '=', $related_flight_id )->get();
+    }
+
+    public static function passenger($related_flight_id)
+    {
+        return FlightPassenger::where('related_flight_id', '=', $related_flight_id )->get();
+    }
 
 }
 

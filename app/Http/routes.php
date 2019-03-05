@@ -71,6 +71,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/flight-result', ['uses' => 'FlightController@getSearchFlightPage', 'as' => 'flight.result']);
     Route::post('/flight-book', ['uses' => 'FlightController@booking', 'as' => 'flight.book']);
     Route::get('/flight-seat', ['uses' => 'FlightController@flightSeat', 'as' => 'flight.seat']);
+    Route::get('/flight-summary', ['uses' => 'FlightController@flightSummary', 'as' => 'flight.summary']);
 
     //Image
     Route::post('/images-save', 'UploadImagesController@store');
