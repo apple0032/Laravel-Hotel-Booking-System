@@ -561,9 +561,11 @@ class FlightController extends Controller
 
         $user_id = Auth::user()->id;
         $booking = FlightBooking::where('user_id', '=', $user_id)->orderby('dep_date','DESC')->get();
+        $pay_method_list = \App\Helpers\AppHelper::instance()->ObjectToArrayMap(PaymentMethod::where('id','!=','5')->get(),'id','type');
 
         return view('flight.summary')
-            ->with('booking',$booking);
+            ->with('booking',$booking)
+            ->with('pay_method_list',$pay_method_list);
 
     }
 

@@ -2,6 +2,10 @@
 
 @section('title', '| My Flight')
 
+@php
+    use App\FlightBooking;
+@endphp
+
 @section('content')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -36,6 +40,7 @@
 
         .book_detail_col {
             border-right: 1px solid #2d6098;
+            padding-right: 30px;
         }
 
         .book_detail_room {
@@ -49,6 +54,17 @@
         .table_header{
             background-color: rgb(166, 86, 86);
             color: white;
+        }
+        
+        .payment_header{
+            font-size:20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #2d6098;
+            padding-bottom: 10px;
+        }
+        
+        .payment_header i{
+            font-size: 25px;
         }
     </style>
 
@@ -87,7 +103,7 @@
                                 <td>{{$bk->dep_airport}}</td>
                                 <td>{{$bk->arr_airport}}</td>
                                 <td>{{substr($bk->dep_date,0,10)}}</td>
-                                <td><img src="http://pics.avs.io/250/40/{{$bk['airline_code']}}.png" style="zoom: 0.6">{{$bk->airline_name}}</td>
+                                <td><img src="http://pics.avs.io/250/40/{{$bk['airline_code']}}.png" style="zoom: 0.6; margin-right: 10px;">{{$bk->airline_name}}</td>
                                 <td>{{$bk->flight_code}}</td>
                                 <td>{{$bk->flight_start}}</td>
                                 <td>{{$bk->flight_end}}</td>
@@ -95,13 +111,46 @@
                                 <td>$ {{$bk->price}}</td>
                                 <td>$ {{$bk->tax}}</td>
                                 <td>{{$bk->class}}</td>
-                                <td>1</td>
+                                <td> <a href=""><i class="fas fa-chair"></i></a> </td>
                             </tr>
                             <tr class="book_detail bk_detail{{$bk->id}} animated bounceInDown faster">
                                 <td colspan="13">
                                     <div class="row well" style="margin: 0px">
                                         <div class="col-md-4 col-sm-12 book_detail_col">
-                                            payment
+                                            @php
+                                                $payment = json_decode(FlightBooking::payment($bk->related_flight_id),true);
+                                            @endphp
+                                            <div class="row">
+                                                <div class="col-md-12 payment_header">
+                                                    <i class="fas fa-file-invoice-dollar"></i> Payment
+                                                </div>
+                                                <div class="col-md-3">
+                                                    狀態
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @if($payment['status'] == 1)
+                                                        <span class="paid">已付款</span>
+                                                    @else
+                                                        <span class="no_paid">未付款</span>
+                                                    @endif
+                                                </div>
+                                                <div class="col-md-3">
+                                                    費用
+                                                </div>
+                                                <div class="col-md-9">
+                                                    $ {{$payment['total_price']}}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    方式
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @php 
+                                                        if(isset($payment['payment_method'])){
+                                                            print_r($pay_method_list[$payment['payment_method']]); 
+                                                        }
+                                                    @endphp
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-md-4 col-sm-12 book_detail_col" style="padding-left: 30px;">
                                             <div class="row">
@@ -115,10 +164,6 @@
                                 </td>
                             </tr>
                         @endforeach
-
-                        {{--<tr>--}}
-                        {{--<td colspan="9">Sum: $180</td>--}}
-                        {{--</tr>--}}
 
                         </tbody>
                     </table>

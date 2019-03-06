@@ -13,7 +13,7 @@ class FlightPassenger extends Model
     //Relationship
     public static function payment($related_flight_id)
     {
-    	return FlightPayment::where('related_flight_id', '=', $related_flight_id )->get();
+    	return FlightPayment::where('related_flight_id', '=', $related_flight_id )->first();
     }
     
     public static function booking($related_flight_id)
