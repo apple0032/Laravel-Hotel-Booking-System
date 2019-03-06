@@ -70,7 +70,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/flightsearch', ['uses' => 'FlightController@search', 'as' => 'flight.search']);
     Route::get('/flight-result', ['uses' => 'FlightController@getSearchFlightPage', 'as' => 'flight.result']);
     Route::post('/flight-book', ['uses' => 'FlightController@booking', 'as' => 'flight.book']);
-    Route::get('/flight-seat', ['uses' => 'FlightController@flightSeat', 'as' => 'flight.seat']);
+    Route::get('/flight-seat/{id}', ['uses' => 'FlightController@flightSeat', 'as' => 'flight.seat']);
     Route::get('/flight-summary', ['uses' => 'FlightController@flightSummary', 'as' => 'flight.summary']);
 
     //Image

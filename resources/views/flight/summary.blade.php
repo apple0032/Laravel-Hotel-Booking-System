@@ -34,6 +34,11 @@
             cursor: pointer;
         }
 
+        .book_row:hover{
+            border-bottom: 2px solid #7a878f;
+            border-radius: 5px;
+        }
+
         .book_detail {
             display: none;
         }
@@ -41,10 +46,13 @@
         .book_detail_col {
             border-right: 1px solid #2d6098;
             padding-right: 30px;
+            font-size: 16px;
         }
 
-        .book_detail_room {
-            font-size: 16px;
+        @media (min-width: 986px) {
+            .book_detail_col {
+                min-height: 185px;
+            }
         }
 
         .book_detail_room div {
@@ -56,15 +64,59 @@
             color: white;
         }
         
-        .payment_header{
-            font-size:20px;
+        .det_header{
+            font-size:16px;
             margin-bottom: 20px;
             border-bottom: 1px solid #2d6098;
             padding-bottom: 10px;
         }
         
-        .payment_header i{
-            font-size: 25px;
+        .det_header i{
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .airline img{
+            zoom: 0.6;
+            margin-right: 30px;
+            margin-left: 30px;
+        }
+
+        .seat_btn{
+            text-align: center;
+            font-size: 19px;
+        }
+
+        .seat_btn i{
+            border: 1px solid #2d6098;
+            padding: 5px 7px;
+            border-radius: 2px;
+            color: white;
+            background-color: #2d6098;
+        }
+
+        .det_col i{
+            font-size: 16px;
+            margin-right: 20px;
+        }
+
+        .paid{
+            background-color: #58ff58;
+            padding: 0px 5px;
+            border-radius: 5px;
+        }
+
+        .no_paid{
+            background-color: #ff8c89;
+            padding: 0px 5px;
+            border-radius: 5px;
+        }
+
+        .disable_seat i{
+            background-color: red;
+            color: #ffffff;
+            border: 0;
+            cursor: auto;
         }
     </style>
 
@@ -98,12 +150,12 @@
                         <tbody id="myTable">
 
                         @foreach($booking as $key => $bk)
-                            <tr class="book_row book_{{$bk->id}}" data-sid="{{$bk->id}}" style="">
+                            <tr class="book_row book_{{$bk->related_flight_id}}" data-sid="{{$bk->related_flight_id}}" style="">
                                 <td><img src="https://countryflags.io/{{$bk->country_code}}/flat/32.png">　{{$bk->country}}</td>
                                 <td>{{$bk->dep_airport}}</td>
                                 <td>{{$bk->arr_airport}}</td>
                                 <td>{{substr($bk->dep_date,0,10)}}</td>
-                                <td><img src="http://pics.avs.io/250/40/{{$bk['airline_code']}}.png" style="zoom: 0.6; margin-right: 10px;">{{$bk->airline_name}}</td>
+                                <td class="airline"><img src="http://pics.avs.io/250/40/{{$bk['airline_code']}}.png">{{$bk->airline_name}}</td>
                                 <td>{{$bk->flight_code}}</td>
                                 <td>{{$bk->flight_start}}</td>
                                 <td>{{$bk->flight_end}}</td>
@@ -111,9 +163,20 @@
                                 <td>$ {{$bk->price}}</td>
                                 <td>$ {{$bk->tax}}</td>
                                 <td>{{$bk->class}}</td>
-                                <td> <a href=""><i class="fas fa-chair"></i></a> </td>
+                                <td class="seat_btn">
+                                    @php
+                                        $dep_time = (substr($bk->dep_date,0,10)).' '.$bk->flight_start;
+                                        $dep_time = strtotime($dep_time);
+                                        $current = strtotime(date("Y-m-d H:i:s"));
+                                    @endphp
+                                    @if($current < $dep_time)
+                                        <a href="flight-seat/{{$bk->id}}"><i class="fas fa-chair"></i></a>
+                                    @else
+                                        <span class="disable_seat"> <i class="fas fa-times"></i></span>
+                                    @endif
+                                </td>
                             </tr>
-                            <tr class="book_detail bk_detail{{$bk->id}} animated bounceInDown faster">
+                            <tr class="book_detail bk_detail{{$bk->related_flight_id}} animated bounceInLeft faster">
                                 <td colspan="13">
                                     <div class="row well" style="margin: 0px">
                                         <div class="col-md-4 col-sm-12 book_detail_col">
@@ -121,44 +184,90 @@
                                                 $payment = json_decode(FlightBooking::payment($bk->related_flight_id),true);
                                             @endphp
                                             <div class="row">
-                                                <div class="col-md-12 payment_header">
-                                                    <i class="fas fa-file-invoice-dollar"></i> Payment
+                                                <div class="col-md-12 det_header">
+                                                    <i class="fas fa-file-invoice-dollar"></i> PAYMENT
                                                 </div>
-                                                <div class="col-md-3">
-                                                    狀態
+                                                <div class="col-md-4 det_col">
+                                                    <i class="fas fa-signal"></i> 狀態
                                                 </div>
-                                                <div class="col-md-9">
+                                                <div class="col-md-8">
                                                     @if($payment['status'] == 1)
                                                         <span class="paid">已付款</span>
                                                     @else
                                                         <span class="no_paid">未付款</span>
                                                     @endif
                                                 </div>
-                                                <div class="col-md-3">
-                                                    費用
+                                                <div class="col-md-4 det_col">
+                                                    <i class="fas fa-hand-holding-usd"></i> 費用
                                                 </div>
-                                                <div class="col-md-9">
+                                                <div class="col-md-8">
                                                     $ {{$payment['total_price']}}
                                                 </div>
-                                                <div class="col-md-3">
-                                                    方式
+                                                <div class="col-md-4 det_col">
+                                                    <i class="far fa-credit-card"></i> 方式
                                                 </div>
-                                                <div class="col-md-9">
+                                                <div class="col-md-8">
                                                     @php 
                                                         if(isset($payment['payment_method'])){
                                                             print_r($pay_method_list[$payment['payment_method']]); 
                                                         }
                                                     @endphp
+                                                    &nbsp;
+                                                </div>
+                                                <div class="col-md-4 det_col">
+                                                    <i class="fas fa-barcode"></i> 卡號
+                                                </div>
+                                                <div class="col-md-8">
+                                                    {{$payment['card_number']}}&nbsp;
+                                                </div>
+                                                <div class="col-md-4 det_col">
+                                                    <i class="fas fa-shield-alt"></i> 安全碼
+                                                </div>
+                                                <div class="col-md-8">
+                                                    {{$payment['security_number']}}&nbsp;
+                                                </div>
+                                                <div class="col-md-4 det_col">
+                                                    <i class="far fa-calendar-check"></i> 到期
+                                                </div>
+                                                <div class="col-md-8">
+                                                    {{$payment['expired_date']}}&nbsp;
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-4 col-sm-12 book_detail_col" style="padding-left: 30px;">
                                             <div class="row">
-                                                seat
+                                                <div class="col-md-12 det_header">
+                                                    <i class="fas fa-chair"></i> SEAT PLAN
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 col-sm-12">
-                                            passenger
+                                        <div class="col-md-4 col-sm-12" style="padding-left: 30px;">
+                                            @php
+                                                $pass = json_decode(FlightBooking::passenger($bk->related_flight_id),true);
+                                            @endphp
+                                            <div class="row">
+                                                <div class="col-md-12 det_header">
+                                                    <i class="fas fa-user"></i> PASSENGER
+                                                </div>
+                                                <div class="col-md-4" style="text-transform: capitalize;">
+                                                    <i class="fas fa-male"></i>&nbsp;&nbsp; 乘客
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <i class="fas fa-passport"></i>&nbsp;&nbsp; 護照號碼
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top: 5px">
+                                                @if($pass != null)
+                                                    @foreach($pass as $k => $m)
+                                                        <div class="col-md-4">
+                                                            {{$m['people_name']}}
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            {{$m['people_passport']}}
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
@@ -175,6 +284,9 @@
 
         </div>
     </div>
+
+    <input type="hidden" name="sbg" id="sbg">
+
     <script>
 
         $("#myInput").on("keyup", function () {
@@ -192,6 +304,12 @@
         $('.book_row').each(function () {
             $(this).on("click", function () {
                 var sid = $(this).data('sid');
+                var sbg = $('#sbg').val();
+                if(sbg != sid) {
+                    $('.book_'+sid).css("background-color", "#f4cfcf");
+                    $('.book_'+sbg).css("background-color", "white");
+                    $('#sbg').val(sid);
+                }
 
                 if ($('.bk_detail' + sid).hasClass("act") == false) {
 

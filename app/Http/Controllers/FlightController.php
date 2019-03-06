@@ -570,7 +570,11 @@ class FlightController extends Controller
     }
 
 
-    public function FlightSeat(){
+    public function FlightSeat($id){
+
+        //$id = Flight booking->id
+        //print_r($id);
+
         return view('flight.seat');
     }
 
