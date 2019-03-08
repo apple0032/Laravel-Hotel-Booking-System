@@ -40,5 +40,7 @@ ALTER TABLE `flight_passenger`
 ALTER TABLE `flight_passenger`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
+ALTER TABLE `flight_passenger` ADD `flight_booking_id` INT(11) NOT NULL AFTER `related_flight_id`;
+
  */
 

@@ -550,6 +550,24 @@
         border: none;
     }
 
+    .ppl_checkbox{
+        display: inline-block;
+        box-shadow: none;
+        margin: 0px;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .ppl_label{
+        vertical-align: top;
+        font-size: 18px;
+        margin-right: 10px;
+    }
+
+    .ppl_check_gp{
+        margin-top:20px;
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -925,6 +943,14 @@
                             <input id="people_passport" name="people_passport[]" class="form-control" type="text" maxlength="30">
                         </div>
                     </div>
+                    <div class="col-md-2 ppl_check_gp">
+                        <input type="hidden" name="dep_people[0]" value="0" />
+                        <input type="hidden" name="arr_people[0]" value="0" />
+                        <input type="checkbox" name="dep_people[0]" value="1" class="form-control ppl_checkbox dep_ckbox" checked>
+                        <span class="ppl_label">出發</span>
+                        <input type="checkbox" name="arr_people[0]" value="1" class="form-control ppl_checkbox arr_ckbox" checked>
+                        <span class="ppl_label">回程</span>
+                    </div>
                 </div>
             </div>
             
@@ -1184,9 +1210,13 @@
         if(fs == ''){
             $('.arrival_section .flight_box_skip').hide();
             $('#source_dep_num').val('');
+            $('.dep_ckbox').hide();
+            $('.arr_ckbox').css("pointer-events", "none");
         } else {
             $('.arrival_section .flight_box_skip').show();
             $('#source_dep_num').val(dep_source);
+            $('.dep_ckbox').show();
+            $('.arr_ckbox').css("pointer-events", "auto");
         }
     }
 
@@ -1210,8 +1240,12 @@
         var arr_source = $('#source_'+fs+fno).val();
         if(fs == ''){
             $('#source_arr_num').val('');
+            $('.arr_ckbox').hide();
+            $('.dep_ckbox').css("pointer-events", "none");
         } else {
             $('#source_arr_num').val(arr_source);
+            $('.arr_ckbox').show();
+            $('.dep_ckbox').css("pointer-events", "auto");
         }
 
         $('#form_departure').val(dep_flight);
@@ -1298,6 +1332,14 @@
                         '<input id="people_passport" name="people_passport[]" class="form-control" type="text" maxlength="30">' +
                     '</div>' +
                 '</div>' +
+                '<div class="col-md-2 ppl_check_gp">' +
+                    '<input type="hidden" name="dep_people['+ppl+']" value="0" />' +
+                    '<input type="hidden" name="arr_people['+ppl+']" value="0" />' +
+                    '<input type="checkbox" name="dep_people['+ppl+']" value="1" class="form-control ppl_checkbox dep_ckbox" checked>' +
+                        '<span class="ppl_label"> 出發</span>' +
+                    '<input type="checkbox" name="arr_people['+ppl+']" value="1" class="form-control ppl_checkbox arr_box" checked>' +
+                        '<span class="ppl_label"> 回程</span>' +
+                '</div>' +
             '<div class="col-md-1 deletePerson" onclick="deletePerson('+ppl+')">' +
             '<br>' +
             '<i class="fas fa-user-times"></i></div></div>' +
@@ -1305,13 +1347,14 @@
 
         ppl++;
         var basic = $('#form_basic_price').val();
-        var total_price = basic * ppl;
+        var numPpl = $('.book_person').length;
+        var total_price = basic * numPpl;   //Use number of .book_person div to count total number of people
         $('#total_price').val(total_price);
     }
     
     function deletePerson(num){
         $('#new_' + num).remove();
-        ppl--;
+        //ppl--;  //no need to minus people to avoid delete-div-bug, can keep adding people and skip div like 1,3,4,5
         var new_price = parseInt($('#total_price').val()) - parseInt($('#form_basic_price').val());
         $('#total_price').val(new_price);
     }

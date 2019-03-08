@@ -410,7 +410,9 @@ class FlightController extends Controller
                 if(!$bk->save())
                  {
                  throw new Exception();
-                 }
+                 } else {
+                    $dep_bk_id = $bk->id;
+                }
             }
            catch(Exception $e)
             {
@@ -449,7 +451,9 @@ class FlightController extends Controller
                 if(!$bk->save())
                  {
                  throw new Exception();
-                 }
+                 } else {
+                    $arr_bk_id = $bk->id;
+                }
             }
            catch(Exception $e)
             {
@@ -497,14 +501,33 @@ class FlightController extends Controller
         if($num_of_ppl > 0){
             try{
 
-                foreach ($request->people_name as $k => $n) {
-                    $ppl = new FlightPassenger();
-                    $ppl->related_flight_id = $related_flight_id;
-                    $ppl->people_name = $n;
-                    $ppl->people_passport = $request->people_passport[$k];
-                    if(!$ppl->save())
-                    {
-                        throw new Exception();
+                if($request->form_departure != null) {
+                    foreach ($request->dep_people as $k => $n) {
+                        if($n == 1) {
+                            $ppl = new FlightPassenger();
+                            $ppl->related_flight_id = $related_flight_id;
+                            $ppl->people_name = $request->people_name[$k];
+                            $ppl->people_passport = $request->people_passport[$k];
+                            $ppl->flight_booking_id = $dep_bk_id;
+                            if (!$ppl->save()) {
+                                throw new Exception();
+                            }
+                        }
+                    }
+                }
+
+                if($request->form_arrival != null) {
+                    foreach ($request->arr_people as $k => $n) {
+                        if($n == 1) {
+                            $ppl = new FlightPassenger();
+                            $ppl->related_flight_id = $related_flight_id;
+                            $ppl->people_name = $request->people_name[$k];
+                            $ppl->people_passport = $request->people_passport[$k];
+                            $ppl->flight_booking_id = $arr_bk_id;
+                            if (!$ppl->save()) {
+                                throw new Exception();
+                            }
+                        }
                     }
                 }
 
@@ -540,10 +563,12 @@ class FlightController extends Controller
 
     public function FlightSeat($id){
 
-        //$id = Flight booking->id
-        //print_r($id);
+        $booking = FlightBooking::where('id', '=', $id)->first();
+        $no_of_passenger = FlightPassenger::where('related_flight_id','=',$booking->related_flight_id)->get()->count();
 
-        return view('flight.seat');
+        return view('flight.seat')
+            ->with('booking',$booking)
+            ->with('no_of_passenger',$no_of_passenger);
     }
 
 
