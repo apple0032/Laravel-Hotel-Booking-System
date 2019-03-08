@@ -55,5 +55,6 @@ ALTER TABLE `flight_booking`
 ALTER TABLE `flight_booking`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
+ALTER TABLE `flight_booking` ADD `seat` VARCHAR(255) NULL DEFAULT NULL AFTER `class`;
  */
 

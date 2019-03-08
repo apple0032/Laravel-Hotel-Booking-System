@@ -26,41 +26,12 @@ class FlightController extends Controller
 {
     const token = "r3jjBWdKXrMzqMkc";
 
-    public function FlightIndex(){
-        
-        /*
-         * The actual operation of Aviation industry - 
-         * 
-         * N kinds of Country * N kinds of City * N kinds of Airports * N kinds of Airlines * N kinds of Flights * N kinds of Price * N kinds of Price Source
-         * 
-         * Country code : https://countrycode.org/
-         * Coutrty search api : https://restcountries.eu/#api-endpoints-language
-         * 
-         * Flight search process (draft at 2019-02-11)
-         * 1. User typing keywords on searchbar will trigger ajax call -> country code search api   //done
-         * 2. User click to select right country , get country code (HK,US,GB)  //done
-         * 3. Popup a input text, call search-airport by country code API to list out all airport from selected country   //done
-         * 4. Also get from_date & to_date from user input  //done
-         * 5. Call Scheduled Flight(s) Api , requested params should be: addid,addkey,'HKG',arrivalAirportCode,Y-M-D    //done
-         * 6. Get scheduled flight data in json format  //done
-         * 7. In json->scheduledFlights, we got all of the flight,plane_eq,time,terminal..etc   //done
-         * 8. We only need the price of flight code!    //done
-         *
-         * 9. Web form to display , calculate and store the booking flight data to local db
-         * 10. Integration between hotel & flight
-         *
-         * Git category [UI][FIX][DOC][TEST][NEW][ENHANCE][REWRITE][MOVE]
-         */
-
-        
-        return view('flight.index');
+    public function __construct() {
+        $this->middleware(['auth'],['except' => ['searchcountry','searchairport','search']]);
     }
     
     public function search(Request $request)
     {
-        if(!Auth::check()){
-            return redirect('auth/login');
-        }
 
         $required_fields = array('countrycode','airport','daterange');
         $missing_fields = array();
@@ -111,9 +82,6 @@ class FlightController extends Controller
     
     public function getSearchFlightPage()
     {
-        if(!Auth::check()){
-            return redirect('auth/login');
-        }
 
         $code = Input::get('code');
         $from = Input::get('from');
