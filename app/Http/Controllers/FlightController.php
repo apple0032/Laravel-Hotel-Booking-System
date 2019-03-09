@@ -538,9 +538,9 @@ class FlightController extends Controller
         } else {
             return redirect()->route('pages.error');
         }
-        
 
-        die('success');
+
+        return redirect()->route('flight.summary');
     }
 
     protected function EncryptToken(){

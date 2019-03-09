@@ -568,6 +568,12 @@
     .ppl_check_gp{
         margin-top:20px;
     }
+
+    .pass_notice{
+        margin-top: 20px;
+        color: #626262;
+        font-size: 11px;
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -957,6 +963,14 @@
             <div class="button button-3d button-caution button-rounded add_new_person" onclick="addNewPerson()">
                 <i class="fas fa-plus-circle"></i>
             </div>
+
+            <div class="row pass_notice">
+                <div class="col-md-12">
+                    <span>*請輸入乘客名稱，護照號碼只能輸入數目字，出發/回程類請最少選擇一項。 <br>
+                        Please enter passenger name, passport number in digital number and choose at least one flight type.
+                    </span>
+                </div>
+            </div>
             
             <div class="row total_price">
                 <div class="col-md-6">
@@ -1212,6 +1226,7 @@
             $('#source_dep_num').val('');
             $('.dep_ckbox').hide();
             $('.arr_ckbox').css("pointer-events", "none");
+            $('.arr_ckbox').prop( "checked", true );
         } else {
             $('.arrival_section .flight_box_skip').show();
             $('#source_dep_num').val(dep_source);
@@ -1242,6 +1257,7 @@
             $('#source_arr_num').val('');
             $('.arr_ckbox').hide();
             $('.dep_ckbox').css("pointer-events", "none");
+            $('.dep_ckbox').prop( "checked", true );
         } else {
             $('#source_arr_num').val(arr_source);
             $('.arr_ckbox').show();
@@ -1337,7 +1353,7 @@
                     '<input type="hidden" name="arr_people['+ppl+']" value="0" />' +
                     '<input type="checkbox" name="dep_people['+ppl+']" value="1" class="form-control ppl_checkbox dep_ckbox" checked>' +
                         '<span class="ppl_label"> 出發</span>' +
-                    '<input type="checkbox" name="arr_people['+ppl+']" value="1" class="form-control ppl_checkbox arr_box" checked>' +
+                    '<input type="checkbox" name="arr_people['+ppl+']" value="1" class="form-control ppl_checkbox arr_ckbox" checked>' +
                         '<span class="ppl_label"> 回程</span>' +
                 '</div>' +
             '<div class="col-md-1 deletePerson" onclick="deletePerson('+ppl+')">' +
@@ -1390,13 +1406,20 @@
                 if(!(Math.floor(bk_passport) == bk_passport && $.isNumeric(bk_passport))){
                     pass = false;
                     return false;
+                } else {
+                    var ck_dep = $(this).find(".dep_ckbox").prop("checked");
+                    var ck_arr = $(this).find(".arr_ckbox").prop("checked");
+                    if(ck_dep == false && ck_arr == false) {
+                        pass = false;
+                        return false;
+                    }
                 }
             } else {
                 pass = false;
                 return false;
             }
         });
-        
+
         if(pass == true){
             //Booking people data validation pass, now validate payment method
             console.log('pass bookng');
