@@ -120,6 +120,15 @@
     .dropdown-menu{
         font-size: 16px;
     }
+
+    .nav_user_box{
+        text-transform: capitalize;
+        font-size: 110%;
+    }
+
+    .nav_user_box i{
+        font-size: 20px;
+    }
 </style>
 
 
@@ -163,8 +172,8 @@
                 @if (Auth::check())
 
                     <li class="dropdown">
-                        <a href="/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false" style="text-transform: capitalize;"><i class="fas fa-user-alt"></i> &nbsp; {{ Auth::user()->name }} <span class="caret"></span></a>
+                        <a href="/" class="dropdown-toggle nav_user_box" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false"><i class="fas fa-user-circle"></i> &nbsp; {{ Auth::user()->name }} <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             @if(Auth::user()->role == 'superadmin')
                                 <li><a href="{{ route('admin.user') }}"><i class="fas fa-users-cog"></i> &nbsp; Users</a></li>
@@ -179,7 +188,7 @@
 
                             <li role="separator" class="divider"></li>
                             <li><a href="{{ route('account') }}"><i class="fas fa-user-circle"></i> &nbsp; Account</a></li>
-                            <li><a href="{{ route('facebook') }}"><i class="fab fa-facebook"></i> &nbsp;Facebook</a></li>
+                            <li><a href="{{ route('facebook') }}"><i class="fab fa-facebook"></i> &nbsp; Facebook</a></li>
                             <li><a href="{{ route('logout') }}"><i class="fas fa-sign-out-alt"></i> &nbsp; Logout</a></li>
                         </ul>
                     </li>

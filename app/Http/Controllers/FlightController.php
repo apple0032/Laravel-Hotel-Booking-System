@@ -564,11 +564,48 @@ class FlightController extends Controller
     public function FlightSeat($id){
 
         $booking = FlightBooking::where('id', '=', $id)->first();
-        $no_of_passenger = FlightPassenger::where('related_flight_id','=',$booking->related_flight_id)->get()->count();
+        $passenger = FlightPassenger::where('flight_booking_id','=',$booking->id)->get()->toArray();
+        $selected_seat = FlightBooking::flightSelectedSeat($passenger);
+        $num_of_select = FlightBooking::flightSeatAvailableSelect($passenger);
+
+        //To correctly display airbus seat map
+        $num_of_rows = FlightBooking::flightSeat();
+        $seat_each_row = FlightBooking::flightSeatEachRow();
+        $booked_seat = FlightBooking::flightSeatExist($booking->flight_code, $booking->dep_date, $booking->flight_start);
 
         return view('flight.seat')
             ->with('booking',$booking)
-            ->with('no_of_passenger',$no_of_passenger);
+            ->with('passenger',$passenger)
+            ->with('num_of_rows',$num_of_rows)
+            ->with('seat_each_row', $seat_each_row)
+            ->with('booked_seat',$booked_seat)
+            ->with('num_of_select',$num_of_select)
+            ->with('selected_seat', $selected_seat);
+    }
+
+    public function seat(Request $request)
+    {
+        //Store selected seat to flight_passenger table.
+        $booking = FlightBooking::where('id', '=', $request->booking_id)->first();
+        $passenger = FlightPassenger::where('flight_booking_id','=',$booking->id)->get()->toArray();
+
+        //Find all no seat passenger
+        foreach ($passenger as $pass){
+            if($pass['seat'] == null){
+                $store[] = $pass['id'];
+            }
+        }
+
+        $select = explode(',',$request->re_select);
+
+        foreach ($select as $k => $set){
+            $pass = FlightPassenger::find($store[$k]);
+            $pass->seat = $set;
+            $pass->save();
+        }
+
+        Session::flash('success', '已成功預訂座位!');
+        return redirect()->route('flight.seat',$booking->id);
     }
 
 

@@ -4,6 +4,7 @@
 
 @php
     use App\FlightBooking;
+    use App\FlightPassenger;
 @endphp
 
 @section('content')
@@ -118,6 +119,16 @@
             border: 0;
             cursor: auto;
         }
+
+        .total_pass{
+            margin-top: 30px;
+            padding-left: 10px;
+        }
+
+        .red_notice{
+            font-weight: bold;
+            color: red;
+        }
     </style>
 
     <div class="row">
@@ -168,8 +179,12 @@
                                         $dep_time = (substr($bk->dep_date,0,10)).' '.$bk->flight_start;
                                         $dep_time = strtotime($dep_time);
                                         $current = strtotime(date("Y-m-d H:i:s"));
+
+                                        $passenger = FlightPassenger::where('flight_booking_id','=',$bk->id)->get()->toArray();
+                                        $selected_seat = FlightBooking::flightSelectedSeat($passenger);
+                                        $num_of_select = FlightBooking::flightSeatAvailableSelect($passenger);
                                     @endphp
-                                    @if($current < $dep_time)
+                                    @if($current < $dep_time && $num_of_select != 0)
                                         <a href="flight-seat/{{$bk->id}}"><i class="fas fa-chair"></i></a>
                                     @else
                                         <span class="disable_seat"> <i class="fas fa-times"></i></span>
@@ -201,7 +216,7 @@
                                                     <i class="fas fa-hand-holding-usd"></i> 費用
                                                 </div>
                                                 <div class="col-md-8">
-                                                    $ {{$payment['total_price']}}
+                                                    <span class="red_notice">$ {{$payment['total_price']}} </span>
                                                 </div>
                                                 <div class="col-md-4 det_col">
                                                     <i class="far fa-credit-card"></i> 方式
@@ -239,11 +254,23 @@
                                                 <div class="col-md-12 det_header">
                                                     <i class="fas fa-chair"></i> SEAT PLAN
                                                 </div>
+                                                <div class="col-md-12 seat_detail">
+                                                    <i class="fas fa-plane"></i> 飛機型號 : AirBus {{$bk->plane}} <br>
+                                                    <i class="fas fa-check-square"></i> 已選擇座位數目： <span class="red_notice"> {{count($selected_seat)}}</span> <br>
+                                                    <i class="fas fa-cat"></i> 已選擇座位:
+                                                    @if($selected_seat != null)
+                                                        @foreach($selected_seat as $selected)
+                                                            <span class="red_notice">{{$selected.' '}}</span>
+                                                        @endforeach
+                                                    @else
+                                                        <span class="red_notice"> 沒有 </span>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-4 col-sm-12" style="padding-left: 30px;">
                                             @php
-                                                $pass = json_decode(FlightBooking::passenger($bk->related_flight_id),true);
+                                                $pass = json_decode(FlightBooking::passenger($bk->id),true);
                                             @endphp
                                             <div class="row">
                                                 <div class="col-md-12 det_header">
@@ -260,13 +287,16 @@
                                                 @if($pass != null)
                                                     @foreach($pass as $k => $m)
                                                         <div class="col-md-4">
-                                                            {{$m['people_name']}}
+                                                            <span class="red_notice"> {{$m['people_name']}} </span>
                                                         </div>
                                                         <div class="col-md-8">
-                                                            {{$m['people_passport']}}
+                                                            <span class="red_notice"> {{$m['people_passport']}} </span>
                                                         </div>
                                                     @endforeach
                                                 @endif
+                                            </div>
+                                            <div class="row total_pass">
+                                                <i class="fas fa-parachute-box"></i> 此航班共有 {{count($pass)}} 位乘客
                                             </div>
                                         </div>
                                     </div>

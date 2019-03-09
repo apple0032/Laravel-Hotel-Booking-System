@@ -29,11 +29,12 @@
 		}
 
 		#box {
-			width: 470px;
+			max-width: 450px;
 			height: auto;
 			margin: 0 auto;
 			background: #fff;
-			border: thin solid #ededed;
+			/*border: thin solid #ededed;*/
+			box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
 		}
 
 

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\FlightPassenger;
 use App\FlightPayment;
+use DB;
 
 class FlightBooking extends Model
 {
@@ -16,11 +17,67 @@ class FlightBooking extends Model
         return FlightPayment::where('related_flight_id', '=', $related_flight_id )->first();
     }
 
-    public static function passenger($related_flight_id)
+    public static function passenger($flight_booking_id)
     {
-        return FlightPassenger::where('related_flight_id', '=', $related_flight_id )->get();
+        return FlightPassenger::where('flight_booking_id', '=', $flight_booking_id )->get();
     }
 
+    public static function flightSeat($no_of_rows = 10){
+
+        for ($x = 1; $x <= $no_of_rows; $x++) {
+            $arr[] = $x;
+        }
+
+        return $arr;
+    }
+
+    public static function flightSeatEachRow(){
+        return array('A','B','C','D','E','F');
+    }
+
+    public static function flightSeatExist($code, $date, $time){
+
+        $passenger = DB::table('flight_passenger')
+            ->select('flight_passenger.*')
+            ->leftJoin('flight_booking', 'flight_passenger.flight_booking_id', '=', 'flight_booking.id')
+            ->where('flight_booking.flight_code', '=', $code)
+            ->where('flight_booking.dep_date', '=', $date)
+            ->where('flight_booking.flight_start', '=', $time)
+            ->get();
+
+        $booked_seat = array();
+        foreach ($passenger as $pass){
+            if($pass->seat != ''){
+                $booked_seat[] = $pass->seat;
+            }
+        }
+
+        return $booked_seat;
+    }
+
+    public static function flightSeatAvailableSelect($passenger){
+
+        $c = 0;
+        foreach ($passenger as $ppl){
+            if($ppl['seat'] == null){
+                $c ++;
+            }
+        }
+
+        return $c;
+    }
+
+    public static function flightSelectedSeat($passenger){
+
+        $selected_seat = array();
+        foreach ($passenger as $ppl){
+            if($ppl['seat'] != null){
+                $selected_seat[] = $ppl['seat'];
+            }
+        }
+
+        return $selected_seat;
+    }
 }
 
 /*
@@ -55,6 +112,6 @@ ALTER TABLE `flight_booking`
 ALTER TABLE `flight_booking`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
-ALTER TABLE `flight_booking` ADD `seat` VARCHAR(255) NULL DEFAULT NULL AFTER `class`;
+//ALTER TABLE `flight_booking` ADD `seat` VARCHAR(255) NULL DEFAULT NULL AFTER `class`; //should be moved to passengers table
  */
 

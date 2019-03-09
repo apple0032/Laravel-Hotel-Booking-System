@@ -16,9 +16,9 @@ class FlightPayment extends Model
         return FlightBooking::where('related_flight_id', '=', $related_flight_id )->get();
     }
 
-    public static function passenger($related_flight_id)
+    public static function passenger($flight_booking_id)
     {
-        return FlightPassenger::where('related_flight_id', '=', $related_flight_id )->get();
+        return FlightPassenger::where('flight_booking_id', '=', $flight_booking_id )->get();
     }
 
 }

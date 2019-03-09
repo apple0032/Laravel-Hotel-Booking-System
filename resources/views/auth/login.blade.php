@@ -28,13 +28,13 @@
 		}
 
 		#box {
-			width: 470px;
+			max-width: 450px;
 			height: auto;
 			margin: 0 auto;
 			background: #fff;
-			border: thin solid #ededed;
+			/*border: thin solid #ededed;*/
+			box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
 		}
-
 
 
 		#box > h3 {
@@ -117,16 +117,17 @@
 			width: 100%;
 			height: auto;
 			border: none;
-			background: #f5f5f5;
+			background: #2e6da4d6;
 			outline: none;
 			margin: 0 auto;
-			padding: 20px;
+			padding: 15px;
 			display: block;
-			color: #666;
+			color: #e1dfdf;
 			text-transform: uppercase;
 			text-align: center;
 			box-sizing: border-box;
 			font-size: 0.8em;
+			margin-top: 30px;
 		}
 
 		#box > .signup p, a {
@@ -135,14 +136,18 @@
 		}
 
 		#box > .signup p {
-			color: #ccc;
+			color: #fff;
 		}
 
 		#box > .signup a {
 			text-decoration: none;
-			color: #015b7e;
+			color: #c4c4c4;
 			font-size: 1em;
-			padding-left: 25px;
+			/*padding-left: 25px;*/
+			border: 1px solid #c4c4c4;
+			margin-left: 30px;
+			padding: 3px 15px;
+			border-radius: 3px;
 		}
 
 		.login_image{
@@ -171,7 +176,7 @@
 				<input class="form-control" name="email" type="email" id="email" placeholder="EMAIL">
 				<input class="form-control" name="password" type="password" value="" id="password" placeholder="PASSWORD">
 
-			<a href="{{ url('password/reset') }}">forgot ?</a><br><br>
+			<u><a href="{{ url('password/reset') }}">forgot ?</a></u><br><br>
 
 
 			<input onclick="this.style.backgroundColor = '#69c061';" type="submit" value="LOGIN"/>
