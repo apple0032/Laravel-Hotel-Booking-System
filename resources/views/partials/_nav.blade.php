@@ -101,7 +101,11 @@
         }
 
         .dropdown-menu {
-            text-align: center;
+            text-align: left;
+        }
+
+        .dropdown-menu li{
+            padding-left: 30%;
         }
     }
 

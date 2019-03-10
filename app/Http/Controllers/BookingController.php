@@ -28,6 +28,7 @@ use Auth;
 use Redirect;
 use DB;
 use DateTime;
+use Illuminate\Support\Facades\Input;
 
 class BookingController extends Controller
 {
@@ -147,7 +148,7 @@ class BookingController extends Controller
                     $guest->save();
                 }
 
-                return redirect()->route('hotel.booklist');
+                return redirect()->route('hotel.booklist',['bkhotel' => $booking->id]);
             }
         }
 
@@ -178,11 +179,27 @@ class BookingController extends Controller
 
         //print_r($pay_method);die();
 
+        $booked_hotel = null;
+        $bkhotel = Input::get('bkhotel');
+        if($bkhotel != null){
+            $booked_hotel = Booking::where('id', '=', $bkhotel)->first();
+            $range = substr($booked_hotel->in_date, 0, 10).' - '.substr($booked_hotel->out_date, 0, 10);
+            if($booked_hotel->count() == null){
+                return redirect()->route('pages.error');
+            }
+        } else {
+            $bkhotel = null;
+            $range = null;
+        }
+
         return view('pages.booklist')
             ->with('room_type',$room_type)
             ->with('room_type_list', $room_type_list)
             ->with('pay_method', $pay_method)
-            ->with('booking', $booking);
+            ->with('booking', $booking)
+            ->with('bkhotel',$bkhotel)
+            ->with('booked_hotel',$booked_hotel)
+            ->with('range', $range);
     }
 
     public function Payment()

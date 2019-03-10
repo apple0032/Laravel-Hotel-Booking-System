@@ -596,6 +596,7 @@
                 <option value="HKG">Hong Kong International Airport</option>
             </select>
         </div>
+        <input type="hidden" id="trip" name="trip_id" value="{{Input::get('trip')}}">
         <div class="col-md-2">
             <label name="subject">到達機場 Arrival Airport</label>
             <select id="airport" name="airport" class="form-control">
@@ -1057,6 +1058,7 @@
 
             <input type="hidden" name="source_dep_num" id="source_dep_num">
             <input type="hidden" name="source_arr_num" id="source_arr_num">
+            <input type="hidden" name="trip" id="trip" value="{{Input::get('trip')}}">
             {!! Form::close() !!}
         </div>
 

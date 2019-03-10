@@ -56,7 +56,60 @@
             background-color: #2d6098;
             color: white;
         }
+
+        @media (min-width: 768px) {
+            .modal-dialog {
+                width: 1000px;
+                margin: 30px auto;
+            }
+        }
+
+        .flight_searchbar{
+            padding-right: 50px;
+            padding-left: 50px;
+            padding-bottom: 50px;
+        }
+
+        .flight_header{
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .list-unstyled {
+            position: absolute;
+            z-index: 10;
+            background-color: white;
+            display: none;
+            margin-top: -7px;
+            border: 1px solid #b4b4b4;
+            padding:7px;
+        }
+
+        .list-unstyled li {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+            border-radius: 2px;
+            color: #0b1a27;
+            font-size: 21px;
+        }
+
+        .list-unstyled li:hover {
+            background-color: #dddddd;
+            font-weight: bold;
+        }
+
+        .btn_trip{
+            display: none;
+        }
+
+        .trip_trigger{
+            text-align: center;
+        }
     </style>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
     <div class="row">
         <div class="col-md-12">
@@ -79,12 +132,19 @@
                             <th>預約時間</th>
                             <th>總價錢</th>
                             <th>狀態</th>
+                            <th>機票</th>
                         </tr>
                         </thead>
                         <tbody id="myTable">
 
                         @foreach($booking as $key => $bk)
-                            <tr class="book_row book_{{$bk->id}}" data-sid="{{$bk->id}}">
+                            <tr class="book_row book_{{$bk->id}}" data-sid="{{$bk->id}}" style="
+                                @php
+                                    if($bk->id == $bkhotel){
+                                        echo 'background-color: rgb(244, 207, 207)';
+                                    }
+                                @endphp
+                            ">
                                 <td>{{$bk->id}}</td>
                                 <td>{{$bk->hotel['name']}}</td>
                                 <td>{{$room_type[$key]}}</td>
@@ -94,9 +154,10 @@
                                 <td>{{$bk->book_date}}</td>
                                 <td>$ {{$bk->total_price}}</td>
                                 <td>@if($bk->status == 1) 正常 @endif</td>
+                                <td class="trip_trigger"><a href="booklist?bkhotel={{$bk->id}}"><i class="fas fa-plane"></i></a></td>
                             </tr>
                             <tr class="book_detail bk_detail{{$bk->id}} animated bounceInDown faster">
-                                <td colspan="9">
+                                <td colspan="10">
                                     <div class="row well" style="margin: 0px">
                                         <div class="col-md-4 col-sm-12 book_detail_col">
 
@@ -233,9 +294,87 @@
             </div>
 
 
+            <!-- Trigger the modal with a button -->
+            <button type="button" class="btn btn-info btn-lg btn_trip" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title">
+                                <i class="fas fa-check-circle"></i> Successful ! 您已成功預訂酒店 ! 接下來距離您的旅程只差一步
+                            </h3>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="flight_searchbar">
+                                {!! Form::open(array('route' => 'flight.search', 'data-parsley-validate' => '')) !!}
+                                <div class="row flight_searchbar_row">
+
+                                    <div class="flight_header">
+                                        <i class="fas fa-plane"></i> 請選擇國家以完成您的旅程
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <label name="subject">國家 Country</label>
+                                        <input id="country" name="country" class="form-control" type="text" maxlength="30">
+                                        <ul class="list-unstyled"></ul>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label name="subject">國家代碼 Country Code</label>
+                                        <input id="countrycode" name="countrycode" class="form-control" type="text" maxlength="30" readonly>
+                                    </div>
+                                    <input type="hidden" id="trip" name="trip_id" value="{{$bkhotel}}">
+                                    <div class="col-md-12">
+                                        <label name="subject">到達機場 Arrival Airport</label>
+                                        <select id="airport" name="airport" class="form-control">
+
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label name="subject">出發/回程日期 Departure & Arrival Date</label>
+                                        <div class="form-group">
+                                            <div class="input-group date" id="datetimepicker">
+                                                <input class="form-control" type="text" name="daterange" id="daterange" value="" readonly/>
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon-calendar glyphicon"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="submit" class="btn btn-action btn-search btn-primary" style="margin-top: 20px">
+                                            <i class="fab fa-searchengin"></i> SEARCH
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {!! Form::close() !!}
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
         </div>
     </div>
     <script>
+
+        var bkhotel = '{{$bkhotel}}';
+        if(bkhotel != ''){
+            $('.btn_trip').click();
+            $('#daterange').val('{{$range}}');
+        }
 
         $("#myInput").on("keyup", function () {
             var value = $(this).val().toLowerCase();
@@ -268,4 +407,110 @@
         });
 
     </script>
+
+    <script>
+
+        //setup before functions
+        var typingTimer;                //timer identifier
+        var doneTypingInterval = 350;  //time in ms
+
+        //on keyup, start the countdown
+        $('#country').keyup(function(){
+
+            var keyword = $(this).val();
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+            clearTimeout(typingTimer);
+            if ($('#country').val) {
+                typingTimer = setTimeout(function(){
+
+                    $.ajax({
+                        url: '../searchcountry',
+                        async: false,
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            name: keyword,
+                        },
+                        dataType: 'JSON',
+                        beforeSend: function () {
+                            $(".list-unstyled").html('');
+                            console.log('ajax start');
+                        },
+                        success: function (data) {
+                            //console.log(data);
+                            if(data['status'] == 'success'){
+                                $.each( data['country'], function( key, value ) {
+                                    if(key>5){ return false; };
+                                    $('.list-unstyled').append('' +
+                                        '<li class="search_opt">' +
+                                        '<div class="row">' +
+                                        '<div class="col-md-12">' +
+                                        data['country'][key]["name"] +
+                                        '</div>' +
+                                        '</div><input type="hidden" class="list-code" id="c-'+data['country'][key]["name"]+'" name="code" value="'+data['country'][key]["alpha2Code"]+'"></li>');
+                                });
+
+                                $(".list-unstyled").fadeIn();
+                            } else {
+                                $(".list-unstyled").fadeOut();
+                                $('#countrycode').val('');
+                                $('#airport').html('');
+                            }
+
+                            $(".search_opt").each(function (index) {
+                                $(this).on("click", function () {
+                                    var name = $(this).text();
+                                    $("#country").val(name);
+                                    var code = $(this).find('.list-code').val();
+                                    console.log(code);
+                                    $('#countrycode').val(code);
+                                    GetAirports(code,CSRF_TOKEN); //Trigger get airport api
+                                });
+                            });
+                        }
+                    });
+
+                }, doneTypingInterval);
+            }
+        });
+
+        function GetAirports(code,token){
+
+            //Ajax call api
+            $.ajax({
+                url: '../searchairport',
+                async: false,
+                type: 'POST',
+                data: {
+                    _token: token,
+                    code: code
+                },
+                dataType: 'JSON',
+                beforeSend: function () {
+                    $('#airport').html("");
+                },
+                success: function (data) {
+                    //<option value="HKG">Hong Kong International Airport</option>
+
+                    $.each( data, function( key, value ) {
+                        $('#airport').append('<option value="'+value['code']+'">'+value['name']+'</option>');
+                    });
+                }
+            });
+
+
+        }
+
+
+        $("#country").focus(function () {
+            $("#country").trigger("keyup");
+        });
+
+        $("#country").blur(function () {
+            $(".list-unstyled").fadeOut();
+        });
+
+    </script>
+
 @endsection

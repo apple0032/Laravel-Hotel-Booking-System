@@ -21,6 +21,7 @@ use DB;
 use App\FlightBooking;
 use App\FlightPayment;
 use App\FlightPassenger;
+use App\Trip;
 
 class FlightController extends Controller
 {
@@ -60,6 +61,7 @@ class FlightController extends Controller
         $de_airport = $request->departure_airport;
         $airport = $request->airport;
         $daterange = $request->daterange;
+        $trip = $request->trip_id;
       
 //        print_r($code);
 //        die();
@@ -76,7 +78,8 @@ class FlightController extends Controller
             'from' => $de_airport,
             'to' => $airport,
             'start' => $start,
-            'end' => $end
+            'end' => $end,
+            'trip' => $trip,
         ]);
     }
     
@@ -537,6 +540,14 @@ class FlightController extends Controller
             }
         } else {
             return redirect()->route('pages.error');
+        }
+
+        //Create trip record if trip params exist
+        if($request->trip != ''){
+            $trip = new Trip();
+            $trip->booking_id = $request->trip;
+            $trip->related_flight_id = $related_flight_id;
+            $trip->save();
         }
 
 
