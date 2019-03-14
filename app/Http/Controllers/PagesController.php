@@ -553,4 +553,8 @@ class PagesController extends Controller
         return view('flight.index');
     }
     
+    public function TripIndex(){
+        
+        return view('flight.trip');
+    }
 }

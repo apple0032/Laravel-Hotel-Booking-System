@@ -189,6 +189,7 @@
                                 <li><a href="{{ route('hotel.booklist') }}"><i class="fas fa-bed"></i> &nbsp; Booking</a></li>
                                 <li><a href="{{ route('hotel.payment') }}"><i class="far fa-credit-card"></i> &nbsp; Payment</a></li>
                                 <li><a href="{{ route('flight.summary') }}"><i class="fas fa-plane-departure"></i> &nbsp; Flight</a></li>
+                                <li><a href="{{ route('flight.trip') }}"><i class="fas fa-map-marked"></i> &nbsp; Trip</a></li>
 
                             <li role="separator" class="divider"></li>
                             <li><a href="{{ route('account') }}"><i class="fas fa-user-circle"></i> &nbsp; Account</a></li>
