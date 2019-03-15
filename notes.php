@@ -11,6 +11,15 @@ https://www.quora.com/Are-there-any-other-good-CSS-icon-libraries-like-Font-Awes
 https://jsonbin.io/
 
 
+//Google API
+
+ https://console.developers.google.com/     //Google API console
+ 
+ CustomSearch API *google search & images  
+ *Requested endpoint
+  - https://www.googleapis.com/customsearch/v1?q=japan&cx=[CX]&key=[KEY]&searchType=image
+  - CX id can be configured and found in google CSE console - https://cse.google.com/
+  
 
 */
 ?>

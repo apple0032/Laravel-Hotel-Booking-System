@@ -1,4 +1,4 @@
-@extends('index')
+@extends('main')
 
 @section('title', '| Trip')
 
@@ -10,7 +10,8 @@
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
         <div class="trip_container">
-<!--            <pre class="brush: php">
+            <!--            
+            <pre class="brush: php">
                 function getDatesFromRange($start, $end, $format = 'Y-m-d') {
                     $array = array();
                     $interval = new DateInterval('P1D');
@@ -27,6 +28,8 @@
                     return $array;
                 }
             </pre>-->
+            
+            
         </div>
 
 @endsection
