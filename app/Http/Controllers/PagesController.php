@@ -12,7 +12,10 @@ use App\PostTag;
 use App\RoomType;
 use App\HotelRoom;
 use App\HotelFacility;
+use App\Trip;
+use App\FlightBooking;
 use App\User;
+use App\CountryImage;
 use Mail;
 use Session;
 use Purifier;
@@ -554,7 +557,111 @@ class PagesController extends Controller
     }
     
     public function TripIndex(){
+
+        $user_id = Auth::user()->id;
+        $trip = Trip::select('id','booking_id','related_flight_id','user_id')
+            ->where('user_id','=',$user_id)
+            ->orderby('id','desc')
+            ->get()
+            ->toArray();
+
+        foreach ($trip as $k => $tr){
+            $trip_book =
+                FlightBooking::select('country','country_code','arr_country','arr_country_code','dep_date')
+                    ->where('related_flight_id','=',$tr['related_flight_id'])
+                    ->get()
+                    ->toArray();
+
+            $trip[$k]['booking'] = $this->getFlightBookingTripInfo($trip_book);
+            $trip[$k]['image'] = $this->getCountryImage($trip[$k]['booking']['country']);
+            $trip[$k]['order'] = $k + 1;
+        }
+
+        //echo '<pre>';print_r($trip);echo '</pre>';die();
         
-        return view('flight.trip');
+        return view('flight.trip')->with('trip',$trip);
     }
+
+
+    public function getFlightBookingTripInfo($booking){
+
+        if(count($booking) == 1){
+            $booking = $booking[0];
+
+            $bk = array();
+            if($booking['country_code'] == 'HK'){
+                $bk['country'] = $booking['arr_country'];
+                $bk['country_code'] = $booking['arr_country_code'];
+            } else {
+                $bk['country'] = $booking['country'];
+                $bk['country_code'] = $booking['country_code'];
+            }
+
+            $bk['dep_date'] = substr($booking['dep_date'], 0, 10);
+        } else {
+            $bk = array();
+            if($booking[0]['country_code'] == 'HK'){
+                $bk['country'] = $booking[0]['arr_country'];
+                $bk['country_code'] = $booking[0]['arr_country_code'];
+            } else {
+                $bk['country'] = $booking[0]['country'];
+                $bk['country_code'] = $booking[0]['country_code'];
+            }
+
+            if($booking[1]['dep_date'] > $booking[0]['dep_date']){
+                $bk['dep_date'] = substr($booking[0]['dep_date'], 0, 10) .' - '. substr($booking[1]['dep_date'], 0, 10);
+            } else {
+                $bk['dep_date'] = substr($booking[1]['dep_date'], 0, 10) .' - '. substr($booking[0]['dep_date'], 0, 10);
+            }
+        }
+
+        return $bk;
+    }
+
+
+    public function getCountryImage($country){
+
+        $image = CountryImage::where('country','=',$country)->first();
+        $image = $image['image'];
+
+        if($image != null){
+            return $image;
+        } else {
+            return $this->getCountryImageByGoogleAPI($country);
+        }
+    }
+
+
+    public function getCountryImageByGoogleAPI($country){
+        $data = array(
+            'q'=> $country.' beautiful',
+            'cx'=>'/* hidden */',
+            'key'=>'/* hidden */',
+            'searchType'=>'image'
+        );
+
+        $search_url = http_build_query($data);
+
+        $host = 'https://www.googleapis.com/customsearch/v1?'.$search_url;
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $arr = json_decode($response,true);
+
+        $image = $arr['items'][0]['link'];
+
+        $ig = new CountryImage();
+        $ig->country = $country;
+        $ig->image = $image;
+        $ig->save();
+
+        return $image;
+    }
+
 }

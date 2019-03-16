@@ -571,6 +571,7 @@ class FlightController extends Controller
         } else {
             $trip->booking_id = NULL;
         }
+        $trip->user_id = Auth::user()->id;
         $trip->related_flight_id = $related_flight_id;
         $trip->save();
 

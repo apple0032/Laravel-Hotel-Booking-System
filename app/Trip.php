@@ -3,9 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\FlightPassenger;
-use App\FlightPayment;
-use App\FlightBooking;
 use DB;
 
 class Trip extends Model
@@ -47,5 +44,8 @@ ALTER TABLE `trip`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 ALTER TABLE `trip` CHANGE `booking_id` `booking_id` INT(11) NULL DEFAULT NULL;
+
+ALTER TABLE `trip` ADD `user_id` INT(11) NOT NULL AFTER `related_flight_id`;
+
  */
 
