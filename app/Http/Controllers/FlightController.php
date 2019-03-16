@@ -85,6 +85,7 @@ class FlightController extends Controller
     
     public function getSearchFlightPage()
     {
+        sleep(1);
 
         $code = Input::get('code');
         $from = Input::get('from');
@@ -165,6 +166,23 @@ class FlightController extends Controller
         return response()->json($response);
     }
 
+    public function searchCountryByCode($code){
+
+        $host = 'https://restcountries.eu/rest/v2/alpha/'.$code;
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $arr = json_decode($response);
+
+        return $arr;
+    }
 
     public function searchairport(Request $request){
         
@@ -394,6 +412,8 @@ class FlightController extends Controller
                $bk->related_flight_id = $related_flight_id;
                $bk->country = 'Hong Kong';
                $bk->country_code = 'HK';
+               $bk->arr_country = $request->country_name;
+               $bk->arr_country_code = $request->country_code;
                $bk->dep_airport = 'HKG';
                $bk->arr_airport = $source_dep['arrival_airport'];
                $bk->dep_date = $source_dep['departure_date'];
@@ -426,15 +446,16 @@ class FlightController extends Controller
         if($request->form_arrival != null) {
             $source_arr = json_decode($request->source_arr, true);
             $source_arr = $source_arr[$request->source_arr_num];
-            $country = FlightStats::AirportsData(null,$source_arr['departure_airport']);
             
             try
             {
                 $bk = new FlightBooking();
                 $bk->user_id = Auth::user()->id;
                 $bk->related_flight_id = $related_flight_id;
-                $bk->country = $country[0]['municipality'];
-                $bk->country_code = $country[0]['iso_country'];
+                $bk->country = $request->country_name;
+                $bk->country_code = $request->country_code;
+                $bk->arr_country = 'Hong Kong';
+                $bk->arr_country_code = 'HK';
                 $bk->dep_airport = $source_arr['departure_airport'];
                 $bk->arr_airport = $source_arr['arrival_airport'];
                 $bk->dep_date = $source_arr['departure_date'];
@@ -543,12 +564,16 @@ class FlightController extends Controller
         }
 
         //Create trip record if trip params exist
-        if($request->trip != ''){
-            $trip = new Trip();
+
+        $trip = new Trip();
+        if($request->trip != '') {
             $trip->booking_id = $request->trip;
-            $trip->related_flight_id = $related_flight_id;
-            $trip->save();
+        } else {
+            $trip->booking_id = NULL;
         }
+        $trip->related_flight_id = $related_flight_id;
+        $trip->save();
+
 
 
         return redirect()->route('flight.summary');

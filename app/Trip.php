@@ -18,6 +18,16 @@ class Trip extends Model
         return FlightBooking::where('related_flight_id', '=', $related_flight_id )->get();
     }
 
+    public static function getTrip($book_id){
+        $trip = Trip::where('booking_id','=',$book_id)->first();
+
+        if($trip != null){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 /*
@@ -36,5 +46,6 @@ ALTER TABLE `trip`
 ALTER TABLE `trip`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
+ALTER TABLE `trip` CHANGE `booking_id` `booking_id` INT(11) NULL DEFAULT NULL;
  */
 

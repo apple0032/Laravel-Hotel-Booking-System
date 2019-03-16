@@ -70,12 +70,16 @@ body{ min-height:100%; padding:0; margin:0; position:relative; }
 }
 
 .footer_text a{
-    color: #3a9add;
+    color: white;
     text-decoration: underline;
+    background-color: #808080;
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .footer_text a i{
-    color:red;
+    color:white;
 }
 .footer_text a:hover{
     color:#fff;
@@ -336,4 +340,16 @@ body{ min-height:100%; padding:0; margin:0; position:relative; }
         display: block;
         margin-right: 0 !important;
     }
+}
+
+
+.power_stat{
+    margin-top: 10px;
+    display: block;
+}
+
+.power_stat i{
+    margin-left: 2px;
+    margin-right: 2px;
+    font-size: 19px;
 }

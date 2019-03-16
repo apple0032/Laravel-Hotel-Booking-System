@@ -113,5 +113,8 @@ ALTER TABLE `flight_booking`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 //ALTER TABLE `flight_booking` ADD `seat` VARCHAR(255) NULL DEFAULT NULL AFTER `class`; //should be moved to passengers table
- */
+
+ALTER TABLE `flight_booking` ADD `arr_country` VARCHAR(255) NOT NULL AFTER `country_code`, ADD `arr_country_code` VARCHAR(255) NOT NULL AFTER `arr_country`;
+
+*/
 

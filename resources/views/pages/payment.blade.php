@@ -63,7 +63,10 @@
             <div class="container book_container">
                 <h2>您的帳單紀錄</h2><br>
 
-                <input class="form-control" id="myInput" type="text" placeholder="搜尋">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fas fa-search"></i></span>
+                    <input class="form-control" id="myInput" type="text" placeholder="搜尋">
+                </div>
 
                 <br>
                 <div class="table-responsive">

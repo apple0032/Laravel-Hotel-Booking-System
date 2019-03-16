@@ -138,6 +138,59 @@
         width: 20px;
         height: 20px;
     }
+
+    #countrycode{
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+    .lds-hourglass {
+        display: inline-block;
+        position: relative;
+        width: 64px;
+        height: 64px;
+    }
+    .lds-hourglass:after {
+        content: " ";
+        display: block;
+        border-radius: 50%;
+        width: 0;
+        height: 0;
+        margin: 6px;
+        box-sizing: border-box;
+        border: 30px solid #37454d;
+        border-color: rgba(55, 69, 77, 0.6) transparent #819da5 transparent;
+        animation: lds-hourglass 1.2s infinite;
+    }
+    @keyframes lds-hourglass {
+        0% {
+            transform: rotate(0);
+            animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+        }
+        50% {
+            transform: rotate(900deg);
+            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        100% {
+            transform: rotate(1800deg);
+        }
+    }
+
+    .px_loading{
+        text-align: center;
+        position: absolute;
+        left: 44%;
+        top: 30%;
+        z-index: 50;
+        display: none;
+    }
+
+    .search_exclamation {
+        font-family: 'Noto Sans TC', sans-serif;
+        font-size: 16px;
+        display: none;
+    }
+
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -159,12 +212,18 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label name="subject">Country:</label>
-                                <input id="country" name="country" class="form-control" type="text" maxlength="30">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fas fa-globe-americas"></i></span>
+                                    <input id="country" name="country" class="form-control" type="text" maxlength="30">
+                                </div>
                                 <ul class="list-unstyled"></ul>
                             </div>
                             <div class="col-md-4">
                                 <label name="subject">Country Code:</label>
-                                <input id="countrycode" name="countrycode" class="form-control" type="text" maxlength="30" readonly>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fas fa-flag-usa"></i></span>
+                                    <input id="countrycode" name="countrycode" class="form-control" type="text" maxlength="30" readonly>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <label name="subject">Departure Airport:</label>
@@ -196,6 +255,12 @@
                             </div>
                         </div>
 
+                        <div class="row search_exclamation">
+                            <div class="col-md-12">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>請輸入國家名稱並在選單點選, 然後再簡選機場</span>
+                            </div>
+                        </div>
 
                         <button type="submit" class="btn btn-action btn-search">
                             <i class="fab fa-searchengin"></i> SEARCH
@@ -208,6 +273,9 @@
             </div>
         </div>
 
+        <div class="px_loading">
+            <div class="lds-hourglass"></div>
+        </div>
 @endsection
 
 @section('scripts')
@@ -344,6 +412,26 @@
 
     $('.hotel_tab').click(function () {
         window.location.href = '../';
-    })
+    });
+
+    $(".btn-search").click(function(e){
+
+        var code = $('#countrycode').val();
+        var airport = $('#airport').val();
+
+        if((code == '') || airport == null) {
+            e.preventDefault();
+            $('.search_exclamation').fadeIn();
+            setTimeout(function(){
+                $('.search_exclamation').fadeOut();
+            }, 2000);
+        } else {
+            $("html, body").animate({scrollTop: 0}, "slow");
+            $('.px_loading').show();
+            $(".search_container , .flight_searchbar , .navbar").css("opacity", "0.2");
+            $(".search_container , .flight_searchbar , .navbar").css("pointer-events", "none");
+        }
+
+    });
 </script>
 @endsection

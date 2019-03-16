@@ -1,7 +1,9 @@
 @extends('main')
 
 @section('title', '| Booking')
-
+@php
+    use App\Trip;
+@endphp
 @section('content')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -107,6 +109,17 @@
         .trip_trigger{
             text-align: center;
         }
+
+        .trip_trigger i{
+            font-size: 20px;
+        }
+
+        .booked_flight{
+            color: white;
+            background-color: red;
+            border-radius: 5px;
+            padding: 5px;
+        }
     </style>
 
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -116,7 +129,10 @@
             <div class="container book_container">
                 <h2>您的酒店預約</h2><br>
 
-                <input class="form-control" id="myInput" type="text" placeholder="搜尋">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fas fa-search"></i></span>
+                    <input class="form-control" id="myInput" type="text" placeholder="搜尋">
+                </div>
 
                 <br>
                 <div class="table-responsive">
@@ -132,7 +148,7 @@
                             <th>預約時間</th>
                             <th>總價錢</th>
                             <th>狀態</th>
-                            <th>機票</th>
+                            <th>預訂機票</th>
                         </tr>
                         </thead>
                         <tbody id="myTable">
@@ -154,7 +170,13 @@
                                 <td>{{$bk->book_date}}</td>
                                 <td>$ {{$bk->total_price}}</td>
                                 <td>@if($bk->status == 1) 正常 @endif</td>
-                                <td class="trip_trigger"><a href="booklist?bkhotel={{$bk->id}}"><i class="fas fa-plane"></i></a></td>
+                                <td class="trip_trigger">
+                                    @if(Trip::getTrip($bk->id) == false)
+                                        <a href="booklist?bkhotel={{$bk->id}}"><i class="fas fa-plane"></i></a>
+                                    @else
+                                        <a href="{{URL::to('/')}}/trip"><span class="booked_flight">已預訂</span></a>
+                                    @endif
+                                </td>
                             </tr>
                             <tr class="book_detail bk_detail{{$bk->id}} animated bounceInDown faster">
                                 <td colspan="10">
@@ -329,6 +351,12 @@
                                         <input id="countrycode" name="countrycode" class="form-control" type="text" maxlength="30" readonly>
                                     </div>
                                     <input type="hidden" id="trip" name="trip_id" value="{{$bkhotel}}">
+                                    <div class="col-md-4" style="display: none">
+                                        <label name="subject">Departure Airport:</label>
+                                        <select id="departure_airport" name="departure_airport" class="form-control">
+                                            <option value="HKG">Hong Kong International Airport</option>
+                                        </select>
+                                    </div>
                                     <div class="col-md-12">
                                         <label name="subject">到達機場 Arrival Airport</label>
                                         <select id="airport" name="airport" class="form-control">

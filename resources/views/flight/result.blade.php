@@ -1059,6 +1059,8 @@
             <input type="hidden" name="source_dep_num" id="source_dep_num">
             <input type="hidden" name="source_arr_num" id="source_arr_num">
             <input type="hidden" name="trip" id="trip" value="{{Input::get('trip')}}">
+            <input type="hidden" name="country_name" value="{{Input::get('country')}}">
+            <input type="hidden" name="country_code" value="{{Input::get('code')}}">
             {!! Form::close() !!}
         </div>
 
@@ -1470,11 +1472,19 @@
 
     });
     
-    $(".btn-search").click(function(){
-        $("html, body").animate({ scrollTop: 0 }, "slow");
+    $(".btn-search").click(function(e){
+
+        var trip = '{{Input::get('trip')}}';
+
+        if(trip.length != 0){
+            //e.preventDefault(); //temporary disabled
+        }
+
+        $("html, body").animate({scrollTop: 0}, "slow");
         $('.px_loading').show();
         $(".plane_section , #sticky-wrapper , .flight_searchbar , .navbar").css("opacity", "0.2");
         $(".plane_section , #sticky-wrapper , .flight_searchbar , .navbar").css("pointer-events", "none");
+
     });
 </script>
 

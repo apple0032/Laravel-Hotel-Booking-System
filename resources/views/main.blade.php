@@ -15,7 +15,7 @@
 
     </div> <!-- end of .container -->
 
-    <div class="footer_section" style="height:80px;padding-top: 30px;">
+    <div class="footer_section" style="height:110px;padding-top: 30px;">
       @include('partials._footer')
     </div>
 

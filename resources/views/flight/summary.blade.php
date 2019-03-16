@@ -129,6 +129,10 @@
             font-weight: bold;
             color: red;
         }
+
+        .seat_detail i{
+            margin-right: 20px;
+        }
     </style>
 
     <div class="row">
@@ -136,14 +140,18 @@
             <div class="container book_container">
                 <h2><i class="fas fa-plane-departure"></i> 您的航班預約</h2><br>
 
-                <input class="form-control" id="myInput" type="text" placeholder="搜尋">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fas fa-search"></i></span>
+                    <input class="form-control" id="myInput" type="text" placeholder="搜尋">
+                </div>
 
                 <br>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr class="table_header">
-                            <th>國家/城市</th>
+                            <th>出發國家</th>
+                            <th>到達國家</th>
                             <th>出發</th>
                             <th>到達</th>
                             <th>日期</th>
@@ -163,6 +171,7 @@
                         @foreach($booking as $key => $bk)
                             <tr class="book_row book_{{$bk->related_flight_id}}" data-sid="{{$bk->related_flight_id}}" style="">
                                 <td><img src="https://countryflags.io/{{$bk->country_code}}/flat/32.png">　{{$bk->country}}</td>
+                                <td><img src="https://countryflags.io/{{$bk->arr_country_code}}/flat/32.png">　{{$bk->arr_country}}</td>
                                 <td>{{$bk->dep_airport}}</td>
                                 <td>{{$bk->arr_airport}}</td>
                                 <td>{{substr($bk->dep_date,0,10)}}</td>

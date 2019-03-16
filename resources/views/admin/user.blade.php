@@ -50,8 +50,11 @@
                 <div class="row">
 
                     <div class="col-md-10 form_height">
-                        <input class="form-control" maxlength="200" name="name" type="text" id="search_hotelname"
-                               value="{{$name}}">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fas fa-users"></i></span>
+                            <input class="form-control" maxlength="200" name="name" type="text" id="search_hotelname"
+                                   value="{{$name}}">
+                        </div>
                     </div>
                     <div class="col-md-1 form_height">
                         <div class="submit" id="submit_search">SEARCH</div>
