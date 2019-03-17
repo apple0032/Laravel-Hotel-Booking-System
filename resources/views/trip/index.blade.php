@@ -3,6 +3,7 @@
 @section('title', '| Trip')
 
 @section('content')
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/trip.css') }}">
     <style>
         /* latin-ext */
         @font-face {
@@ -18,6 +19,23 @@
             font-style: normal;
             font-weight: 400;
             src: local('Raleway'), local('Raleway-Regular'), url(https://fonts.gstatic.com/s/raleway/v12/1Ptug8zYS_SKggPNyC0ITw.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        /* latin-ext */
+        @font-face {
+            font-family: 'Dosis';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Dosis Regular'), local('Dosis-Regular'), url(https://fonts.gstatic.com/s/dosis/v8/HhyaU5sn9vOmLzlmC_W6EQ.woff2) format('woff2');
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+        /* latin */
+        @font-face {
+            font-family: 'Dosis';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Dosis Regular'), local('Dosis-Regular'), url(https://fonts.gstatic.com/s/dosis/v8/HhyaU5sn9vOmLzloC_U.woff2) format('woff2');
             unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
         }
 
@@ -91,9 +109,11 @@
 
         .timeline {
             position: relative;
-            padding: 140px 0;
+            padding-top:140px ;
+            padding-bottom: 80px;
             text-align: center;
             font-family: "Montserrat", sans-serif;
+            min-height:  720px;
         }
         .timeline .row {
             margin-bottom: 50px;
@@ -116,7 +136,7 @@
             z-index: -2;
         }
         .timeline .country-block {
-            padding: 50px 0;
+            padding: 75px 0;
             font-size: 3rem;
             text-transform: uppercase;
             color: #fff;
@@ -126,6 +146,7 @@
             transition: all .5s;
             font-family: 'Raleway', sans-serif;
             cursor: pointer;
+            height: 200px;
         }
         .timeline .country-block i {
             content: '';
@@ -141,27 +162,6 @@
             -moz-transition: background-size .3s;
             -webkit-transition: background-size .3s;
             transition: background-size .3s;
-        }
-        .timeline .country-block i.jp {
-
-        }
-        .timeline .country-block i.vt {
-            background-image: url("http://asia.vasilis-tsirimokos.com/img/banners/vietnam-small.jpg");
-        }
-        .timeline .country-block i.cb {
-            background-image: url("http://asia.vasilis-tsirimokos.com/img/banners/cambodia-small.jpg");
-        }
-        .timeline .country-block i.th {
-            background-image: url("http://asia.vasilis-tsirimokos.com/img/banners/thailand-small.jpg");
-        }
-        .timeline .country-block i.ml {
-            background-image: url("http://asia.vasilis-tsirimokos.com/img/banners/malaysia-small.jpg");
-        }
-        .timeline .country-block i.in {
-            background-image: url("http://asia.vasilis-tsirimokos.com/img/banners/indonesia-small.jpg");
-        }
-        .timeline .country-block i.gr {
-            background-image: url("http://asia.vasilis-tsirimokos.com/img/banners/greece-small.jpg");
         }
         @media only screen and (min-width: 768px) {
             .timeline .country-block {
@@ -218,11 +218,11 @@
         .timeline a:hover, .timeline a:focus {
             text-decoration: none;
         }
-        .timeline a:hover .country-block {
+        .timeline .country-block:hover {
             background: rgba(9, 37, 57, 0.7);
             color: #dfa903;
         }
-        .timeline a:hover .country-block i {
+        .timeline .country-block:hover i {
             background-size: 110%;
         }
         .timeline .date-block > div {
@@ -235,7 +235,7 @@
             border: 2px solid #7d7d7d;
             display: inline-block;
             margin-top: 15px;
-            border-radius: 10px;
+            border-radius: 5px;
             box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
         }
         @media only screen and (min-width: 768px) {
@@ -277,11 +277,72 @@
             }
         }
 
-        @media (min-width: 768px) {
+        @media (min-width: 768px){
             .modal-dialog {
-                width: 1000px;
+                width: 1200px;
                 margin: 30px auto;
             }
+        }
+
+        .trip_period{
+            font-size: 20px !important;
+            font-family: 'Dosis', sans-serif !important;
+        }
+
+        .fa-home{
+            font-size: 45px;
+            color:  #7d7d7d;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            background-color: #f2f2f2;
+        }
+
+        .join_date{
+            padding: 10px 30px 10px 30px;
+            border: 2px solid #7d7d7d;
+            border-radius: 5px;
+            box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
+            width: 330px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            font-family: 'Dosis', sans-serif !important;
+            background-color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .modal-body{
+            padding: 0px;
+        }
+
+        .modal-footer {
+            padding: 5px;
+        }
+
+        .trip_header{
+            height: 260px;
+            background-position: 50% 25%;
+            background-size: cover;
+            opacity: 0.8;
+        }
+
+        .trip_header_country{
+            padding-top: 120px;
+            color: white;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            font-size: 30px;
+            font-family: 'Raleway', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .trip_header_country span{
+            color: black;
+            background-color: white;
+            border-radius: 5px;
+            padding: 0 10px;
         }
     </style>
 
@@ -297,30 +358,45 @@
         </section>
         <section class="timeline">
             <div class="container">
-                @foreach($trip as $k => $tr)
-                    <div class="row">
+                @if($trip != null)
+                    @foreach($trip as $k => $tr)
+                        <div class="row">
+                                <div class="country-block
+                                    @if(fmod($tr['order'],'2') == 0)
+                                        @php print_r('reverse col-sm-6 col-sm-push-6') @endphp
+                                    @else
+                                        @php print_r('col-sm-6') @endphp
+                                    @endif " data-toggle="modal" data-target="#myModal" data-sid="{{$tr['id']}}" data-img="{{$tr['image']}}" data-country="{{$tr['booking']['country']}}">
+                                    <i class="jp" style="background-image: url('{{$tr['image']}}');"></i>
+                                    {{$tr['booking']['country']}}
+                                </div>
 
-                            <div class="country-block
+                            <div class="date-block
                                 @if(fmod($tr['order'],'2') == 0)
-                                    @php print_r('reverse col-sm-6 col-sm-push-6') @endphp
+                                    @php print_r('reverse col-sm-6 col-sm-pull-6') @endphp
                                 @else
                                     @php print_r('col-sm-6') @endphp
-                                @endif " data-toggle="modal" data-target="#myModal" data-sid="{{$tr['id']}}" >
-                                <i class="jp" style="background-image: url('{{$tr['image']}}');"></i>
-                                {{$tr['booking']['country']}}
+                                @endif ">
+                                <div class="trip_period">{{$tr['booking']['dep_date']}}</div>
                             </div>
-
-                        <div class="date-block
-                            @if(fmod($tr['order'],'2') == 0)
-                                @php print_r('reverse col-sm-6 col-sm-pull-6') @endphp
-                            @else
-                                @php print_r('col-sm-6') @endphp
-                            @endif ">
-                            <div>{{$tr['booking']['dep_date']}}</div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="row">
+                        <a href="flight">
+                            <div class="country-block col-sm-6">
+                                <i class="jp" style="background-image: url('{{URL::to('/')}}/images/travel_trip.jpg');"></i>
+                            </div>
+                        </a>
+                        <div class="date-block col-sm-6">
+                            <div>Want to have a new trip? Book Hotel or Flight now!</div>
                         </div>
                     </div>
-                @endforeach
+                @endif
             </div>
+
+            <i class="fas fa-home"></i>
+            <div class="join_date">You joined hotelsDB at {{$join}}</div>
         </section>
 
         <!-- Modal -->
@@ -329,18 +405,22 @@
 
                 <!-- Modal content-->
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h3 class="modal-title">
-                           Header
-                        </h3>
-                    </div>
                     <div class="modal-body">
+                        <div class="trip_header">
+                            <div class="trip_header_country">
+                                <span></span>
+                            </div>
+                        </div>
+
+                        <div class="trip_content">
+                            <!-- Get info via ajax -->
+
+                        </div>
 
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
 
@@ -366,7 +446,14 @@
         $('.country-block').each(function () {
             $(this).on("click", function () {
                 var sid = $(this).data('sid');
-                $('.modal-title').html(sid);
+                var img = $(this).data('img');
+                var country = $(this).data('country');
+
+                $('.trip_header').css("background-image", "url('"+img+"')");
+                $('.trip_header_country span').html(country);
+
+                //ajax to load trip details
+                $('.trip_content').load('trip/'+sid+' .trip_details', function () {});
             });
         });
 

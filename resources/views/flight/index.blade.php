@@ -433,5 +433,7 @@
         }
 
     });
+
+    $('#country').focus();
 </script>
 @endsection

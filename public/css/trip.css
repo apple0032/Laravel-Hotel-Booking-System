@@ -1,0 +1,138 @@
+/* latin-ext */
+@font-face {
+    font-family: 'Bree Serif';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Bree Serif Regular'), local('BreeSerif-Regular'), url(https://fonts.gstatic.com/s/breeserif/v8/4UaHrEJCrhhnVA3DgluA96Tp56N1.woff2) format('woff2');
+    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+    font-family: 'Bree Serif';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Bree Serif Regular'), local('BreeSerif-Regular'), url(https://fonts.gstatic.com/s/breeserif/v8/4UaHrEJCrhhnVA3DgluA96rp5w.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+.trip_details{
+    padding: 20px;
+}
+
+.ticket{
+    border: 3px solid transparent;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.ticket_header{
+    margin: 0px;
+    background-color: rgba(50, 126, 122, 0.61);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.ticket_footer{
+    margin: 0px;
+    background-color: rgba(50, 126, 122, 0.61);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.ticket_header .ticket_big img{
+    width: 250px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.ticket_header .ticket_small{
+    text-align: center;
+    padding-top: 10px;
+}
+
+.ticket_header .ticket_small img{
+    width: 150px;
+    height: auto;
+}
+
+.ticket_big{
+    border-right: 3px dotted #bcfff8;
+}
+
+.ticket_body{
+    margin: 0px;
+    background-color: #dddddd;
+}
+
+.ticket_body .ticket_big , .ticket_body .ticket_small{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.qr_code{
+    float: right;
+}
+
+.qr_code img{
+    height: 35px;
+    width:auto;
+}
+
+.ticket_big .pass_name{
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.ticket_small .pass_name{
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.ticket_title{
+    font-weight: bold;
+    display: block;
+}
+
+.ticket_big .ticket_details{
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.ticket_small .ticket_details{
+    font-size: 6px;
+}
+
+.flight_title{
+    text-transform: uppercase;
+    font-family: 'Bree Serif', serif;
+    font-size: 25px;
+    margin-bottom: 12px;
+}
+
+.flight_title i{
+    margin-right: 15px;
+}
+
+.hotel_content{
+    font-size: 15px;
+}
+
+.hotel_content img{
+    width: 300px;
+    height: auto;
+}
+
+.hotel_content_title{
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.hotel_content_image{
+    margin-bottom: 10px;
+}
+
+.fa-link{
+    float: right;
+}
