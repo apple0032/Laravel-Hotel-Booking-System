@@ -555,5 +555,17 @@ class PagesController extends Controller
         
         return view('flight.index');
     }
+    
+    public function ConvertXMLStoreDB(){
+        $xml_string = file_get_contents('https://opendata.clp.com.hk/GetChargingSectionXML.aspx?lang=EN');
+        
+        $xml = simplexml_load_string($xml_string);
+        $json = json_encode($xml);
+        $array = json_decode($json,true);
+       
+        echo '<pre>'; print_r($array['stationList']['station']); echo '</pre>'; die();
+        
+        return $json;
+    }
 
 }

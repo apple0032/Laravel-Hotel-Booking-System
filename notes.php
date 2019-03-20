@@ -19,7 +19,12 @@ https://jsonbin.io/
  *Requested endpoint
   - https://www.googleapis.com/customsearch/v1?q=japan&cx=[CX]&key=[KEY]&searchType=image
   - CX id can be configured and found in google CSE console - https://cse.google.com/
-  
 
+//Cool UI design page
+https://codepen.io/mavrK/pen/eZVYbo
+   
+//Frontend web game
+https://codepen.io/mavrK/pen/VXoRVz
+  
 */
 ?>

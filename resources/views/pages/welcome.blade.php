@@ -1104,7 +1104,18 @@
     <script>
         $('.flight_tab').click(function () {
             window.location.href = 'flight';
-        })
+        });
+        
+        //Lazy load example
+        $(window).scroll(function() {               
+          if($(window).scrollTop() + $(window).height() > $(document).height() - 70) {
+                console.log("bottom!");
+                var html = '<div style="height:500px; width:500px; background-color:yellow; display:none;" class="new_block">lazy load</div>';
+                //$('.hotel_grid_container').append(html);
+                //$('.new_block').fadeIn();
+          }
+        });
+        
     </script>
 
 @endsection
