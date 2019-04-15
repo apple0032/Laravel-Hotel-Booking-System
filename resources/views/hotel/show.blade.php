@@ -9,6 +9,7 @@
 @section('stylesheets')
 
     {!! Html::style('css/parsley.css') !!}
+    {!! Html::style('css/prism.css') !!}
     {!! Html::style('css/select2.min.css') !!}
 
 @endsection
@@ -1196,6 +1197,7 @@
 @section('scripts')
 
     {!! Html::script('js/parsley.min.js') !!}
+    {!! Html::script('js/prism.js') !!}
     {!! Html::script('js/select2.min.js') !!}
 
     <script type="text/javascript">

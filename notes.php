@@ -25,6 +25,18 @@ https://codepen.io/mavrK/pen/eZVYbo
    
 //Frontend web game
 https://codepen.io/mavrK/pen/VXoRVz
+
+//Web banner template
+https://www.canva.com/templates/web-banners/
+
+//Website vertical banner design online
+https://www.fotor.com/
+
+//tinymce code sample 
+https://www.tiny.cloud/docs/plugins/codesample/
+  
+//Code sample plugin style
+https://prismjs.com/download.html#themes=prism-coy&languages=markup+css+clike+javascript
   
 */
 ?>
