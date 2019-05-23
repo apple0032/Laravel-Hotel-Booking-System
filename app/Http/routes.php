@@ -131,7 +131,5 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('facebook', ['uses' => 'FacebookController@post', 'as' => 'facebook.post']);
     Route::post('facebook/banner', ['uses' => 'FacebookController@banner', 'as' => 'facebook.banner']);
     Route::post('facebook/profiledesc','FacebookController@profiledesc');
-    
-    //XML
-    Route::get('/convert', ['uses' => 'PagesController@ConvertXMLStoreDB']);
+
 });
