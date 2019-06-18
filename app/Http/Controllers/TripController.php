@@ -174,3 +174,37 @@ class TripController extends Controller
     }
 
 }
+
+
+/****************************************************************************
+ *** TRIP MANAGEMENT SYSTEM RESOURCES, DATA SOURCES, DATA FLOW, LOGIC FLOW***
+ ****************************************************************************
+ 
+Trip advisor & Data sources - 
+http://docs.sygictravelapi.com/1.1/#
+ - x-api-key (Each request must contain an authorization header that identifies the requesting party)
+
+https://www.inspirock.com/trip/6-days-in-tokyo-itinerary-in-june-7250aad4-2ccd-425e-b1e2-08b0fffe3934/overview
+https://www.trip-jam.com/organizer/zh_TW/nl7hlZcx/1
+ - The demo function/web application that hotelsdb trying to clone it.
+
+https://fullcalendar.io/
+ - javascript based widget to do drag&drop action on their trip.
+
+https://admin.sygictraveldata.com/data-export/zf8979vspcvz61dya3pyxbvsduyjtnh4
+- List of top cities CSV file that provided by sygictravel
+
+1. First,import the cities CSV file into system database
+2. In table 'airport', we have airport name, airport code, iso country, city name, coordinates etc..
+3. We have enough information & support to call sygic API because the `city name` is linkage from both side(We can store city name in each trip)
+4. Need to update/enhance flight system search UI to include city name on each of the trip
+5. This API get all articles from country id
+ * https://api.sygictravelapi.com/1.1/en/collections?parent_place_id=country:75
+6. This API get all attractions from city
+ * https://api.sygictravelapi.com/1.1/en/places/list?parents=city:2585&level=poi&limit=100
+7. This API get details of each points/attractions including photo & desc
+ * https://api.sygictravelapi.com/1.1/en/places/poi:19822
+8. This API is a search API by inputing string
+ * https://api.sygictravelapi.com/1.1/en/places/list?query=Senso-ji
+
+*/
