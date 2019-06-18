@@ -22,13 +22,14 @@ use App\FlightBooking;
 use App\FlightPayment;
 use App\FlightPassenger;
 use App\Trip;
+use App\Airports;
 
 class FlightController extends Controller
 {
     const token = "r3jjBWdKXrMzqMkc";
 
     public function __construct() {
-        $this->middleware(['auth'],['except' => ['searchcountry','searchairport','search']]);
+        $this->middleware(['auth'],['except' => ['searchcountry','searchairport','search','getairportlist']]);
     }
     
     public function search(Request $request)
@@ -62,6 +63,7 @@ class FlightController extends Controller
         $airport = $request->airport;
         $daterange = $request->daterange;
         $trip = $request->trip_id;
+        $city = $request->city;
       
 //        print_r($code);
 //        die();
@@ -74,6 +76,7 @@ class FlightController extends Controller
         
         return redirect()->route('flight.result', [
             'country' => $country,
+            'city' => $city,
             'code' => $code,
             'from' => $de_airport,
             'to' => $airport,
@@ -92,6 +95,7 @@ class FlightController extends Controller
         $to = Input::get('to');
         $start = Input::get('start');
         $end = Input::get('end');
+        $city = Input::get('city');
 
         //Call Flight scheduled Api to retrieve data from api source
 
@@ -102,9 +106,15 @@ class FlightController extends Controller
         $departure = '{"data":[{"type":"flight-offer","id":"1551613833282--1754331648","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"1","at":"2019-06-04T00:50:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-04T05:55:00+09:00"},"carrierCode":"NH","number":"822","aircraft":{"code":"763"},"operating":{"carrierCode":"NQ","number":"822"},"duration":"0DT4H5M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"U","availability":9,"fareBasis":"URFJ0O"}}]}],"price":{"total":"5153","totalTaxes":"503"},"pricePerAdult":{"total":"5153","totalTaxes":"503"}}]},{"type":"flight-offer","id":"1551613833282-1943551295","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"1","at":"2019-06-04T15:15:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-04T20:25:00+09:00"},"carrierCode":"CX","number":"6320","aircraft":{"code":"772"},"operating":{"carrierCode":"JL","number":"6320"},"duration":"0DT4H10M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"B","availability":4,"fareBasis":"BAAROWF8"}}]}],"price":{"total":"7211","totalTaxes":"361"},"pricePerAdult":{"total":"7211","totalTaxes":"361"}}]},{"type":"flight-offer","id":"1551613833282--3784642","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"2","at":"2019-06-04T18:05:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-04T23:25:00+09:00"},"carrierCode":"UO","number":"622","aircraft":{"code":"321"},"operating":{"carrierCode":"UO","number":"622"},"duration":"0DT4H20M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"V","availability":4,"fareBasis":"VGDD"}}]}],"price":{"total":"1355","totalTaxes":"305"},"pricePerAdult":{"total":"1355","totalTaxes":"305"}}]},{"type":"flight-offer","id":"1551613833282-1816767499","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"1","at":"2019-06-04T16:20:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-04T21:35:00+09:00"},"carrierCode":"JL","number":"7032","aircraft":{"code":"773"},"operating":{"carrierCode":"CX","number":"7032"},"duration":"0DT4H15M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"H","availability":4,"fareBasis":"HLN0OGED"}}]}],"price":{"total":"5034","totalTaxes":"504"},"pricePerAdult":{"total":"5034","totalTaxes":"504"}}]},{"type":"flight-offer","id":"1551613833282-1717183141","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"2","at":"2019-06-04T23:40:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-05T04:55:00+09:00"},"carrierCode":"UO","number":"624","aircraft":{"code":"321"},"operating":{"carrierCode":"UO","number":"624"},"duration":"0DT4H15M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"V","availability":4,"fareBasis":"VGDD"}}]}],"price":{"total":"1355","totalTaxes":"305"},"pricePerAdult":{"total":"1355","totalTaxes":"305"}}]},{"type":"flight-offer","id":"1551613833282-1281890586","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"1","at":"2019-06-04T15:15:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-04T20:25:00+09:00"},"carrierCode":"JL","number":"26","aircraft":{"code":"777"},"operating":{"carrierCode":"JL","number":"26"},"duration":"0DT4H10M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"H","availability":9,"fareBasis":"HLN0OGDD"}}]}],"price":{"total":"5034","totalTaxes":"504"},"pricePerAdult":{"total":"5034","totalTaxes":"504"}}]},{"type":"flight-offer","id":"1551613833282--1796577260","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"1","at":"2019-06-04T16:20:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-04T21:35:00+09:00"},"carrierCode":"CX","number":"542","aircraft":{"code":"773"},"operating":{"carrierCode":"CX","number":"542"},"duration":"0DT4H15M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"B","availability":9,"fareBasis":"BAAROWF8"}}]}],"price":{"total":"7211","totalTaxes":"361"},"pricePerAdult":{"total":"7211","totalTaxes":"361"}}]},{"type":"flight-offer","id":"1551613833282-50440429","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"1","at":"2019-06-04T14:45:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-04T20:00:00+09:00"},"carrierCode":"NH","number":"860","aircraft":{"code":"77W"},"operating":{"carrierCode":"NH","number":"860"},"duration":"0DT4H15M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"U","availability":9,"fareBasis":"URFJ0O"}}]}],"price":{"total":"5153","totalTaxes":"503"},"pricePerAdult":{"total":"5153","totalTaxes":"503"}}]},{"type":"flight-offer","id":"1551613833282--272181557","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"1","at":"2019-06-04T08:45:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-04T13:55:00+09:00"},"carrierCode":"JL","number":"7030","aircraft":{"code":"77W"},"operating":{"carrierCode":"CX","number":"7030"},"duration":"0DT4H10M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"H","availability":4,"fareBasis":"HLN0OGED"}}]}],"price":{"total":"5284","totalTaxes":"504"},"pricePerAdult":{"total":"5284","totalTaxes":"504"}}]},{"type":"flight-offer","id":"1551613833282-1864871668","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"1","at":"2019-06-04T23:45:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-05T05:10:00+09:00"},"carrierCode":"CX","number":"5396","aircraft":{"code":"321"},"operating":{"carrierCode":"KA","number":"5396"},"duration":"0DT4H25M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"B","availability":9,"fareBasis":"BAAROWF8"}}]}],"price":{"total":"7211","totalTaxes":"361"},"pricePerAdult":{"total":"7211","totalTaxes":"361"}}]},{"type":"flight-offer","id":"1551613833282--601975588","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"1","at":"2019-06-04T08:45:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-04T13:55:00+09:00"},"carrierCode":"CX","number":"548","aircraft":{"code":"77W"},"operating":{"carrierCode":"CX","number":"548"},"duration":"0DT4H10M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"B","availability":9,"fareBasis":"BAAROWF8"}}]}],"price":{"total":"7211","totalTaxes":"361"},"pricePerAdult":{"total":"7211","totalTaxes":"361"}}]},{"type":"flight-offer","id":"1551613833282-1830949611","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HKG","terminal":"1","at":"2019-06-04T23:45:00+08:00"},"arrival":{"iataCode":"HND","terminal":"I","at":"2019-06-05T05:10:00+09:00"},"carrierCode":"KA","number":"396","aircraft":{"code":"321"},"operating":{"carrierCode":"KA","number":"396"},"duration":"0DT4H25M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"B","availability":9,"fareBasis":"BAAQOWF8"}}]}],"price":{"total":"7211","totalTaxes":"361"},"pricePerAdult":{"total":"7211","totalTaxes":"361"}}]}],"dictionaries":{"carriers":{"JL":"JAPAN AIRLINES","NQ":"AIR JAPAN COMPANY LTD","CX":"CATHAY PACIFIC","KA":"CATHAY DRAGON","NH":"ALL NIPPON AIRWAYS","UO":"HONG KONG EXPRESS AIRWAYS"},"currencies":{"HKD":"HONGKONG DOLLAR"},"aircraft":{"321":"AIRBUS INDUSTRIE A321","772":"BOEING 777-200/200ER","773":"BOEING 777-300","763":"BOEING 767-300/300ER","777":"BOEING 777-200/300","77W":"BOEING 777-300ER"},"locations":{"HKG":{"subType":"AIRPORT","detailedName":"INTERNATIONAL"},"HND":{"subType":"AIRPORT","detailedName":"TOKYO INTL HANEDA"}}},"meta":{"links":{"self":"https://api.amadeus.com/v1/shopping/flight-offers?origin=HKG&destination=HND&departureDate=2019-06-04&adults=1&nonStop=true¤cy=HKD&max=50"},"currency":"HKD"}}';
         $arrival = '{"data":[{"type":"flight-offer","id":"1551613900689--2121462007","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T06:35:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T10:20:00+08:00"},"carrierCode":"KA","number":"397","aircraft":{"code":"321"},"operating":{"carrierCode":"KA","number":"397"},"duration":"0DT4H45M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"V","availability":9,"fareBasis":"VLASOJP8"}}]}],"price":{"total":"3512","totalTaxes":"472"},"pricePerAdult":{"total":"3512","totalTaxes":"472"}}]},{"type":"flight-offer","id":"1551613900689-1493784203","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T10:35:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T14:20:00+08:00"},"carrierCode":"CX","number":"543","aircraft":{"code":"773"},"operating":{"carrierCode":"CX","number":"543"},"duration":"0DT4H45M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"V","availability":9,"fareBasis":"VLATOJP8"}}]}],"price":{"total":"4012","totalTaxes":"472"},"pricePerAdult":{"total":"4012","totalTaxes":"472"}}]},{"type":"flight-offer","id":"1551613900689--64505619","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T10:00:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T13:45:00+08:00"},"carrierCode":"JL","number":"29","aircraft":{"code":"777"},"operating":{"carrierCode":"JL","number":"29"},"duration":"0DT4H45M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"Y","availability":9,"fareBasis":"YNX0OABA"}}]}],"price":{"total":"11742","totalTaxes":"572"},"pricePerAdult":{"total":"11742","totalTaxes":"572"}}]},{"type":"flight-offer","id":"1551613900689-92057181","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T10:35:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T14:20:00+08:00"},"carrierCode":"JL","number":"7031","aircraft":{"code":"773"},"operating":{"carrierCode":"CX","number":"7031"},"duration":"0DT4H45M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"Y","availability":4,"fareBasis":"YNX0OABA"}}]}],"price":{"total":"11742","totalTaxes":"572"},"pricePerAdult":{"total":"11742","totalTaxes":"572"}}]},{"type":"flight-offer","id":"1551613900689--1198921234","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T00:55:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T04:30:00+08:00"},"carrierCode":"NH","number":"821","aircraft":{"code":"763"},"operating":{"carrierCode":"NQ","number":"821"},"duration":"0DT4H35M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"Y","availability":9,"fareBasis":"Y2XOWA3"}}]}],"price":{"total":"12172","totalTaxes":"572"},"pricePerAdult":{"total":"12172","totalTaxes":"572"}}]},{"type":"flight-offer","id":"1551613900689-1393475059","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T06:35:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T10:15:00+08:00"},"carrierCode":"UO","number":"625","aircraft":{"code":"321"},"operating":{"carrierCode":"UO","number":"625"},"duration":"0DT4H40M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"V","availability":4,"fareBasis":"VGDD"}}]}],"price":{"total":"1371","totalTaxes":"331"},"pricePerAdult":{"total":"1371","totalTaxes":"331"}}]},{"type":"flight-offer","id":"1551613900689--1399493487","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T10:00:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T13:45:00+08:00"},"carrierCode":"CX","number":"6321","aircraft":{"code":"772"},"operating":{"carrierCode":"JL","number":"6321"},"duration":"0DT4H45M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"Y","availability":4,"fareBasis":"YOW9"}}]}],"price":{"total":"16032","totalTaxes":"472"},"pricePerAdult":{"total":"16032","totalTaxes":"472"}}]},{"type":"flight-offer","id":"1551613900689--1589144392","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T16:25:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T20:00:00+08:00"},"carrierCode":"JL","number":"7039","aircraft":{"code":"77W"},"operating":{"carrierCode":"CX","number":"7039"},"duration":"0DT4H35M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"Y","availability":4,"fareBasis":"YNX0OABA"}}]}],"price":{"total":"11742","totalTaxes":"572"},"pricePerAdult":{"total":"11742","totalTaxes":"572"}}]},{"type":"flight-offer","id":"1551613900689--1039050126","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T06:35:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T10:20:00+08:00"},"carrierCode":"CX","number":"5397","aircraft":{"code":"321"},"operating":{"carrierCode":"KA","number":"5397"},"duration":"0DT4H45M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"V","availability":9,"fareBasis":"VLASOJP8"}}]}],"price":{"total":"3512","totalTaxes":"472"},"pricePerAdult":{"total":"3512","totalTaxes":"472"}}]},{"type":"flight-offer","id":"1551613900689--2015190044","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T16:25:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T20:00:00+08:00"},"carrierCode":"CX","number":"549","aircraft":{"code":"77W"},"operating":{"carrierCode":"CX","number":"549"},"duration":"0DT4H35M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"L","availability":9,"fareBasis":"LLATOJP8"}}]}],"price":{"total":"4502","totalTaxes":"472"},"pricePerAdult":{"total":"4502","totalTaxes":"472"}}]},{"type":"flight-offer","id":"1551613900689--1268860943","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T01:00:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T04:40:00+08:00"},"carrierCode":"UO","number":"623","aircraft":{"code":"321"},"operating":{"carrierCode":"UO","number":"623"},"duration":"0DT4H40M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"V","availability":4,"fareBasis":"VGDD"}}]}],"price":{"total":"1371","totalTaxes":"331"},"pricePerAdult":{"total":"1371","totalTaxes":"331"}}]},{"type":"flight-offer","id":"1551613900689-1650337939","offerItems":[{"services":[{"segments":[{"flightSegment":{"departure":{"iataCode":"HND","terminal":"I","at":"2019-06-28T08:50:00+09:00"},"arrival":{"iataCode":"HKG","terminal":"1","at":"2019-06-28T12:25:00+08:00"},"carrierCode":"NH","number":"859","aircraft":{"code":"77W"},"operating":{"carrierCode":"NH","number":"859"},"duration":"0DT4H35M"},"pricingDetailPerAdult":{"travelClass":"ECONOMY","fareClass":"Y","availability":9,"fareBasis":"Y2XOWA3"}}]}],"price":{"total":"12522","totalTaxes":"572"},"pricePerAdult":{"total":"12522","totalTaxes":"572"}}]}],"dictionaries":{"carriers":{"JL":"JAPAN AIRLINES","NQ":"AIR JAPAN COMPANY LTD","CX":"CATHAY PACIFIC","KA":"CATHAY DRAGON","NH":"ALL NIPPON AIRWAYS","UO":"HONG KONG EXPRESS AIRWAYS"},"currencies":{"HKD":"HONGKONG DOLLAR"},"aircraft":{"321":"AIRBUS INDUSTRIE A321","772":"BOEING 777-200/200ER","773":"BOEING 777-300","763":"BOEING 767-300/300ER","777":"BOEING 777-200/300","77W":"BOEING 777-300ER"},"locations":{"HKG":{"subType":"AIRPORT","detailedName":"INTERNATIONAL"},"HND":{"subType":"AIRPORT","detailedName":"TOKYO INTL HANEDA"}}},"meta":{"links":{"self":"https://api.amadeus.com/v1/shopping/flight-offers?origin=HND&destination=HKG&departureDate=2019-06-28&adults=1&nonStop=true¤cy=HKD&max=50"},"currency":"HKD"}}';
 
-        $airports = self::Airports($code);
-        $departure_airport = self::Airports($code, $to);
-        $departure_airport = $departure_airport[0]['name'];
+        $airports = Airports::select('id','iata_code as code','name')
+            ->where('municipality', '=', $city)
+            ->where('type','=','large_airport')
+            ->orderby('name')->get()->toArray();
+
+        $departure_airport = Airports::select('id','iata_code','name')
+            ->where('iata_code', '=', $to)->first();
+        $departure_airport = $departure_airport->name;
+
 
         //Reformat & regroup json data
         $departure = self::ReformingJsonData($departure);
@@ -196,28 +206,52 @@ class FlightController extends Controller
         if($code == ''){
             $airport = null;
         } else {
-            $airport = self::Airports($code);
+            $airport = self::AirportsCity($code);
         }
-
+        //print_r($airport);die();
         return response()->json($airport);
     }
 
 
-    protected function Airports($code, $airport = null){
+    protected function AirportsCity($code, $airport = null){
 
         $country = $code;
         $airports = FlightStats::AirportsData($country,$airport);
 
         $airport = array();
+        $counter = 0;
         foreach ($airports as $k => $obj){
-            if($obj['iata_code'] != null) {
-                $airport[$k]['code'] = $obj['iata_code'];
-                $airport[$k]['name'] = $obj['name'];
+            if($obj['iata_code'] != null && $obj['municipality'] != '' && $obj['type'] == 'large_airport') {
+                $airport[$counter]['id'] = $obj['id'];
+                $airport[$counter]['code'] = $obj['iata_code'];
+                $airport[$counter]['name'] = $obj['name'];
+                $airport[$counter]['municipality'] = $obj['municipality'];
+                $counter++;
             }
         }
 
-        return $airport;
+        //print_r($airport);die();
+        $city = array();
+        foreach ($airport as $air){
+            if(!in_array($air['municipality'],$city)){
+                array_push($city,$air['municipality']);
+            }
+        }
+        sort($city);
+
+        return $city;
     }
+
+    public function getairportlist(Request $request){
+
+        $city = $request->city;
+        $airports = Airports::select('id','iata_code','name')->where('municipality', '=', $city)->where('type','=','large_airport');
+        $airports = $airports->orderby('name')->get()->toArray();
+
+        return response()->json($airports);
+    }
+
+
 
 
     protected function SchedulesAPI($departure, $arrival, $year, $month, $day){

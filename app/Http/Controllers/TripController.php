@@ -204,7 +204,7 @@ https://admin.sygictraveldata.com/data-export/zf8979vspcvz61dya3pyxbvsduyjtnh4
  * https://api.sygictravelapi.com/1.1/en/places/list?parents=city:2585&level=poi&limit=100
 7. This API get details of each points/attractions including photo & desc
  * https://api.sygictravelapi.com/1.1/en/places/poi:19822
-8. This API is a search API by inputing string
+8. This API is a search API by inputting string
  * https://api.sygictravelapi.com/1.1/en/places/list?query=Senso-ji
 
 */

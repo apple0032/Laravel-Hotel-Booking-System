@@ -91,6 +91,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/searchname','PagesController@searchname');
     Route::post('/searchcountry','FlightController@searchcountry');
     Route::post('/searchairport','FlightController@searchairport');
+    Route::post('/getairportlist','FlightController@getairportlist');
     Route::post('hotel/searchbyajax','PagesController@searchbyajax');
     Route::post('book/checkvalidation','PagesController@checkvalidation');
     

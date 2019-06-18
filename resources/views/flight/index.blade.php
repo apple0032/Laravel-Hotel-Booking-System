@@ -234,7 +234,11 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-3">
+                                <label name="subject">City:</label>
+                                <select id="city" name="city" class="form-control"></select>
+                            </div>
+                            <div class="col-md-3">
                                 <label name="subject">Arrival Airport:</label>
                                 <select id="airport" name="airport" class="form-control"></select>
                             </div>
@@ -249,7 +253,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label name="subject">Direct Route 直航</label> <br>
                                 <input name="direct" type="checkbox" class="direct_check" value="true" onclick="return false" checked>
                             </div>
@@ -341,7 +345,7 @@
                                 var code = $(this).find('.list-code').val();
                                 console.log(code);
                                 $('#countrycode').val(code);
-                                GetAirports(code,CSRF_TOKEN); //Trigger get airport api
+                                GetCities(code,CSRF_TOKEN); //Trigger get airport api
                             });
                         });
                     }
@@ -351,7 +355,7 @@
         }
     });
 
-    function GetAirports(code,token){
+    function GetCities(code,token){
 
         //Ajax call api
         $.ajax({
@@ -364,14 +368,16 @@
             },
             dataType: 'JSON',
             beforeSend: function () {
-                $('#airport').html("");
+                $('#city').html("");
             },
             success: function (data) {
                 //<option value="HKG">Hong Kong International Airport</option>
 
                 $.each( data, function( key, value ) {
-                    $('#airport').append('<option value="'+value['code']+'">'+value['name']+'</option>');
+                    $('#city').append('<option value="'+value+'">'+value+'</option>');
                 });
+
+                getAirports(data[0]);
             }
         });
 
@@ -435,5 +441,36 @@
     });
 
     $('#country').focus();
+
+    $("#city").change(function(){
+        getAirports($(this).val());
+    });
+
+    function getAirports(city){
+        //alert(city);
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+        //Ajax call api
+        $.ajax({
+            url: 'getairportlist',
+            async: false,
+            type: 'POST',
+            data: {
+                _token: CSRF_TOKEN,
+                city: city
+            },
+            dataType: 'JSON',
+            beforeSend: function () {
+                $('#airport').html("");
+            },
+            success: function (data) {
+                //<option value="HKG">Hong Kong International Airport</option>
+                $.each( data, function( key, value ) {
+                    $('#airport').append('<option value="'+value['iata_code']+'">'+value['name']+'</option>');
+                });
+            }
+        });
+    }
+
 </script>
 @endsection
