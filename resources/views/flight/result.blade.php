@@ -236,7 +236,7 @@
 
     @media (max-width: 990px) {
         .flight_info_mobile{
-            margin-top: 40px;
+            margin-top: 80px;
         }
     }
 
@@ -343,7 +343,7 @@
     .fly_detail{
         font-size: 13px;
         font-weight: bold;
-        margin-right: 20px;
+        margin-right: 60px;
     }
 
     .no_result {
@@ -575,6 +575,13 @@
         color: #626262;
         font-size: 11px;
     }
+
+    .plane_section .flight_box_details .fas{
+        color: #445691;
+        margin-right: 5px;
+        margin-left: 5px;
+        font-size: 20px;
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -643,7 +650,7 @@
 <div class="plane_title">
     <div class="title_unselect">
         @if($departure != null)
-            <i class="fas fa-plane-departure"></i> 選擇由 香港 HKG 飛往 {{Input::get('country')}} ({{$departure_airport}}) 的航班
+            <i class="fas fa-plane-departure"></i> 選擇由 香港 HKG 飛往 {{Input::get('country')}} - {{$city}} ({{$departure_airport}}) 的航班
         @else
             <i class="fas fa-exclamation-circle"></i> 找不到任何由 香港 HKG 飛往 {{Input::get('country')}} ({{$departure_airport}}) 的航班
         @endif
