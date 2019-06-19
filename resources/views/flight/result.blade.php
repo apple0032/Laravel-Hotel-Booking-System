@@ -542,6 +542,7 @@
         padding: 5px;
         transition: 0.2s all;
         cursor: pointer;
+        float: right;
     }
 
     .skip_btn:hover{
@@ -688,10 +689,10 @@
                 <input type="hidden" id="taxes_" value="0">
                 <div class="flight_box_header">
                     <div class="row">
-                        <div class="col-md-10 skip_flight">
+                        <div class="col-md-9 skip_flight">
                             <i class="fas fa-times-circle"></i> 只預訂回程航班 Only book arrival flight.
                         </div>
-                        <div class="col-md-2 select_btn_col">
+                        <div class="col-md-3 select_btn_col">
                             <span class="skip_btn">點選以跳過 SKIP</span>
                         </div>
                     </div>
@@ -783,10 +784,10 @@
                 <input type="hidden" id="taxes_" value="0">
                 <div class="flight_box_header">
                     <div class="row">
-                        <div class="col-md-10 skip_flight">
+                        <div class="col-md-9 skip_flight">
                             <i class="fas fa-times-circle"></i> 只預訂出發航班 Only book departure flight.
                         </div>
-                        <div class="col-md-2 select_btn_col">
+                        <div class="col-md-3 select_btn_col">
                             <span class="skip_btn">點選以跳過 SKIP</span>
                         </div>
                     </div>
