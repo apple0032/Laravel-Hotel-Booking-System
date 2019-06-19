@@ -207,14 +207,14 @@
                 </div>
                 <div class="row search_index">
                     <div class="col-md-12">
-                        {!! Form::open(array('route' => 'flight.search', 'data-parsley-validate' => '')) !!}
+                        {!! Form::open(array('route' => 'flight.search', 'id' => 'flight-search-form', 'data-parsley-validate' => '')) !!}
 
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-4" id="input_country">
                                 <label name="subject">Country:</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fas fa-globe-americas"></i></span>
-                                    <input id="country" name="country" class="form-control" type="text" maxlength="30">
+                                    <input id="country" name="country" class="form-control" type="text" maxlength="30" autocomplete="off" >
                                 </div>
                                 <ul class="list-unstyled"></ul>
                             </div>
@@ -288,18 +288,26 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
-    
     //setup before functions
     var typingTimer;                //timer identifier
     var doneTypingInterval = 350;  //time in ms
+    
+    function delay(callback, ms) {
+        var timer = 0;
+        return function() {
+          var context = this, args = arguments;
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            callback.apply(context, args);
+          }, ms || 0);
+        };
+    }
 
-    //on keyup, start the countdown
-    $('#country').keyup(function(){
-        
+      // Example usage:
+      $('#country').keyup(delay(function (e) {
         var keyword = $(this).val();
         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
         
-        clearTimeout(typingTimer);
         if ($('#country').val) {
             typingTimer = setTimeout(function(){
 
@@ -353,7 +361,7 @@
 
             }, doneTypingInterval);
         }
-    });
+      }, 500));
 
     function GetCities(code,token){
 
@@ -472,5 +480,12 @@
         });
     }
 
+    //Disable search form submit by `Enter` key
+    $('#flight-search-form').keydown(function(event){
+        if(event.keyCode == 13) {
+          event.preventDefault();
+          return false;
+        }
+    });
 </script>
 @endsection

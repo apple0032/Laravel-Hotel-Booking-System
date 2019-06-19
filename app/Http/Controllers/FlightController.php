@@ -96,7 +96,7 @@ class FlightController extends Controller
         $start = Input::get('start');
         $end = Input::get('end');
         $city = Input::get('city');
-
+        $country = Input::get('country');
         //Call Flight scheduled Api to retrieve data from api source
 
         //$departure = self::FlightData($from,$to,$start);
@@ -130,6 +130,8 @@ class FlightController extends Controller
             ->with('to', $to)
             ->with('start', $start)
             ->with('end',$end)
+            ->with('city',$city)
+            ->with('country',$country)
             ->with('departure',$departure)
             ->with('arrival',$arrival)
             ->with('airports',$airports)

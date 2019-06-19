@@ -1,6 +1,6 @@
 @extends('index')
 
-@section('title', '| Flight Result')
+@section('title', '| Flight Results')
 
 @php
     use Illuminate\Support\Facades\Input;
@@ -122,7 +122,7 @@
     }
 
     .plane_title{
-        font-size: 26px;
+        font-size: 20px;
         border-bottom: 1px solid #afafaf;
         background-color: #ededed;
         font-family: 'Noto Sans TC', sans-serif;
@@ -579,15 +579,15 @@
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
 <div class="flight_searchbar">
-    {!! Form::open(array('route' => 'flight.search', 'data-parsley-validate' => '')) !!}
+    {!! Form::open(array('route' => 'flight.search', 'id' => 'flight-search-form', 'data-parsley-validate' => '')) !!}
     <div class="row flight_searchbar_row">
         <div class="col-md-2">
             <label name="subject">國家 Country</label>
-            <input id="country" name="country" class="form-control" type="text" maxlength="30">
+            <input id="country" name="country" class="form-control" type="text" maxlength="30" autocomplete="off">
             <ul class="list-unstyled"></ul>
         </div>
-        <div class="col-md-2">
-            <label name="subject">國家代碼 Country Code</label>
+        <div class="col-md-1">
+            <label name="subject">國家代碼 Code</label>
             <input id="countrycode" name="countrycode" class="form-control" type="text" maxlength="30" readonly>
         </div>
         <div class="col-md-2">
@@ -595,6 +595,10 @@
             <select id="departure_airport" name="departure_airport" class="form-control">
                 <option value="HKG">Hong Kong International Airport</option>
             </select>
+        </div>
+        <div class="col-md-2">
+            <label name="subject">城市 City</label>
+            <select id="city" name="city" class="form-control"></select>
         </div>
         <input type="hidden" id="trip" name="trip_id" value="{{Input::get('trip')}}">
         <div class="col-md-2">
@@ -611,7 +615,7 @@
                 @endif
             </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label name="subject">出發/回程日期 Departure & Arrival Date</label>
             <div class="form-group">
                 <div class="input-group date" id="datetimepicker">
@@ -1109,13 +1113,33 @@
 </script>
 
 <script>
+    setTimeout(function () {
+        var country_code =  {!! json_encode($code) !!};
+        var city =  {!! json_encode($city) !!};
 
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        GetCities(country_code,CSRF_TOKEN);
+        $("#city").val(city);
+        getAirports(city);
+    }, 1000);
+                
     //setup before functions
     var typingTimer;                //timer identifier
     var doneTypingInterval = 350;  //time in ms
+    
+    function delay(callback, ms) {
+        var timer = 0;
+        return function() {
+          var context = this, args = arguments;
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            callback.apply(context, args);
+          }, ms || 0);
+        };
+    }
 
     //on keyup, start the countdown
-    $('#country').keyup(function(){
+    $('#country').keyup(delay(function(e){
 
         var keyword = $(this).val();
         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
@@ -1165,7 +1189,7 @@
                                 var code = $(this).find('.list-code').val();
                                 console.log(code);
                                 $('#countrycode').val(code);
-                                GetAirports(code,CSRF_TOKEN); //Trigger get airport api
+                                GetCities(code,CSRF_TOKEN); //Trigger get airport api
                             });
                         });
                     }
@@ -1173,9 +1197,9 @@
 
             }, doneTypingInterval);
         }
-    });
+    }, 500));
 
-    function GetAirports(code,token){
+    function GetCities(code,token){
 
         //Ajax call api
         $.ajax({
@@ -1188,14 +1212,16 @@
             },
             dataType: 'JSON',
             beforeSend: function () {
-                $('#airport').html("");
+                $('#city').html("");
             },
             success: function (data) {
                 //<option value="HKG">Hong Kong International Airport</option>
 
                 $.each( data, function( key, value ) {
-                    $('#airport').append('<option value="'+value['code']+'">'+value['name']+'</option>');
+                    $('#city').append('<option value="'+value+'">'+value+'</option>');
                 });
+                
+                getAirports(data[0]);
             }
         });
 
@@ -1210,7 +1236,44 @@
     $("#country").blur(function () {
         $(".list-unstyled").fadeOut();
     });
+    
+    $("#city").change(function(){
+        getAirports($(this).val());
+    });
 
+    function getAirports(city){
+        //alert(city);
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+        //Ajax call api
+        $.ajax({
+            url: 'getairportlist',
+            async: false,
+            type: 'POST',
+            data: {
+                _token: CSRF_TOKEN,
+                city: city
+            },
+            dataType: 'JSON',
+            beforeSend: function () {
+                $('#airport').html("");
+            },
+            success: function (data) {
+                //<option value="HKG">Hong Kong International Airport</option>
+                $.each( data, function( key, value ) {
+                    $('#airport').append('<option value="'+value['iata_code']+'">'+value['name']+'</option>');
+                });
+            }
+        });
+    }
+
+    //Disable search form submit by `Enter` key
+    $('#flight-search-form').keydown(function(event){
+        if(event.keyCode == 13) {
+          event.preventDefault();
+          return false;
+        }
+    });
 </script>
 
 
