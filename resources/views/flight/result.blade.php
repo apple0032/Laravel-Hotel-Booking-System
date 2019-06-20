@@ -668,7 +668,7 @@
         </div>
 
         <div class="plane_title_arrival">
-            <div class="arrival_title">選擇由 {{Input::get('country')}} ({{$departure_airport}}) 返回 香港 HKG 的航班
+            <div class="arrival_title">選擇由 {{Input::get('country')}} - {{$city}} ({{$departure_airport}}) 返回 香港 HKG 的航班
                 <i class="fas fa-plane-arrival" style="transform: scaleX(-1);"></i>
             </div>
 
