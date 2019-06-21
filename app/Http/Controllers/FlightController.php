@@ -62,7 +62,7 @@ class FlightController extends Controller
         $de_airport = $request->departure_airport;
         $airport = $request->airport;
         $daterange = $request->daterange;
-        $trip = $request->trip_id;
+        $trip = $request->trip;
         $city = $request->city;
       
 //        print_r($code);
@@ -76,8 +76,8 @@ class FlightController extends Controller
         
         return redirect()->route('flight.result', [
             'country' => $country,
-            'city' => $city,
             'code' => $code,
+            'city' => $city,
             'from' => $de_airport,
             'to' => $airport,
             'start' => $start,

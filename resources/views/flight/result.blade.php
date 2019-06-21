@@ -582,6 +582,11 @@
         margin-left: 5px;
         font-size: 20px;
     }
+    
+    .final_label{
+        font-size: 19px;
+        color:#2d6098;
+    }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -874,6 +879,21 @@
         <div class="book_form">
             {!! Form::open(array('route' => 'flight.book', 'data-parsley-validate' => '', 'id' => 'flight_form' )) !!}
             <div class="row">
+                
+                <div class="col-md-6 form_gp">
+                    <label name="subject">國家 Country</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-globe-asia"></i></span>
+                        <input value="{{$country}}" id="form_departure_date" name="final_country" class="form-control final_label" type="text" readonly>
+                    </div>
+                </div>
+                <div class="col-md-6 form_gp">
+                    <label name="subject">城市 City</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fas fa-city"></i></span>
+                        <input value="{{$city}}" id="form_arrival_date" name="final_city" class="form-control final_label" type="text" readonly>
+                    </div>
+                </div>
 
                 <div class="col-md-6 form_gp">
                     <label name="subject">出發日期 Departure Date</label>
@@ -1071,8 +1091,9 @@
             <input type="hidden" name="source_dep_num" id="source_dep_num">
             <input type="hidden" name="source_arr_num" id="source_arr_num">
             <input type="hidden" name="trip" id="trip" value="{{Input::get('trip')}}">
-            <input type="hidden" name="country_name" value="{{Input::get('country')}}">
-            <input type="hidden" name="country_code" value="{{Input::get('code')}}">
+            <input type="hidden" name="country_name" value="{{$country}}">
+            <input type="hidden" name="country_code" value="{{$code}}">
+            <input type="hidden" name="city_name" value="{{$city}}">
             {!! Form::close() !!}
         </div>
 
