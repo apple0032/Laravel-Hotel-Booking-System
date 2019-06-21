@@ -17,6 +17,7 @@ use App\FlightPassenger;
 use App\FlightPayment;
 use App\Trip;
 use App\CountryImage;
+use App\Cities;
 
 class TripController extends Controller
 {
@@ -165,6 +166,8 @@ class TripController extends Controller
         }
 
         //echo '<pre>';print_r($booking);echo '</pre>';die();
+
+        $city = Cities::where('name','=',$trip_data->city)->first();
 
         return view('trip.info')
             ->with('flight',$flight)

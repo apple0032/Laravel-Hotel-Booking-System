@@ -15,6 +15,11 @@ class Trip extends Model
         return FlightBooking::where('related_flight_id', '=', $related_flight_id )->get();
     }
 
+    public function City()
+    {
+        return $this->hasone('App\Cities');
+    }
+
     public static function getTrip($book_id){
         $trip = Trip::where('booking_id','=',$book_id)->first();
 

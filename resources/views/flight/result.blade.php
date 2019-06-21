@@ -584,8 +584,9 @@
     }
     
     .final_label{
-        font-size: 19px;
+        font-size: 20px;
         color:#2d6098;
+        font-weight: bold;
     }
 </style>
 
