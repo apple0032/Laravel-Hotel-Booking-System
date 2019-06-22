@@ -18,6 +18,7 @@ use App\FlightPayment;
 use App\Trip;
 use App\CountryImage;
 use App\Cities;
+use App\ApiInfo;
 
 class TripController extends Controller
 {
@@ -32,7 +33,7 @@ class TripController extends Controller
         $join = User::select('created_at')->where('id','=',$user_id)->first()->toArray();
         $join = substr($join['created_at'], 0, 10);
 
-        $trip = Trip::select('id','booking_id','related_flight_id','user_id')
+        $trip = Trip::select('*')
             ->where('user_id','=',$user_id)
             ->orderby('id','desc')
             ->get()
@@ -46,7 +47,7 @@ class TripController extends Controller
                     ->toArray();
 
             $trip[$k]['booking'] = $this->getFlightBookingTripInfo($trip_book);
-            $trip[$k]['image'] = $this->getCountryImage($trip[$k]['booking']['country']);
+            $trip[$k]['image'] = $this->getCountryImage($trip[$k]['booking']['country'],$tr['city']);
             $trip[$k]['order'] = $k + 1;
         }
 
@@ -92,7 +93,7 @@ class TripController extends Controller
     }
 
 
-    public function getCountryImage($country){
+    public function getCountryImage($country,$city){
 
         $image = CountryImage::where('country','=',$country)->first();
         $image = $image['image'];
@@ -100,16 +101,60 @@ class TripController extends Controller
         if($image != null){
             return $image;
         } else {
-            return $this->getCountryImageByGoogleAPI($country);
+
+            $city = Cities::where('name','=',$city)->first();
+
+            if($city == null) {
+                return $this->getCountryImageByGoogleAPI($country);
+            } else {
+                return $this->getCountryImageBySygicApi($city,$country);
+            }
         }
+    }
+
+    public function getCountryImageBySygicApi($city,$country){
+
+        $city = $city->country_id;
+
+        $host = 'https://api.sygictravelapi.com/1.1/en/places/'.$city.'/media';
+        $api_key = ApiInfo::SygicTravelApi();
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('x-api-key: '.$api_key));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        // execute api
+        $response = curl_exec($ch);
+
+        // close the connection, release resources used
+        curl_close($ch);
+
+        //return result
+        $response = json_decode($response,true);
+
+        if(isset($response['data']['media'][0]['url'])){
+            $image = $response['data']['media'][0]['url'];
+
+            $ig = new CountryImage();
+            $ig->country = $country;
+            $ig->image = $image;
+            $ig->save();
+        }
+
+        return $image;
     }
 
 
     public function getCountryImageByGoogleAPI($country){
+
+        $apiData = ApiInfo::GoogleSearchApiData();
+
         $data = array(
             'q'=> $country.' beautiful',
-            'cx'=>'/* hidden */',
-            'key'=>'/* hidden */',
+            'cx'=> $apiData['cx'],
+            'key'=> $apiData['key'],
             'searchType'=>'image'
         );
 

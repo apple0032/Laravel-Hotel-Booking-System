@@ -170,12 +170,12 @@
 
                         @foreach($booking as $key => $bk)
                             <tr class="book_row book_{{$bk->related_flight_id}}" data-sid="{{$bk->related_flight_id}}" style="">
-                                <td><img src="https://countryflags.io/{{$bk->country_code}}/flat/32.png">　{{$bk->country}}</td>
-                                <td><img src="https://countryflags.io/{{$bk->arr_country_code}}/flat/32.png">　{{$bk->arr_country}}</td>
+                                <td style="width: 200px;"><img src="https://countryflags.io/{{$bk->country_code}}/flat/32.png">　{{$bk->country}}</td>
+                                <td style="width: 200px;"><img src="https://countryflags.io/{{$bk->arr_country_code}}/flat/32.png">　{{$bk->arr_country}}</td>
                                 <td>{{$bk->dep_airport}}</td>
                                 <td>{{$bk->arr_airport}}</td>
-                                <td>{{substr($bk->dep_date,0,10)}}</td>
-                                <td class="airline"><img src="http://pics.avs.io/250/40/{{$bk['airline_code']}}.png">{{$bk->airline_name}}</td>
+                                <td style="width: 100px;">{{substr($bk->dep_date,0,10)}}</td>
+                                <td class="airline"><img src="http://pics.avs.io/250/40/{{$bk['airline_code']}}.png"><br><div style="text-align: center">{{$bk->airline_name}}</div></td>
                                 <td>{{$bk->flight_code}}</td>
                                 <td>{{$bk->flight_start}}</td>
                                 <td>{{$bk->flight_end}}</td>
@@ -201,7 +201,7 @@
                                 </td>
                             </tr>
                             <tr class="book_detail bk_detail{{$bk->related_flight_id}} animated bounceInLeft faster">
-                                <td colspan="13">
+                                <td colspan="14">
                                     <div class="row well" style="margin: 0px">
                                         <div class="col-md-4 col-sm-12 book_detail_col">
                                             @php
@@ -251,7 +251,7 @@
                                                     {{$payment['security_number']}}&nbsp;
                                                 </div>
                                                 <div class="col-md-4 det_col">
-                                                    <i class="far fa-calendar-check"></i> 到期
+                                                    <i class="far fa-calendar-check"></i> 到期日
                                                 </div>
                                                 <div class="col-md-8">
                                                     {{$payment['expired_date']}}&nbsp;

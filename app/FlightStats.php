@@ -3,6 +3,7 @@
 namespace App;
 use App\Airlines;
 use App\Airports;
+use App\ApiInfo;
 
 class FlightStats
 {
@@ -14,16 +15,12 @@ class FlightStats
          *
          */
 
-        //Api data provided from flightstats.com
-        //The api key auth data will hide in git server
-
-        //$data['appId'] = '/* HIDDEN */';
-        //$data['appKey'] = '/* HIDDEN */';
-
         //Amadeus API auth structure
+        $client_id = (ApiInfo::ApiData())['client_id'];
+        $client_secret = (ApiInfo::ApiData())['client_secret'];
 
-        $data['client_id'] = '/* HIDE */';
-        $data['client_secret'] = '/* HIDE */';
+        $data['client_id'] = $client_id;
+        $data['client_secret'] = $client_secret;
 
         return $data;
     }
