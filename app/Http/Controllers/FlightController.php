@@ -182,23 +182,6 @@ class FlightController extends Controller
         return response()->json($response);
     }
 
-    public function searchCountryByCode($code){
-
-        $host = 'https://restcountries.eu/rest/v2/alpha/'.$code;
-
-        $ch = curl_init($host);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:') );
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        $arr = json_decode($response);
-
-        return $arr;
-    }
 
     public function searchairport(Request $request){
         

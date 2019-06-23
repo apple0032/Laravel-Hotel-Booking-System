@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Booking;
+use App\Airports;
+use App\TripAdviser;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\User;
@@ -221,6 +223,37 @@ class TripController extends Controller
             ->with('trip',$trip);
     }
 
+
+    public function getTripAdviser($city){
+
+        $city_name = $city;
+        $city = Cities::where('name','=',$city)->first();
+        if($city == null){
+            return redirect()->route('pages.error');
+        }
+
+        $airports = Airports::select('*')->where('municipality', '=', $city_name)->first();
+        $country_code = $airports->iso_country;
+
+        $country = TripAdviser::searchCountryByCode($country_code);
+        $country = $country['name'];
+
+        $data = TripAdviser::getTripCollections($city);
+        $data = TripAdviser::getPlaceIdFromCollectionsData($data);
+        $data = TripAdviser::getPlacesDetailsByMultiIds($data);
+        $data = $data['data']['places'];
+
+        //echo '<pre>';print_r($data);echo '</pre>';die();
+
+        return view('trip.adviser')
+            ->with('data',$data)
+            ->with('city',$city)
+            ->with('country',$country)
+            ->with('country_code',$country_code);
+    }
+
+
+
 }
 
 
@@ -242,19 +275,35 @@ https://fullcalendar.io/
 https://admin.sygictraveldata.com/data-export/zf8979vspcvz61dya3pyxbvsduyjtnh4
 - List of top cities CSV file that provided by sygictravel
 
-1. First,import the cities CSV file into system database
-2. In table 'airport', we have airport name, airport code, iso country, city name, coordinates etc..
-3. We have enough information & support to call sygic API because the `city name` is linkage from both side(We can store city name in each trip)
-4. Need to update/enhance flight system search UI to include city name on each of the trip
-5. This API get all articles from country id
+1. First,import the cities CSV file into system database //DONE
+2. In table 'airport', we have airport name, airport code, iso country, city name, coordinates etc..  //DONE
+3. We have enough information & support to call sygic API because the `city name` is linkage from both side(We can store city name in each trip) //DONE
+4. Need to update/enhance flight system search UI to include city name on each of the trip //DONE
+
+
+5. This API get all articles from country id (These API return place_ids array like : poi:19886)
  * https://api.sygictravelapi.com/1.1/en/collections?parent_place_id=country:75
+ * https://api.sygictravelapi.com/1.1/en/collections?parent_place_id=city:2585
+    - What to See in Tokyo
+    - Popular Parks in Tokyo
+    - Best Restaurants in Tokyo
+
 6. This API get all attractions from city
  * https://api.sygictravelapi.com/1.1/en/places/list?parents=city:2585&level=poi&limit=100
+
+
 7. This API get details of each points/attractions including photo & desc
  * https://api.sygictravelapi.com/1.1/en/places/poi:19822
+ * https://api.sygictravelapi.com/1.1/en/places?ids=poi:19822%7Cpoi:19967 //get all ids
+
+
 8. This API is a search API by inputting string
  * https://api.sygictravelapi.com/1.1/en/places/list?query=Senso-ji
+
+
 9. This API search for media information by attraction id
  * https://api.sygictravelapi.com/1.1/en/places/poi:19822/media
+
+
 
 */

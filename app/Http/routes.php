@@ -77,6 +77,7 @@ Route::group(['middleware' => ['web']], function () {
     //Trip
     Route::get('/trip', ['uses' => 'TripController@tripIndex', 'as' => 'flight.trip']);
     Route::get('/trip/{trip_id}', ['uses' => 'TripController@getTripDetails', 'as' => 'flight.trip_info']);
+    Route::get('/trip/adviser/{city_name}', ['uses' => 'TripController@getTripAdviser', 'as' => 'flight.trip_adviser']);
 
     //Image
     Route::post('/images-save', 'UploadImagesController@store');
