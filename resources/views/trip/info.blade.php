@@ -47,7 +47,7 @@
             background-image: url('') !important;
             background: #f2f2f2;
         }
-
+        
     </style>
 
     <div class="trip_details row">
@@ -208,6 +208,14 @@
                     </div>
                 </div>
             </div>
+        @else
+            <div class="hotel_section col-md-6">
+                <div class="row no_hotel_block">
+                    <div class="col-md-12 no_hotel_button" onclick="window.location.href='#'">
+                        <i class="fas fa-exclamation-circle"></i> &nbsp;&nbsp; No hotel booking linkage right now. Do it now?
+                    </div>
+                </div>
+            </div>
         @endif
 
     </div>
@@ -215,5 +223,6 @@
 @endsection
 
 @section('scripts')
+
 
 @endsection

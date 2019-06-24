@@ -193,7 +193,7 @@
                                         $selected_seat = FlightBooking::flightSelectedSeat($passenger);
                                         $num_of_select = FlightBooking::flightSeatAvailableSelect($passenger);
                                     @endphp
-                                    @if($current < $dep_time && $num_of_select != 0)
+                                    @if(($current < $dep_time) && $num_of_select != 0)
                                         <a href="flight-seat/{{$bk->id}}"><i class="fas fa-chair"></i></a>
                                     @else
                                         <span class="disable_seat"> <i class="fas fa-times"></i></span>
