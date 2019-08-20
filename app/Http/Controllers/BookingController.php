@@ -221,7 +221,11 @@ class BookingController extends Controller
             foreach ($booking as $k => $bk) {
                 $room[$k] = HotelRoom::where('id', '=', $bk->hotel_room_id)->get()->toarray();
                 $room_type[$k] = $room_type_list[$room[$k][0]['room_type_id']];
-                $pay_method[$k] = $pay_method_list[$bk->payment['payment_method_id']];
+                if($bk->payment['payment_method_id']){
+                    $pay_method[$k] = $pay_method_list[$bk->payment['payment_method_id']];
+                } else {
+                    $pay_method[$k] = null;
+                }
             }
         }
 
