@@ -453,7 +453,24 @@
                 $('.trip_header_country span').html(country);
 
                 //ajax to load trip details
-                $('.trip_content').load('trip/'+sid+' .trip_details', function () {});
+                $('.trip_content').load('trip/'+sid+' .trip_details', function () {
+                    $('.link_submit').click(function () {
+                        var selected = $('#sel1').val();
+                        //call node js api here
+
+                    });
+
+                    $('.no_hotel_button').click(function () {
+                        $('.no_hotel_button').fadeOut();
+                        $('.no_hotel_select').fadeIn();
+                    });
+
+                    $('.link_submit').click(function () {
+                        //$('.no_hotel_button').fadeIn();
+                        $('.no_hotel_select').fadeOut();
+                    });
+
+                });
             });
         });
 

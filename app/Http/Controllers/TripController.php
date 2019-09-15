@@ -216,11 +216,45 @@ class TripController extends Controller
 
         $city = Cities::where('name','=',$trip_data->city)->first();
 
+        //$bk = self::getHotelBookingFromNodeAPI($trip_data->user_id);
+        $bk = null;
+        //echo '<pre>';print_r($bk);echo '</pre>';die();
+
         return view('trip.info')
             ->with('flight',$flight)
             ->with('booking',$booking)
             ->with('trip_data',$trip_data)
-            ->with('trip',$trip);
+            ->with('trip',$trip)
+            ->with('bk',$bk);
+    }
+
+    public function getHotelBookingFromNodeAPI($userid){
+        $host = request()->getHost();
+        $host = 'http://'.$host.':8080/hotel/booking/'.$userid;
+        $headers[] = 'api_key: m67578441';
+        //print_r($host);die();
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $arr = json_decode($response,true);
+
+        $bk = array();
+
+        if($arr != null) {
+            foreach ($arr['booking'] as $k => $booking) {
+                $bk[$k]['id'] = $booking['id'];
+                $bk[$k]['hotel'] = $booking['hotel']['name'];
+                $bk[$k]['date'] = $rest = substr($booking['in_date'], 0, 10);
+            }
+        }
+
+        return $bk;
     }
 
 

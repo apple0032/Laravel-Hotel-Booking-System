@@ -143,10 +143,9 @@
     padding-left: 15%;
 }
 
-.no_hotel_button{
+.no_hotel_button, .no_hotel_select{
     text-align: center;
     box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,.2);
-    background:#fe4a5d;
     padding: .5rem .75rem;
     border-radius: .25rem;
     color: white;
@@ -154,6 +153,15 @@
     cursor: pointer;
 }
 
+.no_hotel_button{
+    background:#fe4a5d;
+}
+
 .no_hotel_button:hover{
         box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,.9);
+}
+
+.no_hotel_select{
+    display: none;
+    background: #5c606c;
 }

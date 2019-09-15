@@ -448,6 +448,7 @@ class FlightController extends Controller
                $bk->related_flight_id = $related_flight_id;
                $bk->country = 'Hong Kong';
                $bk->country_code = 'HK';
+               $bk->city = $request->final_city;
                $bk->arr_country = $request->country_name;
                $bk->arr_country_code = $request->country_code;
                $bk->dep_airport = 'HKG';
@@ -490,6 +491,7 @@ class FlightController extends Controller
                 $bk->related_flight_id = $related_flight_id;
                 $bk->country = $request->country_name;
                 $bk->country_code = $request->country_code;
+                $bk->city = $request->final_city;
                 $bk->arr_country = 'Hong Kong';
                 $bk->arr_country_code = 'HK';
                 $bk->dep_airport = $source_arr['departure_airport'];

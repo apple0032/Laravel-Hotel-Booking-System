@@ -214,6 +214,16 @@
                     <div class="col-md-12 no_hotel_button" onclick="window.location.href='#'">
                         <i class="fas fa-exclamation-circle"></i> &nbsp;&nbsp; No hotel booking linkage right now. Do it now?
                     </div>
+                    <div class="col-md-12 no_hotel_select" onclick="window.location.href='#'">
+                        <select class="form-control" id="sel1">
+                            @if($bk != null)
+                                @foreach($bk as $b)
+                                    <option value="{{$b['id']}}">{{$b['id'].' - '.$b['hotel'].' - '.$b['date']}}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <button type="button" class="btn btn-primary link_submit">Confirm</button>
+                    </div>
                 </div>
             </div>
         @endif

@@ -114,6 +114,10 @@
             font-size: 20px;
         }
 
+        .trip_trigger a{
+            text-decoration: none;
+        }
+
         .booked_flight{
             color: white;
             background-color: red;
