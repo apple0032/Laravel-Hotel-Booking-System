@@ -453,6 +453,7 @@
                 var sid = $(this).data('sid');
                 var img = $(this).data('img');
                 var country = $(this).data('country');
+                var userid = <?php print_r(Auth::user()->id)?>
 
                 $('.trip_header').css("background-image", "url('"+img+"')");
                 $('.trip_header_country span').html(country);
@@ -470,28 +471,34 @@
                         //$('.no_hotel_button').fadeIn();
                         var selected = $('#sel1').val();
                         if(selected != null){
-                            $('.no_hotel_select').fadeOut();
-                            
-                            $.ajax({
-                                url: 'matchbooking',
-                                type: 'POST',
-                                data: {
-                                    _token: CSRF_TOKEN,
-                                    id : sid,
-                                    booking: selected
-                                },
-                                dataType: 'JSON',
-                                beforeSend: function () {
-
-                                },
-                                success: function (data) {
-                                    //$('.hotel_section').html('');
-                                    $('.hotel_section').load('trip/1 .load_hotel', function () {});
-                                }
-                            });
+                            var con = confirm("Sure to match?");
+                            if (con) {
+                                ApiUpdateMatching(CSRF_TOKEN, sid, selected);
+                            }
                         }
                     });
 
+                    function ApiUpdateMatching(token,sid,selected) {
+                        $('.no_hotel_select').fadeOut();
+
+                        $.ajax({
+                            url: 'matchbooking',
+                            type: 'POST',
+                            data: {
+                                _token: token,
+                                id : sid,
+                                booking: selected
+                            },
+                            dataType: 'JSON',
+                            beforeSend: function () {
+
+                            },
+                            success: function (data) {
+                                //$('.hotel_section').html('');
+                                $('.hotel_section').load('trip/'+sid+' .load_hotel', function () {});
+                            }
+                        });
+                    }
                 });
             });
         });

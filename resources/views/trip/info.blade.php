@@ -174,7 +174,7 @@
                     <div class="hotel_content">
                         <div class="row">
                             <div class="col-md-12 hotel_content_image">
-                                @if($booking->image == 'null.jpg')
+                                @if($booking->image == 'null')
                                     <img src="{{URL::to('/')}}/images/upload/{{$booking->image}}">
                                 @else
                                     <img src="https://photos.hotellook.k8s.avs.io/image_v2/limit/h{{$booking->default_image}}_0/640/480.jpg">
