@@ -165,43 +165,45 @@
 
         @if($booking != null)
             <div class="hotel_section col-md-6">
-                <div class="flight_title">
-                    <i class="fas fa-hotel"></i> Hotel booking
-                    <a href="{{URL::to('/')}}/book/booklist"><i class="fas fa-link"></i></a>
-                </div>
+                <div class="load_hotel">
+                    <div class="flight_title">
+                        <i class="fas fa-hotel"></i> Hotel booking
+                        <a href="{{URL::to('/')}}/book/booklist"><i class="fas fa-link"></i></a>
+                    </div>
 
-                <div class="hotel_content">
-                    <div class="row">
-                        <div class="col-md-12 hotel_content_image">
-                            @if($booking->image == 'null.jpg')
-                                <img src="{{URL::to('/')}}/images/upload/{{$booking->image}}">
-                            @else
-                                <img src="https://photos.hotellook.k8s.avs.io/image_v2/limit/h{{$booking->default_image}}_0/640/480.jpg">
-                            @endif
-                        </div>
-                        <div class="col-md-12 hotel_details">
-                            <div class="row">
-                                <div class="col-md-4 hotel_content_title">
-                                    Hotel Name
-                                </div>
-                                <div class="col-md-8">
-                                    {{$booking->name}}
-                                </div>
+                    <div class="hotel_content">
+                        <div class="row">
+                            <div class="col-md-12 hotel_content_image">
+                                @if($booking->image == 'null.jpg')
+                                    <img src="{{URL::to('/')}}/images/upload/{{$booking->image}}">
+                                @else
+                                    <img src="https://photos.hotellook.k8s.avs.io/image_v2/limit/h{{$booking->default_image}}_0/640/480.jpg">
+                                @endif
                             </div>
-                            <div class="row">
-                                <div class="col-md-4 hotel_content_title">
-                                    Check in time
+                            <div class="col-md-12 hotel_details">
+                                <div class="row">
+                                    <div class="col-md-4 hotel_content_title">
+                                        Hotel Name
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{$booking->name}}
+                                    </div>
                                 </div>
-                                <div class="col-md-8">
-                                    {{substr($booking->in_date, 0, 10)}}
+                                <div class="row">
+                                    <div class="col-md-4 hotel_content_title">
+                                        Check in time
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{substr($booking->in_date, 0, 10)}}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4 hotel_content_title">
-                                    Check out time
-                                </div>
-                                <div class="col-md-8">
-                                    {{substr($booking->out_date, 0, 10)}}
+                                <div class="row">
+                                    <div class="col-md-4 hotel_content_title">
+                                        Check out time
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{substr($booking->out_date, 0, 10)}}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -218,7 +220,7 @@
                         <select class="form-control" id="sel1">
                             @if($bk != null)
                                 @foreach($bk as $b)
-                                    <option value="{{$b['id']}}">{{$b['id'].' - '.$b['hotel'].' - '.$b['date']}}</option>
+                                    <option value="{{$b['id']}}">{{$b['id'].' - '.$b['hotel'].' - '.$b['in_date'].' to '.$b['out_date']}}</option>
                                 @endforeach
                             @endif
                         </select>

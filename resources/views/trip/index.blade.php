@@ -344,6 +344,10 @@
             border-radius: 5px;
             padding: 0 10px;
         }
+        
+        .trip_content{
+            text-align: center
+        }
     </style>
 
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -413,6 +417,7 @@
                         </div>
 
                         <div class="trip_content">
+                            <div class="lds-hourglass"></div>
                             <!-- Get info via ajax -->
 
                         </div>
@@ -454,12 +459,8 @@
 
                 //ajax to load trip details
                 $('.trip_content').load('trip/'+sid+' .trip_details', function () {
-                    $('.link_submit').click(function () {
-                        var selected = $('#sel1').val();
-                        //call node js api here
-
-                    });
-
+                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                    
                     $('.no_hotel_button').click(function () {
                         $('.no_hotel_button').fadeOut();
                         $('.no_hotel_select').fadeIn();
@@ -467,7 +468,28 @@
 
                     $('.link_submit').click(function () {
                         //$('.no_hotel_button').fadeIn();
-                        $('.no_hotel_select').fadeOut();
+                        var selected = $('#sel1').val();
+                        if(selected != null){
+                            $('.no_hotel_select').fadeOut();
+                            
+                            $.ajax({
+                                url: 'matchbooking',
+                                type: 'POST',
+                                data: {
+                                    _token: CSRF_TOKEN,
+                                    id : sid,
+                                    booking: selected
+                                },
+                                dataType: 'JSON',
+                                beforeSend: function () {
+
+                                },
+                                success: function (data) {
+                                    //$('.hotel_section').html('');
+                                    $('.hotel_section').load('trip/1 .load_hotel', function () {});
+                                }
+                            });
+                        }
                     });
 
                 });
