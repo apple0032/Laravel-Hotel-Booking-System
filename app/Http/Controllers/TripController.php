@@ -312,7 +312,7 @@ class TripController extends Controller
 
     public function ItineraryIndex(){
 
-        $path = 'http://'.request()->getHttpHost().'/hotelsdb/itinerary.json';
+        $path = 'http://'.request()->getHttpHost().'/hotelsdb/storage/itinerary.json';
         $itinerary = json_decode(file_get_contents($path), true);
         //echo'<pre>'; print_r($itinerary); echo '</pre>';die();
     
