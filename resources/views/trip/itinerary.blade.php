@@ -200,7 +200,7 @@
         }
 
         .line-between-longest{
-            height: 200px;
+            height: 150px;
         }
 
         .marker{
@@ -279,22 +279,9 @@
                                         {{$poi['perex']}} <br><br>
                                         <i class="fas fa-info-circle"></i> See more details
                                         <br>
-                                        <span class="marker" data-toggle="modal" data-target="#iftameMarker-{{$i}}-{{$s}}">
+                                        <span class="marker" data-toggle="modal" data-target="#iftameMarker" onclick="loadMap('<?php echo $poi['coordinate'] ?>')">
                                             <i class="fas fa-map-marker-alt"></i> Maps
                                         </span>
-
-                                        <div class="modal fade" id="iftameMarker-{{$i}}-{{$s}}" role="dialog">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <iframe src="http://maps.google.com/maps?q={{$poi['coordinate']}}&z=15&output=embed" width="100%" height="650" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -329,6 +316,9 @@
 
     </div>
 
+
+    <!----------------- Modal Part ----------------->
+
     <div class="modal fade" id="iftameModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -341,6 +331,20 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="iftameMarker" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <iframe id="place_point" src="" width="100%" height="650" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 @endsection
 
@@ -356,6 +360,16 @@
         var $iframe = $('#google_iframe');
         if ( $iframe.length ) {
             var url = "https://www.google.com/maps/embed/v1/directions?key=AIzaSyBs37KmdWQjAdOeIon2W_kg7hDfAOF_Fhc&origin="+from+"&destination="+to;
+            $iframe.attr('src',url);
+            return false;
+        }
+        return true;
+    }
+
+    function loadMap(point){
+        var $iframe = $('#place_point');
+        if ( $iframe.length ) {
+            var url = "http://maps.google.com/maps?q="+point+"&z=15&output=embed";
             $iframe.attr('src',url);
             return false;
         }
