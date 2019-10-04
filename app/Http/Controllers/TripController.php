@@ -312,13 +312,17 @@ class TripController extends Controller
 
     public function ItineraryIndex(){
 
-        $path = 'http://'.request()->getHttpHost().'/hotelsdb/storage/itinerary.json';
+        $path = 'http://'.request()->getHttpHost().'/hotelsdb/storage/itinerary2.json';
         $itinerary = json_decode(file_get_contents($path), true);
         //echo'<pre>'; print_r($itinerary); echo '</pre>';die();
     
         //$user_id = Auth::user()->id;
 
-        return view('trip.itinerary')->with('itinerary',$itinerary);
+        $related_flight_id = $itinerary['related_flight_id'];
+        $booking = FlightBooking::where('related_flight_id', '=', $related_flight_id)->orderby('dep_date','DESC')->get()->toArray();
+        //print_r($booking);die();
+
+        return view('trip.itinerary')->with('itinerary',$itinerary)->with('related_flight_id',$related_flight_id);
     }
 }
 

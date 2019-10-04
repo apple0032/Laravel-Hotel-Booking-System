@@ -627,8 +627,14 @@ class FlightController extends Controller
     public function FlightSummary(){
 
         $user_id = Auth::user()->id;
-        $booking = FlightBooking::where('user_id', '=', $user_id)->orderby('dep_date','DESC')->get();
+        $id = Input::get('id', false);
+        if($id == null){
+            $booking = FlightBooking::where('user_id', '=', $user_id)->orderby('dep_date','DESC')->get();
+        } else {
+            $booking = FlightBooking::where('user_id', '=', $user_id)->where('related_flight_id','=',$id)->orderby('dep_date', 'DESC')->get();
+        }
         $pay_method_list = \App\Helpers\AppHelper::instance()->ObjectToArrayMap(PaymentMethod::where('id','!=','5')->get(),'id','type');
+
 
         return view('flight.summary')
             ->with('booking',$booking)
