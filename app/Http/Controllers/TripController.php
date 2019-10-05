@@ -312,17 +312,122 @@ class TripController extends Controller
 
     public function ItineraryIndex(){
 
-        $path = 'http://'.request()->getHttpHost().'/hotelsdb/storage/itinerary2.json';
-        $itinerary = json_decode(file_get_contents($path), true);
+        $user_id = Auth::user()->id;
+        //$path = 'http://'.request()->getHttpHost().'/hotelsdb/storage/itinerary2.json';
+        //$itinerary = json_decode(file_get_contents($path), true);
         //echo'<pre>'; print_r($itinerary); echo '</pre>';die();
-    
-        //$user_id = Auth::user()->id;
 
-        $related_flight_id = $itinerary['related_flight_id'];
-        $booking = FlightBooking::where('related_flight_id', '=', $related_flight_id)->orderby('dep_date','DESC')->get()->toArray();
-        //print_r($booking);die();
+        $itinerary = $this->getItineraryFromNodeAPI();
+        $itinerary = json_decode($itinerary,true);
+        $pois = json_encode($itinerary['itinerary_pois']);
 
-        return view('trip.itinerary')->with('itinerary',$itinerary)->with('related_flight_id',$related_flight_id);
+        //print_r($pois);die();
+
+        $poi_string = $this->getPOIStringFromNodeAPI($pois);
+        $poi_string = json_decode($poi_string,true);
+
+        foreach ($poi_string['places_list'] as $poi){
+            $poi_arr[] = json_decode($this->getPOIDetailsFromNodeAPI($poi),true);
+        }
+
+        $poi_data = array();
+        foreach($poi_arr as $p){
+            foreach ($p['details'] as $pinfo) {
+                array_push($poi_data, $pinfo);
+            }
+        }
+
+        $poi_details = array();
+        foreach ($poi_data as $a){
+            $poi_details[$a['id']] = $a;
+        }
+
+
+        $related_flight_id = null;
+        if($itinerary['related_flight_id'] != 'null') {
+            $related_flight_id = $itinerary['related_flight_id'];
+        }
+
+        return view('trip.itinerary')
+            ->with('itinerary',$itinerary)
+            ->with('related_flight_id',$related_flight_id)
+            ->with('poi_data',$poi_details);
+    }
+
+    public function getItineraryFromNodeAPI(){
+        $host = request()->getHost();
+        $host = 'http://'.$host.':8080/trip';
+        $api_key = ApiInfo::NodeAPI();
+
+        $post = [
+            'city' => 'Hong Kong',
+            'limit' => '400',
+            'priority' => '{"sightseeing": 5, "shopping" : 4, "eating" : 3}',
+            'trip_start' => '2019-11-23',
+            'trip_end' => '2019-11-27',
+            'start_time' => '09:00',
+            'end_time' => '20:00',
+            'hottest' => 1
+        ];
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded','api_key: '.$api_key));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        //$result = json_decode($response,true);
+
+        return $response;
+    }
+
+    public function getPOIStringFromNodeAPI($pois){
+        $host = request()->getHost();
+        $host = 'http://'.$host.':8080/pois';
+        $api_key = ApiInfo::NodeAPI();
+
+        $post = [
+            'pois' => $pois
+        ];
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded','api_key: '.$api_key));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        //$result = json_decode($response,true);
+
+        return $response;
+    }
+
+    public function getPOIDetailsFromNodeAPI($pois){
+        $host = request()->getHost();
+        $host = 'http://'.$host.':8080/pois-info';
+        $api_key = ApiInfo::NodeAPI();
+
+        $post = [
+            'pois' => $pois
+        ];
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded','api_key: '.$api_key));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        //$result = json_decode($response,true);
+
+        return $response;
     }
 }
 

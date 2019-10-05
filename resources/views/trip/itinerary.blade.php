@@ -113,7 +113,7 @@
         
         .itinerary_poi{
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            border: solid 1px #f0eded;
+            border: solid 1px #dbdbdb;
             padding-top: 25px;
             padding-bottom: 25px;
         }
@@ -312,7 +312,7 @@
                 <nav class="col-sm-3" id="myScrollspy">
                     <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
                         @foreach($itinerary['dates'] as $i => $date)
-                            <li><a href="#section{{$i}}">{{substr($date,0,-5)}}</a></li>
+                            <li><a href="#day{{$i+1}}">{{substr($date,0,-5)}}</a></li>
                         @endforeach
                     </ul>
                 </nav>
@@ -320,7 +320,7 @@
 
             <div class="col-md-11 right_itinerary">
                 @foreach($itinerary['dates'] as $i => $date)
-                    <div class="eachday" id="section{{$i}}">
+                    <div class="eachday" id="day{{$i+1}}">
                         <div class="mdate">
                             {{$date}}
                         </div>
@@ -377,7 +377,7 @@
                                                 @endif
                                                 <br><br>
                                                 {{$poi['perex']}} <br><br>
-                                                <div class="see_more" data-toggle="modal" data-target="#detailsModal">
+                                                <div class="see_more" data-toggle="modal" data-target="#detailsModal" onclick="loadDetails('<?php echo $poi['poi_id'] ?>')">
                                                     <i class="fas fa-info-circle"></i> See more details
                                                 </div>
                                                 <br>
@@ -405,7 +405,7 @@
                                             <div class="col-md-8 itinerary_details">
                                                 <h3>{{ucfirst($poi['location'])}}</h3>
                                                 <br><br>
-                                                <i class="fas fa-info-circle"></i>&nbsp;{{$poi['perex']}} <br><br>
+                                                <i class="fas fa-location-arrow"></i>&nbsp;{{$poi['perex']}} <br><br>
                                                 <br>
                                                 <span class="marker" data-toggle="modal" data-target="#iftameMarker" onclick="loadMap('<?php echo $poi['coordinate'] ?>')">
                                                     <i class="fas fa-map-marker-alt"></i> Maps
@@ -491,7 +491,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    Details...
+                   <span id="poi_name">TEXT</span>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -558,6 +558,15 @@
         });
 
     });
+
+    //Load json from PHP to javascript
+    var poi_data = {!! json_encode($poi_data) !!};
+
+    function loadDetails(id) {
+        var name = poi_data[id]['original_name'];
+
+        $('#detailsModal #poi_name').html(name);
+    }
 
 </script>
 
