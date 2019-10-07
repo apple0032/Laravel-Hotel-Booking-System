@@ -91,12 +91,35 @@
         }
 
         .modal-body{
-            padding: 0px;
+            padding: 10px;
         }
 
         .modal-footer {
             padding: 5px;
         }
+
+        .middle {
+            position: relative;
+            height:500px;
+        }
+
+        @media only screen and (max-width: 800px) {
+            .middle {
+                height:250px;
+            }
+        }
+
+        .middle img {
+            max-width: 100%;
+            max-height:100%;
+            margin: auto;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+
 
         .container_itinerary {
             margin-top: 35px;
@@ -154,7 +177,8 @@
 
         .schedule_time{
             display: block;
-            font-size: 27px;
+            font-size: 30px;
+            margin-bottom: 5px;
         }
         
         .itinerary_img img{
@@ -291,6 +315,57 @@
             display: inline-block;
             cursor: pointer;
         }
+
+        #detailsModal{
+            color: black;
+        }
+
+        .poi_content{
+            font-size: 14px;
+            color: #3f3f3f;
+        }
+
+        .poi_content i{
+            margin-right: 5px;
+            width: 15px;
+        }
+
+        .poi_content b{
+            font-size: 15px;
+        }
+
+        .poi_content_header{
+            margin: 5px 5px 5px 5px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .poi_star i{
+            font-size: 16px;
+        }
+
+        .poi_desc{
+            padding: 10px;
+        }
+
+        .poi_category{
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .poi_text{
+            font-size: 16px;
+        }
+
+        .poi_address, .poi_admission, .poi_opening, .poi_phone, .poi_map{
+            margin-top: 40px;
+        }
+
+        #place_map{
+            border: 1px solid #7b7b7b;
+            border-radius: 5px;
+        }
     </style>
 
     <div class="loading_css">
@@ -344,7 +419,7 @@
                                         <div class="row">
                                             <div class="col-md-2 itinerary_time">
                                                 <span class="schedule_time">{{substr($poi['schedule_time'], -8,-3)}}</span>
-                                                <i class="far fa-clock"></i> &nbsp;{{$poi['duration']/60}} Minutes
+                                                <i class="fas fa-hourglass-half"></i> &nbsp;{{$poi['duration']/60}} Minutes
                                             </div>
                                             <div class="col-md-2 itinerary_img">
                                                 @if($poi['thumbnail_url'] != null)
@@ -491,7 +566,71 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                   <span id="poi_name">TEXT</span>
+                    <div class="poi_content_header">
+                        <span class="poi_name">#NAME</span> - <span class="poi_oname">#ONAME</span>
+                        <span class="poi_star"><i class="fas fa-star" style="color: #ff9600;"></i></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                                <!-- Indicators -->
+                                <ol class="carousel-indicators">
+
+                                </ol>
+
+                                <!-- Wrapper for slides -->
+                                <div class="carousel-inner">
+
+                                </div>
+
+                                <!-- Left and right controls -->
+                                <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                                    <span class="glyphicon glyphicon-chevron-left"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                                    <span class="glyphicon glyphicon-chevron-right"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+                            <div class="poi_desc">
+                                <div class="poi_category">
+                                    <b>Category</b> : <span>#CATEGORIES</span>
+                                </div>
+                                <div class="poi_text">
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="poi_content">
+                                <div class="poi_duration">
+                                    <b><i class="fas fa-hourglass-half"></i> Recommended Duration</b> <br>
+                                    <span></span>
+                                </div>
+                                <div class="poi_address">
+                                    <b><i class="fas fa-location-arrow"></i> Address</b> <br>
+                                    <span></span>
+                                </div>
+                                <div class="poi_admission">
+                                    <b><i class="fas fa-dollar-sign"></i> Admission</b> <br>
+                                    <span></span>
+                                </div>
+                                <div class="poi_opening">
+                                    <b><i class="fas fa-clock"></i> Opening Hours</b> <br>
+                                    <span></span>
+                                </div>
+                                <div class="poi_phone">
+                                    <b><i class="fas fa-mobile-alt"></i> Phone</b> <br>
+                                    <span></span>
+                                </div>
+                                <div class="poi_map">
+                                    <b><i class="fas fa-map-marked-alt"></i> Location</b> <br>
+                                    <iframe id="place_map" src="" width="100%" height="300" frameborder="0" allowfullscreen=""></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -507,16 +646,16 @@
 
 <script>
     window.onload = function() {
-        setTimeout(function(){
+        //setTimeout(function(){
             $(".container_itinerary").css("display", "block");
             $(".loading_css").hide();
-        }, 800);
+        //}, 800);
     };
 
     function loadIframe(from,to) {
         var $iframe = $('#google_iframe');
         if ( $iframe.length ) {
-            var url = "https://www.google.com/maps/embed/v1/directions?key=AIzaSyBs37KmdWQjAdOeIon2W_kg7hDfAOF_Fhc&origin="+from+"&destination="+to;
+            var url = "https://www.google.com/maps/embed/v1/directions?key="+map_key+"&origin="+from+"&destination="+to;
             $iframe.attr('src',url);
             return false;
         }
@@ -561,11 +700,128 @@
 
     //Load json from PHP to javascript
     var poi_data = {!! json_encode($poi_data) !!};
+    var map_key = {!! json_encode($api_key) !!};
 
     function loadDetails(id) {
-        var name = poi_data[id]['original_name'];
+        console.log(poi_data[id]);
 
-        $('#detailsModal #poi_name').html(name);
+        //POI Header
+        var name = poi_data[id]['name'];
+        var original_name = poi_data[id]['original_name'];
+        var rating = poi_data[id]['rating'];
+        $('#detailsModal .poi_name').html(name);
+        $('#detailsModal .poi_oname').html(original_name);
+
+        var star_html = '';
+        var star = '<i class="fas fa-star" style="color: #ff9600;">';
+        switch (true) {
+            case rating > 0.5:
+                for (var i = 0; i < 6; i++) {
+                    star_html += star;
+                }
+                break;
+            case rating > 0.3:
+                for (var i = 0; i < 5; i++) {
+                    star_html += star;
+                }
+                break;
+            case rating > 0.1:
+                for (var i = 0; i < 4; i++) {
+                    star_html += star;
+                }
+                break;
+            case rating > 0.05:
+                for (var i = 0; i < 3; i++) {
+                    star_html += star;
+                }
+                break;
+            default:
+                star_html += star+star;
+        }
+        $('.poi_star').html(star_html);
+
+
+        //POI Carousel
+        var media = poi_data[id]['main_media']['media'];
+        var main_img = media[0]['url'];
+
+        var media_html = '';
+        var indicators = '';
+        media_html = '<div class="item active"><div class="middle"><img src="'+main_img+'" alt=""></div></div>';
+        indicators = '<li data-target="#myCarousel" data-slide-to="0" class="active"></li>';
+        setTimeout(function(){
+            $.each( media, function( key, value ) {
+                if(key > 0){
+                    media_html += '<div class="item"><div class="middle"><img src="'+value['url']+'" alt=""></div></div>';
+                    indicators += '<li data-target="#myCarousel" data-slide-to="'+key+'"></li>';
+                }
+            });
+
+            $("#myCarousel .carousel-inner").html(media_html);
+            $("#myCarousel .carousel-indicators").html(indicators);
+        }, 500);
+
+        //POI desc
+        var categories = poi_data[id]['categories'];
+        var cat_str = '';
+        $.each( categories, function( key, value ) {
+            if(key < categories.length - 1){
+                cat_str += value+' / ';
+            } else {
+                cat_str += value;
+            }
+        });
+        $(".poi_category span").html('<i>'+cat_str+'</i>');
+
+        var desc_text = poi_data[id]['description']['text'];
+        $(".poi_text span").text(desc_text);
+
+
+        //POI Content
+        var duration = poi_data[id]['duration'];
+        var recom_duration_from;
+        var recom_duration_to;
+        var duration_str = '';
+        if(duration != null){
+            recom_duration_from = (duration/60);
+            recom_duration_to = ((duration + 1800)/60);
+            duration_str = recom_duration_from+ ' to ' +recom_duration_to + ' Minutes';
+            $(".poi_duration span").html(duration_str);
+        }
+
+        var address = poi_data[id]['address'];
+        $(".poi_address span").html(address);
+
+        var admission = poi_data[id]['admission'];
+        if(admission != null) {
+            $(".poi_admission span").html(admission);
+        } else {
+            $(".poi_admission span").html('No.');
+        }
+
+        var opening = poi_data[id]['opening_hours'];
+        if(opening != null) {
+            $(".poi_opening span").text(opening);
+        } else {
+            $(".poi_opening span").text("No information provided.");
+        }
+
+        var phone = poi_data[id]['phone'];
+        if(phone != null){
+            $(".poi_phone span").text(phone);
+        } else {
+            $(".poi_phone span").text('No information provided.');
+        }
+
+        var location = poi_data[id]['location'];
+        location = location.lat+','+location.lng;
+
+        var $iframe = $('#place_map');
+        if ( $iframe.length ) {
+            var url = "http://maps.google.com/maps?q="+location+"&z=15&output=embed";
+            $iframe.attr('src',url);
+            return false;
+        }
     }
 
 </script>

@@ -231,7 +231,8 @@ class TripController extends Controller
     public function getHotelBookingFromNodeAPI($userid){
         $host = request()->getHost();
         $host = 'http://'.$host.':8080/hotel/booking/'.$userid;
-        $headers[] = 'api_key: m67578441';
+        $api_key = ApiInfo::NodeAPI();
+        $headers[] = 'api_key: '.$api_key;
         //print_r($host);die();
 
         $ch = curl_init($host);
@@ -262,7 +263,8 @@ class TripController extends Controller
         
         $host = request()->getHost();
         $host = 'http://'.$host.':8080/hotel/trip_match/'.$request->id.'/'.$request->booking;
-        $headers[] = 'api_key: m67578441';
+        $api_key = ApiInfo::NodeAPI();
+        $headers[] = 'api_key: '.$api_key;
 
         $ch = curl_init($host);
         curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
@@ -317,6 +319,7 @@ class TripController extends Controller
         //$itinerary = json_decode(file_get_contents($path), true);
         //echo'<pre>'; print_r($itinerary); echo '</pre>';die();
 
+        $api_key = ApiInfo::GoogleMapApiData();
         $itinerary = $this->getItineraryFromNodeAPI();
         $itinerary = json_decode($itinerary,true);
         $pois = json_encode($itinerary['itinerary_pois']);
@@ -351,7 +354,8 @@ class TripController extends Controller
         return view('trip.itinerary')
             ->with('itinerary',$itinerary)
             ->with('related_flight_id',$related_flight_id)
-            ->with('poi_data',$poi_details);
+            ->with('poi_data',$poi_details)
+            ->with('api_key',$api_key);
     }
 
     public function getItineraryFromNodeAPI(){
