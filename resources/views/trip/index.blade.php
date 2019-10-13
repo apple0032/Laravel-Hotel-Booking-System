@@ -459,7 +459,7 @@
                 $('.trip_header_country span').html(country);
 
                 //ajax to load trip details
-                $('.trip_content').load('trip/'+sid+' .trip_details', function () {
+                $('.trip_content').load('trip/info/'+sid+' .trip_details', function () {
                     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                     
                     $('.no_hotel_button').click(function () {

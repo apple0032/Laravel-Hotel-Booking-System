@@ -21,6 +21,7 @@ use App\Trip;
 use App\CountryImage;
 use App\Cities;
 use App\ApiInfo;
+use App\Itinerary;
 
 class TripController extends Controller
 {
@@ -312,7 +313,35 @@ class TripController extends Controller
             ->with('country_code',$country_code);
     }
 
-    public function ItineraryIndex(){
+    public function generateItinerary(Request $request){
+        //AJAX to generate itinerary
+
+        $city = $request->city;
+        $start = substr($request->date, 0, 10);
+        $end = substr($request->date, -10);
+        $starttime = $request->starttime;
+        $endtime = $request->endtime;
+
+        //print_r($city);print_r($start);print_r($end);print_r($starttime);print_r($endtime);die();
+
+        $itinerary = $this->getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime);
+
+        $new = new Itinerary();
+        $new->itinerary_obj = $itinerary;
+        $new->save();
+
+        $response = array(
+            'status' => "success",
+            'id' => $new->id
+        );
+
+        return response()->json($response);
+    }
+
+    public function ItineraryIndex($id){
+
+        //$plan = Itinerary::where('id', '=', 1)->get()->first();
+        //echo '<pre>'; print_r($plan->itinerary_obj); echo '</pre>'; die();
 
         $user_id = Auth::user()->id;
         //$path = 'http://'.request()->getHttpHost().'/hotelsdb/storage/itinerary2.json';
@@ -320,8 +349,8 @@ class TripController extends Controller
         //echo'<pre>'; print_r($itinerary); echo '</pre>';die();
 
         $api_key = ApiInfo::GoogleMapApiData();
-        $itinerary = $this->getItineraryFromNodeAPI();
-        $itinerary = json_decode($itinerary,true);
+        $itinerary = Itinerary::where('id', '=', $id)->get()->first();
+        $itinerary = json_decode($itinerary['itinerary_obj'],true);
         $pois = json_encode($itinerary['itinerary_pois']);
 
         //print_r($pois);die();
@@ -358,19 +387,19 @@ class TripController extends Controller
             ->with('api_key',$api_key);
     }
 
-    public function getItineraryFromNodeAPI(){
+    public function getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime){
         $host = request()->getHost();
         $host = 'http://'.$host.':8080/trip';
         $api_key = ApiInfo::NodeAPI();
 
         $post = [
-            'city' => 'Hong Kong',
+            'city' => $city,
             'limit' => '400',
             'priority' => '{"sightseeing": 5, "shopping" : 4, "eating" : 3}',
-            'trip_start' => '2019-11-23',
-            'trip_end' => '2019-11-27',
-            'start_time' => '09:00',
-            'end_time' => '20:00',
+            'trip_start' => $start,
+            'trip_end' => $end,
+            'start_time' => $starttime,
+            'end_time' => $endtime,
             'hottest' => 1
         ];
 
@@ -432,6 +461,31 @@ class TripController extends Controller
         //$result = json_decode($response,true);
 
         return $response;
+    }
+
+    public function PlanIndex(){
+
+        
+        return view('trip.plan');
+    }
+
+    public function searchCity(Request $request){
+
+        if($request->type == "match") {
+            $cities = Cities::where('name', 'like', '%' . $request->name . '%')->get()->toArray();
+        } else {
+            $cities = Cities::where('name', '=', $request->name)->get()->toArray();
+        }
+
+        //$city = array('osaka', 'tokyo');
+        //print_r($city);die();
+
+        $response = array(
+            'status' => "success",
+            'city' => $cities
+        );
+
+        return response()->json($response);
     }
 }
 

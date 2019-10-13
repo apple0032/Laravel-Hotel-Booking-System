@@ -76,9 +76,12 @@ Route::group(['middleware' => ['web']], function () {
 
     //Trip
     Route::get('/trip', ['uses' => 'TripController@tripIndex', 'as' => 'flight.trip']);
-    Route::get('/trip/{trip_id}', ['uses' => 'TripController@getTripDetails', 'as' => 'flight.trip_info']);
+    Route::get('/trip/info/{trip_id}', ['uses' => 'TripController@getTripDetails', 'as' => 'flight.trip_info']);
     Route::get('/trip/adviser/{city_name}', ['uses' => 'TripController@getTripAdviser', 'as' => 'flight.trip_adviser']);
-    Route::get('/itinerary', ['uses' => 'TripController@ItineraryIndex', 'as' => 'flight.itinerary']);
+    Route::get('/trip/itinerary/{id}', ['uses' => 'TripController@ItineraryIndex', 'as' => 'flight.itinerary']);
+    Route::get('/trip/plan', ['uses' => 'TripController@PlanIndex', 'as' => 'flight.plan']);
+    Route::post('/trip/searchCity','TripController@searchCity');
+    Route::post('/trip/generateItinerary','TripController@generateItinerary');
     
     //Image
     Route::post('/images-save', 'UploadImagesController@store');
