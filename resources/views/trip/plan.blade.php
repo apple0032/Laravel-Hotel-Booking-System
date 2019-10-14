@@ -6,6 +6,8 @@
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css"/>
     <link href="https://fonts.googleapis.com/css?family=Quicksand:400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.1.0/nouislider.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.1.0/nouislider.js"></script>
     <style type="text/css" class="cp-pen-styles">
 
         body {
@@ -62,12 +64,33 @@
             font-size: 15px;
         }
 
-        .input_city {
+        .input_city , .input_weighting {
             margin-top: 60px;
             margin-left: 28%;
             margin-right: 28%;
         }
+        
+        .input_weighting{
+            color: #565656;
+            background-color: #f7f7f7;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        
+        .input_weighting i{
+            margin-right: 8px;
+        }
+        
+        .noUi-handle{
+            border: 1px solid #797979;
+            background: #124a66;
+            border-radius: 8px;
+        }
 
+        .weighting_group{
+            margin-bottom: 15px;
+        }
+        
         @media only screen and (max-width: 800px) {
             .input_city {
                 margin-left: 5% !important;
@@ -134,7 +157,7 @@
             font-size: 18px;
         }
 
-        .step-2{
+        .step-2, .step-3{
             display: none;
             margin-top: 50px;
         }
@@ -274,6 +297,47 @@
             </div>
         </div>
 
+        <div class="screen-actions">
+            <span id="js_city_step_prev" class="prev-button js_city_step_move prev-btn-dsk">
+                <span class="p-size button prev-btn-dsk">
+                    <i class="icon-arrow-left prev-btn-dsk"></i>
+                    Back
+                </span>
+            </span>
+            <span id="js_city_step_next" class="next-button js_city_step_move next-btn-dsk">
+                <span class="p-color p-size button next-btn-dsk">
+                    <span id="js_city_next_step_title" class="step_title next-btn-dsk">
+                        Next <i class="icon-arrow-right next-btn-dsk"></i>
+                    </span>
+                </span>
+            </span>
+        </div>
+    </div>
+    
+    <div class="step-3 animated">
+        <div class="input_weighting">
+            <div class="row weighting_group">
+                <div class="col-md-2">
+                    <i class="fas fa-utensils"></i>
+                    Eating
+                </div>
+                <div class="col-md-10">
+                    <div id="slider_eating"></div>
+                </div>
+                <input name="w_eating" id="w_eating" type="hidden" value="">
+            </div>
+            <div class="row weighting_group">
+                <div class="col-md-2">
+                    <i class="fas fa-hiking"></i>
+                    Hiking
+                </div>
+                <div class="col-md-10">
+                    <div id="slider_hiking"></div>
+                </div>
+                <input name="w_hiking" id="w_hiking" type="hidden" value="">
+            </div>
+        </div>
+        
         <div class="screen-actions">
             <span id="js_city_step_prev" class="prev-button js_city_step_move prev-btn-dsk">
                 <span class="p-size button prev-btn-dsk">
@@ -436,7 +500,7 @@
                     $('.step-1').hide();
                     $('.step-2').addClass("bounceInRight").show();
                     setTimeout(function(){
-                        $('.screen-actions').fadeIn();
+                        $('.step-2 .screen-actions').fadeIn();
                     }, 1000);
                 }, 200);
 
@@ -457,43 +521,101 @@
             value: '20:00'
         });
 
-        $("#js_city_step_prev").click(function () {
+        $(".step-2 #js_city_step_prev").click(function () {
             $('.step-2').removeClass("bounceInRight").hide();
-            $('.screen-actions').hide();
+            $('.step-2 .screen-actions').hide();
             setTimeout(function() {
                 $('.step-1').removeClass("bounceOutLeft");
-                $('.step-1').addClass("bounceInRight").show();
+                $('.step-1').addClass("bounceInLeft").show();
             }, 200);
         });
 
 
-        $("#js_city_step_next").click(function () {
+        $(".step-2 #js_city_step_next").click(function () {
 
             var city = $('#searchcity').val();
             var date = $('#daterange').val();
             var starttime = $('#starttime').val();
             var endtime = $('#endtime').val();
 
-            $.ajax({
-                url: 'generateItinerary',
-                async: false,
-                type: 'POST',
-                data: {
-                    _token: CSRF_TOKEN,
-                    city: city,
-                    date: date,
-                    starttime: starttime,
-                    endtime: endtime
-                },
-                dataType: 'JSON',
-                success: function (data) {
-                    if(data['status'] === 'success') {
-                        location.href = "../trip/itinerary/"+data['id'];
-                    }
-                }
-            });
+            $('.step-2').removeClass("bounceInRight").hide();
+            $('.step-2 .screen-actions').hide();
+            setTimeout(function() {
+                $('.step-3').removeClass("bounceOutLeft");
+                $('.step-3').addClass("bounceInRight").show();
+            }, 200);
+            
+            setTimeout(function(){
+                $('.step-3 .screen-actions').fadeIn();
+            }, 1300);
+            
+//            $.ajax({
+//                url: 'generateItinerary',
+//                async: false,
+//                type: 'POST',
+//                data: {
+//                    _token: CSRF_TOKEN,
+//                    city: city,
+//                    date: date,
+//                    starttime: starttime,
+//                    endtime: endtime
+//                },
+//                dataType: 'JSON',
+//                success: function (data) {
+//                    if(data['status'] === 'success') {
+//                        location.href = "../trip/itinerary/"+data['id'];
+//                    }
+//                }
+//            });
+        });
+        
+        
+        $(".step-3 #js_city_step_prev").click(function () {
+            $('.step-3').removeClass("bounceInRight").hide();
+            $('.step-3 .screen-actions').hide();
+            setTimeout(function() {
+                $('.step-2').removeClass("bounceOutLeft");
+                $('.step-2').addClass("bounceInLeft").show();
+            }, 200);
+            
+            setTimeout(function(){
+                $('.step-2 .screen-actions').fadeIn();
+            }, 1300);
         });
 
+        
+        
 
+        var r_eating = document.getElementById('slider_eating');
+
+        noUiSlider.create(r_eating, {
+            start: [30],
+            step: 1,
+            range: {
+                'min': [10],
+                'max': [50]
+            }
+        });
+        
+        slider_eating.noUiSlider.on('update.one', function (values) { 
+            $("#w_eating").val(Math.floor(values[0]));
+        });
+        
+        
+        var r_hiking = document.getElementById('slider_hiking');
+
+        noUiSlider.create(r_hiking, {
+            start: [30],
+            step: 1,
+            range: {
+                'min': [10],
+                'max': [50]
+            }
+        });
+        
+        slider_hiking.noUiSlider.on('update.one', function (values) { 
+            console.log(Math.floor(values[0]));
+        });
+        
     </script>
 @endsection
