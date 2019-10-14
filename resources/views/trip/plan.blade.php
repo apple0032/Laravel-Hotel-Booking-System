@@ -64,7 +64,7 @@
             font-size: 15px;
         }
 
-        .input_city , .input_weighting {
+        .input_city , .input_weighting{
             margin-top: 60px;
             margin-left: 28%;
             margin-right: 28%;
@@ -74,16 +74,30 @@
             color: #565656;
             background-color: #f7f7f7;
             border-radius: 5px;
-            padding: 10px;
+            padding: 30px 20px 10px 20px;
+            font-size: 20px;
+        }
+
+        .input_map{
+            margin-top: 30px;
+            margin-left: 15%;
+            margin-right: 15%;
+            color: #565656;
+            background-color: #f7f7f7;
+            border-radius: 5px;
+            padding: 0px 10px 10px 10px;
+            font-size: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .input_weighting i{
             margin-right: 8px;
+            width: 21px;
         }
         
         .noUi-handle{
             border: 1px solid #797979;
-            background: #124a66;
+            background: #a0a0a0;
             border-radius: 8px;
         }
 
@@ -157,6 +171,15 @@
             font-size: 18px;
         }
 
+        .step-1{
+            /*display: none;*/
+        }
+
+        .step-4{
+            display: none;
+            margin-top: 50px;
+        }
+
         .step-2, .step-3{
             display: none;
             margin-top: 50px;
@@ -189,7 +212,7 @@
             width: 100% !important;
         }
 
-        .step-2_label{
+        .step-2_label, .step-3_label, .step-4_label{
             font-size: 30px;
             text-align: center;
             margin-bottom: 40px;
@@ -233,6 +256,16 @@
             background-color: #db7569;
             border-radius: 3px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        #map{
+            height: 450px;
+        }
+
+        .map_text{
+            font-size: 16px;
+            color: black;
+            margin-bottom: 5px;
         }
     </style>
 
@@ -315,27 +348,21 @@
     </div>
     
     <div class="step-3 animated">
+        <div class="step-3_label">What would you like to do in your trip?</div>
         <div class="input_weighting">
-            <div class="row weighting_group">
-                <div class="col-md-2">
-                    <i class="fas fa-utensils"></i>
-                    Eating
+            @foreach($categories as $cat => $fa)
+                <div class="row weighting_group">
+                    <div class="col-md-3">
+                        <i class="fas {{$fa}}"></i>
+                        {{ucfirst($cat)}}
+                    </div>
+                    <div class="col-md-9">
+                        <div id="slider_{{$cat}}"></div>
+                    </div>
+                    <input name="w_{{$cat}}" id="w_{{$cat}}" type="hidden" value="">
                 </div>
-                <div class="col-md-10">
-                    <div id="slider_eating"></div>
-                </div>
-                <input name="w_eating" id="w_eating" type="hidden" value="">
-            </div>
-            <div class="row weighting_group">
-                <div class="col-md-2">
-                    <i class="fas fa-hiking"></i>
-                    Hiking
-                </div>
-                <div class="col-md-10">
-                    <div id="slider_hiking"></div>
-                </div>
-                <input name="w_hiking" id="w_hiking" type="hidden" value="">
-            </div>
+            @endforeach
+
         </div>
         
         <div class="screen-actions">
@@ -355,6 +382,24 @@
         </div>
     </div>
 
+
+    <div class="step-4 animated">
+        <div class="step-4_label">Do you have accommodation in your trip?</div>
+        <div class="input_map">
+            <span class="map_text"><i class="fas fa-map-marker-alt"></i> &nbsp;Drag the marker below.</span>
+            <div id="map"></div>
+        </div>
+
+        <div class="screen-actions">
+            <span id="js_city_step_prev" class="prev-button js_city_step_move prev-btn-dsk">
+                <span class="p-size button prev-btn-dsk">
+                    <i class="icon-arrow-left prev-btn-dsk"></i>
+                    Back
+                </span>
+            </span>
+        </div>
+    </div>
+
 @endsection
 
 
@@ -362,6 +407,7 @@
 
 @section('scripts')
 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7BhQ5f9OupkTJRgLg_vCehCi8AlLOSuQ"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
@@ -533,11 +579,6 @@
 
         $(".step-2 #js_city_step_next").click(function () {
 
-            var city = $('#searchcity').val();
-            var date = $('#daterange').val();
-            var starttime = $('#starttime').val();
-            var endtime = $('#endtime').val();
-
             $('.step-2').removeClass("bounceInRight").hide();
             $('.step-2 .screen-actions').hide();
             setTimeout(function() {
@@ -548,25 +589,7 @@
             setTimeout(function(){
                 $('.step-3 .screen-actions').fadeIn();
             }, 1300);
-            
-//            $.ajax({
-//                url: 'generateItinerary',
-//                async: false,
-//                type: 'POST',
-//                data: {
-//                    _token: CSRF_TOKEN,
-//                    city: city,
-//                    date: date,
-//                    starttime: starttime,
-//                    endtime: endtime
-//                },
-//                dataType: 'JSON',
-//                success: function (data) {
-//                    if(data['status'] === 'success') {
-//                        location.href = "../trip/itinerary/"+data['id'];
-//                    }
-//                }
-//            });
+
         });
         
         
@@ -583,39 +606,112 @@
             }, 1300);
         });
 
-        
-        
 
-        var r_eating = document.getElementById('slider_eating');
+        //var categories = ['shopping','eating','relaxing','sightseeing','playing','outdoor','discovering'];
+        var categories = JSON.parse('<?php print_r(json_encode($categories)) ?>');
+        console.log(categories);
 
-        noUiSlider.create(r_eating, {
-            start: [30],
-            step: 1,
-            range: {
-                'min': [10],
-                'max': [50]
-            }
-        });
-        
-        slider_eating.noUiSlider.on('update.one', function (values) { 
-            $("#w_eating").val(Math.floor(values[0]));
-        });
-        
-        
-        var r_hiking = document.getElementById('slider_hiking');
+        $.each(categories, function (key, value) {
+            var slider = document.getElementById('slider_' + key);
 
-        noUiSlider.create(r_hiking, {
-            start: [30],
-            step: 1,
-            range: {
-                'min': [10],
-                'max': [50]
-            }
+            noUiSlider.create(slider, {
+                start: [30],
+                step: 1,
+                range: {
+                    'min': [10],
+                    'max': [50]
+                }
+            });
+
+            slider.noUiSlider.on('update.one', function (values) {
+                $("#w_" + key).val(Math.floor(values[0]));
+            });
         });
-        
-        slider_hiking.noUiSlider.on('update.one', function (values) { 
-            console.log(Math.floor(values[0]));
+
+
+        $(".step-3 #js_city_step_next").click(function () {
+
+            $('.step-3').removeClass("bounceInRight").hide();
+            $('.step-3 .screen-actions').hide();
+            setTimeout(function() {
+                $('.step-4').removeClass("bounceOutLeft");
+                $('.step-4').addClass("bounceInRight").show();
+            }, 200);
+
+            setTimeout(function(){
+                $('.step-4 .screen-actions').fadeIn();
+            }, 1300);
+
         });
-        
+
+        $(".step-4 #js_city_step_prev").click(function () {
+            $('.step-4').removeClass("bounceInRight").hide();
+            $('.step-4 .screen-actions').hide();
+            setTimeout(function() {
+                $('.step-3').removeClass("bounceOutLeft");
+                $('.step-3').addClass("bounceInLeft").show();
+            }, 200);
+
+            setTimeout(function(){
+                $('.step-3 .screen-actions').fadeIn();
+            }, 1300);
+        });
+
+
+        var map;
+        var marker;
+
+        var myLatLng = {lat: parseFloat("22.444630"), lng: parseFloat("114.170655")};
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 15,
+            center: myLatLng
+        });
+
+        marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            draggable: true,
+            icon: '../images/marker.png'
+        });
+
+        google.maps.event.addListener(marker, 'dragend', function (event) {
+            var lat = this.getPosition().lat();
+            var lng = this.getPosition().lng();
+            console.log(lat+','+lng);
+
+            //$('#map_lat').val(lat);
+            //$('#map_lng').val(lng);
+        });
+
+
+
+
+
+//                    var city = $('#searchcity').val();
+//                    var date = $('#daterange').val();
+//                    var starttime = $('#starttime').val();
+//                    var endtime = $('#endtime').val();
+//
+//                    $.ajax({
+//                        url: 'generateItinerary',
+//                        async: false,
+//                        type: 'POST',
+//                        data: {
+//                            _token: CSRF_TOKEN,
+//                            city: city,
+//                            date: date,
+//                            starttime: starttime,
+//                            endtime: endtime
+//                        },
+//                        dataType: 'JSON',
+//                        success: function (data) {
+//                            if(data['status'] === 'success') {
+//                                location.href = "../trip/itinerary/"+data['id'];
+//                            }
+//                        }
+//                    });
+
     </script>
+
 @endsection

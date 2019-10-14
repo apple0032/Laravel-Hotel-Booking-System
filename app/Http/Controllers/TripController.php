@@ -465,8 +465,19 @@ class TripController extends Controller
 
     public function PlanIndex(){
 
+        $categories = array(
+            "shopping" => "fa-shopping-cart",
+            "eating" => "fa-utensils",
+            "relaxing" => "fa-couch",
+            "sightseeing" => "fa-torii-gate",
+            "playing" => "fa-football-ball",
+            "outdoor" => "fa-hiking",
+            "discovering" => "fa-binoculars"
+        );
+
+        $api_key = ApiInfo::GoogleMapJsApiData();
         
-        return view('trip.plan');
+        return view('trip.plan')->with('categories',$categories)->with('api_key',$api_key);
     }
 
     public function searchCity(Request $request){
