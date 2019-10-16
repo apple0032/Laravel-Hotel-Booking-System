@@ -69,13 +69,23 @@
             margin-left: 28%;
             margin-right: 28%;
         }
-        
+
+        .input_timer{
+            background-color: #f7f7f7;
+            color: #000000;
+            border-radius: 5px;
+            padding: 10px 50px 30px 50px;
+            font-size: 20px;
+            box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
+        }
+
         .input_weighting{
-            color: #565656;
+            color: #183849;
             background-color: #f7f7f7;
             border-radius: 5px;
-            padding: 30px 20px 10px 20px;
+            padding: 40px 50px 20px 50px;
             font-size: 20px;
+            box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
         }
 
         .input_map{
@@ -87,16 +97,16 @@
             border-radius: 5px;
             padding: 0px 10px 10px 10px;
             font-size: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
         }
         
         .input_weighting i{
             margin-right: 8px;
-            width: 21px;
+            width: 28px;
         }
         
         .noUi-handle{
-            border: 1px solid #797979;
+            border: 1px solid #a4a4a4;
             background: #a0a0a0;
             border-radius: 8px;
         }
@@ -177,6 +187,7 @@
 
         .step-4{
             display: none;
+            /*margin-bottom: 200px;*/
             margin-top: 50px;
         }
 
@@ -189,6 +200,7 @@
             color: white;
             margin-left: 40%;
             margin-right: 40%;
+            margin-top: 60px;
         }
 
         @media only screen and (max-width: 800px) {
@@ -199,13 +211,13 @@
         }
 
         .gj-textbox-md{
-            border-bottom: 2px solid rgba(255, 255, 255, 0.42) !important;
-            color: rgba(255, 255, 255, 0.87) !important;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.42) !important;
+            color: rgba(0, 0, 0, 0.87) !important;
             font-size: 22px !important;
         }
 
         .gj-icon{
-            color: white !important;
+            color: #000 !important;
         }
 
         .gj-timepicker{
@@ -220,7 +232,7 @@
         }
 
         .timer_label{
-            font-size: 20px;
+            font-size: 21px;
             margin-top: 20px;
         }
 
@@ -260,12 +272,60 @@
 
         #map{
             height: 450px;
+            border: 1px solid #aaaaaa;
+            border-radius: 5px;
         }
 
         .map_text{
             font-size: 16px;
             color: black;
             margin-bottom: 5px;
+            float: right;
+        }
+
+        .map_searching{
+            padding: 10px 20px;
+        }
+
+        #search_str{
+            margin-top: 10px;
+        }
+
+        .search_result{
+            font-size:10px;
+            margin-bottom: 10px;
+        }
+
+        .search_option{
+            border: 1px solid #606060;
+            border-radius: 5px;
+            padding: 5px;
+            margin-bottom: 1px;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .search_option:hover{
+            background-color: black;
+            color: white;
+        }
+
+        .generate_btn{
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            padding-right: 40%;
+            padding-left: 40%;
+            margin-top: 25px;
+        }
+
+        .gen-btn{
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-radius: 5px;
+            background-color: #4ab879;
+            cursor: pointer;
         }
     </style>
 
@@ -319,14 +379,16 @@
     <div class="step-2 animated">
         <div class="step-2_label">What is the start time and end time for your trip?</div>
         <div class="planning2">
-            <div class="timer_label">Start Time</div>
-            <div>
-                <input id="starttime" name="starttime" />
-            </div>
+            <div class="input_timer">
+                <div class="timer_label">Start Time</div>
+                <div>
+                    <input id="starttime" name="starttime" />
+                </div>
 
-            <div class="timer_label">End Time</div>
-            <div>
-                <input id="endtime" name="endtime" />
+                <div class="timer_label">End Time</div>
+                <div>
+                    <input id="endtime" name="endtime" />
+                </div>
             </div>
         </div>
 
@@ -387,7 +449,26 @@
         <div class="step-4_label">Do you have accommodation in your trip?</div>
         <div class="input_map">
             <span class="map_text"><i class="fas fa-map-marker-alt"></i> &nbsp;Drag the marker below.</span>
-            <div id="map"></div>
+            <div class="row">
+                <div class="col-md-2 map_searching">
+                    <i class="fas fa-search"></i> &nbsp;Search
+                    <input id="search_str" class="form-control" type="text" maxlength="30" autocomplete="off" placeholder="*Hotel name/Home">
+                    <div class="search_result"></div>
+                    <button id="search_place" type="button" class="btn btn-primary">Search</button>
+                    <button id="search_clear" type="button" class="btn btn-default">Clear</button>
+                </div>
+                <div class="col-md-10">
+                    <div id="map"></div>
+                    <input type="hidden" id="accom_lat" name="accom_lat" value="22.444630">
+                    <input type="hidden" id="accom_lng" name="accom_lng" value="114.170655">
+                </div>
+            </div>
+        </div>
+
+        <div class="generate_btn">
+            <div class="gen-btn">
+                Start Generating Itinerary
+            </div>
         </div>
 
         <div class="screen-actions">
@@ -430,6 +511,7 @@
             });
         });
 
+        $("#searchcity").focus();
         $('#searchcity').on("focus", function () {
             $(this).attr("placeholder", "Enter a city name");
         });
@@ -636,6 +718,7 @@
             setTimeout(function() {
                 $('.step-4').removeClass("bounceOutLeft");
                 $('.step-4').addClass("bounceInRight").show();
+                //$("#search_str").focus();
             }, 200);
 
             setTimeout(function(){
@@ -660,57 +743,122 @@
 
         var map;
         var marker;
+        initGoogleMap("22.444630","114.170655");
 
-        var myLatLng = {lat: parseFloat("22.444630"), lng: parseFloat("114.170655")};
+        function initGoogleMap(lat,lng) {
+            var myLatLng = {lat: parseFloat(lat), lng: parseFloat(lng)};
 
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 15,
-            center: myLatLng
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: myLatLng
+            });
+
+            marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                draggable: true,
+                icon: '../images/marker.png'
+            });
+
+            google.maps.event.addListener(marker, 'dragend', function (event) {
+                var lat = this.getPosition().lat();
+                var lng = this.getPosition().lng();
+                console.log(lat+','+lng);
+
+                $('#accom_lat').val(lat);
+                $('#accom_lng').val(lng);
+            });
+        }
+
+
+        $("#search_place").click(function () {
+            if($("#search_str").val() != '') {
+                searchPlacesByGoogleApi($("#search_str").val());
+            } else {
+                alert("Please input string.");
+            }
         });
 
-        marker = new google.maps.Marker({
-            position: myLatLng,
-            map: map,
-            draggable: true,
-            icon: '../images/marker.png'
+        $("#search_str").on('keyup', function (e) {
+            if (e.keyCode === 13) {
+                if($(this).val() != '') {
+                    searchPlacesByGoogleApi($(this).val());
+                } else {
+                    alert("Please input string.");
+                }
+            }
         });
 
-        google.maps.event.addListener(marker, 'dragend', function (event) {
-            var lat = this.getPosition().lat();
-            var lng = this.getPosition().lng();
-            console.log(lat+','+lng);
-
-            //$('#map_lat').val(lat);
-            //$('#map_lng').val(lng);
+        $("#search_clear").click(function () {
+            $("#search_str").val("");
         });
 
+        function searchPlacesByGoogleApi(keyword) {
+            $.ajax({
+                url: 'searchPlaces',
+                async: false,
+                type: 'POST',
+                data: {
+                    _token: CSRF_TOKEN,
+                    keyword: keyword
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    $('.search_result').html('');
+                    if(data['result'].length > 0){
+                        var chtml = '';
+                        $.each(data['result'], function (key, value) {
+                            var lat = value['location']['lat'];
+                            var lng = value['location']['lng'];
+                            chtml += '<div class="search_option" onclick="changeMap('+lat+','+lng+')"><i class="fas fa-map-marker-alt">&nbsp; '+value['name']+'</i></div>';
+                        });
+
+                        $('.search_result').append(chtml);
+                    }
+                }
+            });
+        }
+
+        function changeMap(lat,lng){
+            initGoogleMap(lat,lng);
+            $('#accom_lat').val(lat);
+            $('#accom_lng').val(lng);
+        }
 
 
+        $(".gen-btn").click(function () {
+            var city = $('#searchcity').val();
+            var date = $('#daterange').val();
+            var starttime = $('#starttime').val();
+            var endtime = $('#endtime').val();
+            var priority = {};
+            $.each(categories, function (key, value) {
+                priority[key] = $('#w_'+key).val();
+            });
+            var point = ($("#accom_lat").val())+','+($("#accom_lng").val());
 
+            $.ajax({
+                url: 'generateItinerary',
+                async: false,
+                type: 'POST',
+                data: {
+                    _token: CSRF_TOKEN,
+                    city: city,
+                    date: date,
+                    starttime: starttime,
+                    endtime: endtime,
+                    priority: priority,
+                    point:point
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    if(data['status'] === 'success') {
+                        location.href = "../trip/itinerary/"+data['id'];
+                    }
+                }
+            });
+        })
 
-//                    var city = $('#searchcity').val();
-//                    var date = $('#daterange').val();
-//                    var starttime = $('#starttime').val();
-//                    var endtime = $('#endtime').val();
-//
-//                    $.ajax({
-//                        url: 'generateItinerary',
-//                        async: false,
-//                        type: 'POST',
-//                        data: {
-//                            _token: CSRF_TOKEN,
-//                            city: city,
-//                            date: date,
-//                            starttime: starttime,
-//                            endtime: endtime
-//                        },
-//                        dataType: 'JSON',
-//                        success: function (data) {
-//                            if(data['status'] === 'success') {
-//                                location.href = "../trip/itinerary/"+data['id'];
-//                            }
-//                        }
-//                    });
 
     </script>
 

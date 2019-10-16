@@ -81,6 +81,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/trip/itinerary/{id}', ['uses' => 'TripController@ItineraryIndex', 'as' => 'flight.itinerary']);
     Route::get('/trip/plan', ['uses' => 'TripController@PlanIndex', 'as' => 'flight.plan']);
     Route::post('/trip/searchCity','TripController@searchCity');
+    Route::post('/trip/searchPlaces','TripController@searchPlaces');
     Route::post('/trip/generateItinerary','TripController@generateItinerary');
     
     //Image

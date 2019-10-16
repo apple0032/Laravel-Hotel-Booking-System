@@ -323,8 +323,17 @@ class TripController extends Controller
         $endtime = $request->endtime;
 
         //print_r($city);print_r($start);print_r($end);print_r($starttime);print_r($endtime);die();
+        $priority = $request->priority;
+        foreach ($priority as $k => $p){
+            $priority[$k] = intval(substr($priority[$k], 0, -1));
+        }
 
-        $itinerary = $this->getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime);
+        $priority = json_encode($priority);
+        $priority = str_replace("outdoor","going_out",$priority);
+
+        $point = $request->point;
+
+        $itinerary = $this->getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime,$priority,$point);
 
         $new = new Itinerary();
         $new->itinerary_obj = $itinerary;
@@ -387,19 +396,23 @@ class TripController extends Controller
             ->with('api_key',$api_key);
     }
 
-    public function getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime){
+    public function getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime,$priority,$point){
         $host = request()->getHost();
         $host = 'http://'.$host.':8080/trip';
         $api_key = ApiInfo::NodeAPI();
 
         $post = [
             'city' => $city,
-            'limit' => '400',
-            'priority' => '{"sightseeing": 5, "shopping" : 4, "eating" : 3}',
+            'limit' => '500',
+            'priority' => $priority,
             'trip_start' => $start,
             'trip_end' => $end,
             'start_time' => $starttime,
             'end_time' => $endtime,
+            'start_point' => $point,
+            'end_point' => $point,
+            'start_location' => 'hotel',
+            'end_location' => 'hotel',
             'hottest' => 1
         ];
 
@@ -494,6 +507,35 @@ class TripController extends Controller
         $response = array(
             'status' => "success",
             'city' => $cities
+        );
+
+        return response()->json($response);
+    }
+
+
+    public function searchPlaces(Request $request){
+
+        $keyword = str_replace(" ","%7C",$request->keyword);
+
+        $api_key = ApiInfo::GoogleMapApiData();
+        $url='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$keyword.'&language=en&key='.$api_key;
+        $response=file_get_contents($url);
+        $response = json_decode($response,true);
+
+        //print_r($response['results']);die();
+        $result = array();
+        foreach ($response['results'] as $k => $place){
+            if($k < 10) {
+                $result[$k]['name'] = $place['name'];
+                $result[$k]['location'] = $place['geometry']['location'];
+            }
+        }
+
+        //print_r($result);die();
+
+        $response = array(
+            'status' => "success",
+            'result' => $result
         );
 
         return response()->json($response);
