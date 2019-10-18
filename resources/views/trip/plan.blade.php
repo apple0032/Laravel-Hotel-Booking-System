@@ -327,6 +327,84 @@
             background-color: #4ab879;
             cursor: pointer;
         }
+        
+        /* Custom radio buttons */
+        input[type="radio"] + label {
+          display: inline-block;
+          cursor: pointer;
+          position: relative;
+          padding-left: 30px;
+          margin-right: 15px;
+          font-size: 13px;
+        }
+        input[type="radio"] + label:before {
+          content: "";
+          display: block;
+          width: 22px;
+          height: 22px;
+          margin-right: 14px;
+          position: absolute;
+          top: -3px;
+          left: 0;
+          border: 1px solid #aaa;
+          background-color: #fff;
+          border-radius: 50%;
+        }
+        input[type="radio"] {
+          display: none !important;
+          *display: inline;
+        }
+        input[type="radio"]:checked + label:after {
+          content: "";
+          display: block;
+          position: absolute;
+          top: 2px;
+          left: 5px;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #173848;
+        }
+        /* Custom checkbox */
+        input[type="checkbox"] + label {
+          display: inline-block;
+          cursor: pointer;
+          position: relative;
+          padding-left: 30px;
+          margin-right: 15px;
+          font-size: 13px;
+        }
+        input[type="checkbox"] + label:before {
+          content: "";
+          display: block;
+          width: 22px;
+          height: 22px;
+          margin-right: 14px;
+          position: absolute;
+          top: -3px;
+          left: 0;
+          border: 1px solid #aaa;
+          background-color: #fff;
+          border-radius: 5px;
+        }
+        input[type="checkbox"] {
+          display: none !important;
+          *display: inline;
+        }
+        input[type="checkbox"]:checked + label:after {
+          content: "✔";
+          font-size: 20px;
+          line-height: 20px;
+          color: #b7b7b7;
+          display: block;
+          position: absolute;
+          top: 0;
+          left: 4px;
+          width: 20px;
+          height: 20px;
+          border-radius: 3px;
+        }
+
     </style>
 
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -424,7 +502,14 @@
                     <input name="w_{{$cat}}" id="w_{{$cat}}" type="hidden" value="">
                 </div>
             @endforeach
-
+            <div class="">
+              <div class="radio"> 
+                <input id="first" type="radio" name="hot" value="1" checked>  
+                <label for="first">Hottest</label>  
+                <input id="second" type="radio" name="hot" value="0">  
+                <label for="second">Random</label>    
+              </div> 
+            </div>
         </div>
         
         <div class="screen-actions">
