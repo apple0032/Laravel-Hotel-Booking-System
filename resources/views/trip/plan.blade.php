@@ -327,7 +327,16 @@
             background-color: #4ab879;
             cursor: pointer;
         }
-        
+
+        .hottest_select{
+            margin-top: 25px;
+        }
+
+        .hottest_title{
+            border-bottom: 1px solid #173848;
+            font-weight: bold;
+        }
+
         /* Custom radio buttons */
         input[type="radio"] + label {
           display: inline-block;
@@ -335,7 +344,7 @@
           position: relative;
           padding-left: 30px;
           margin-right: 15px;
-          font-size: 13px;
+          font-size: 15px;
         }
         input[type="radio"] + label:before {
           content: "";
@@ -405,6 +414,13 @@
           border-radius: 3px;
         }
 
+        .openmap_btn{
+            display: none;
+        }
+
+        .skipmap_btn, .openmap_btn{
+            cursor: pointer;
+        }
     </style>
 
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -460,12 +476,12 @@
             <div class="input_timer">
                 <div class="timer_label">Start Time</div>
                 <div>
-                    <input id="starttime" name="starttime" />
+                    <input id="starttime" name="starttime" readonly/>
                 </div>
 
                 <div class="timer_label">End Time</div>
                 <div>
-                    <input id="endtime" name="endtime" />
+                    <input id="endtime" name="endtime" readonly/>
                 </div>
             </div>
         </div>
@@ -502,13 +518,14 @@
                     <input name="w_{{$cat}}" id="w_{{$cat}}" type="hidden" value="">
                 </div>
             @endforeach
-            <div class="">
-              <div class="radio"> 
-                <input id="first" type="radio" name="hot" value="1" checked>  
-                <label for="first">Hottest</label>  
-                <input id="second" type="radio" name="hot" value="0">  
-                <label for="second">Random</label>    
-              </div> 
+            <div class="hottest_select">
+                <div class="hottest_title">Search Hottest/Random Attractions?</div>
+              <div class="radio">
+                <input id="first" type="radio" name="hot" value="1" checked>
+                <label for="first">Hottest</label>
+                <input id="second" type="radio" name="hot" value="0">
+                <label for="second">Random</label>
+              </div>
             </div>
         </div>
         
@@ -563,7 +580,16 @@
                     Back
                 </span>
             </span>
+            <span id="js_city_step_next" class="next-button js_city_step_move next-btn-dsk">
+                <span class="p-color p-size button next-btn-dsk">
+                    <span id="js_city_next_step_title" class="step_title next-btn-dsk">
+                        <label class="skipmap_btn"><i class="fas fa-minus-circle"></i> Skip </label>
+                        <label class="openmap_btn"><i class="fas fa-home"></i> Map </label>
+                    </span>
+                </span>
+            </span>
         </div>
+        <input type="hidden" id="has_accom" name="has_accom" value="1">
     </div>
 
 @endsection
@@ -683,11 +709,43 @@
 
                 }, doneTypingInterval);
             }
+
+            if (e.keyCode === 13) {
+                $(".list-unstyled").fadeOut();
+                if($(this).val() !== '') {
+                    var validcity = searchCity($(this).val());
+                    if (validcity === true) {
+                        $('.start-btn').click();
+                    } else {
+                        displayInvalidMessage();
+                    }
+                } else {
+                    alert("Please input city.");
+                }
+            }
         }, 200));
 
 
         $('.start-btn').click(function () {
             var cityname = $('#searchcity').val();
+            var validcity = searchCity(cityname);
+
+            if (validcity === true) {
+                $('.step-1').addClass("bounceOutLeft");
+                setTimeout(function() {
+                    $('.step-1').hide();
+                    $('.step-2').addClass("bounceInRight").show();
+                    setTimeout(function(){
+                        $('.step-2 .screen-actions').fadeIn();
+                    }, 1000);
+                }, 200);
+
+            } else {
+                displayInvalidMessage();
+            }
+        });
+
+        function searchCity(cityname) {
             var validcity = true;
 
             $.ajax({
@@ -707,24 +765,16 @@
                 }
             });
 
-            if (validcity === true) {
-                $('.step-1').addClass("bounceOutLeft");
-                setTimeout(function() {
-                    $('.step-1').hide();
-                    $('.step-2').addClass("bounceInRight").show();
-                    setTimeout(function(){
-                        $('.step-2 .screen-actions').fadeIn();
-                    }, 1000);
-                }, 200);
+            return validcity;
+        }
 
-            } else {
-                $('.invalid_message').fadeIn();
-                $('.invalid_message').html("<i class=\"fas fa-exclamation-circle\"></i> Invalid City Name");
-                setTimeout(function () {
-                    $('.invalid_message').fadeOut();
-                }, 1500);
-            }
-        });
+        function displayInvalidMessage() {
+            $('.invalid_message').fadeIn();
+            $('.invalid_message').html("<i class=\"fas fa-exclamation-circle\"></i> Invalid City Name");
+            setTimeout(function () {
+                $('.invalid_message').fadeOut();
+            }, 1500);
+        }
 
         $('#starttime').timepicker({
             value: '10:00'
@@ -910,6 +960,20 @@
             $('#accom_lng').val(lng);
         }
 
+        $('.skipmap_btn').click(function () {
+            $(".input_map").css("opacity", "0.2").css("pointer-events", "none");
+            $(".skipmap_btn").hide();
+            $(".openmap_btn").fadeIn();
+            $("#has_accom").val(0);
+        });
+
+        $('.openmap_btn').click(function () {
+            $(".input_map").css("opacity", "1").css("pointer-events", "auto");
+            $(".openmap_btn").hide();
+            $(".skipmap_btn").fadeIn();
+            $("#has_accom").val(1);
+        });
+
 
         $(".gen-btn").click(function () {
             var city = $('#searchcity').val();
@@ -921,6 +985,8 @@
                 priority[key] = $('#w_'+key).val();
             });
             var point = ($("#accom_lat").val())+','+($("#accom_lng").val());
+            var hottest = $('[name="hot"]:checked').val();
+            var has_accom = $('#has_accom').val();
 
             $.ajax({
                 url: 'generateItinerary',
@@ -933,6 +999,8 @@
                     starttime: starttime,
                     endtime: endtime,
                     priority: priority,
+                    hottest: hottest,
+                    has_accom: has_accom,
                     point:point
                 },
                 dataType: 'JSON',

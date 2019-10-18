@@ -332,8 +332,10 @@ class TripController extends Controller
         $priority = str_replace("outdoor","going_out",$priority);
 
         $point = $request->point;
+        $hottest = $request->hottest;
+        $has_accom = $request->has_accom;
 
-        $itinerary = $this->getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime,$priority,$point);
+        $itinerary = $this->getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime,$priority,$point,$hottest,$has_accom);
 
         $new = new Itinerary();
         $new->itinerary_obj = $itinerary;
@@ -396,7 +398,7 @@ class TripController extends Controller
             ->with('api_key',$api_key);
     }
 
-    public function getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime,$priority,$point){
+    public function getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime,$priority,$point,$hottest,$has_accom){
         $host = request()->getHost();
         $host = 'http://'.$host.':8080/trip';
         $api_key = ApiInfo::NodeAPI();
@@ -408,13 +410,18 @@ class TripController extends Controller
             'trip_start' => $start,
             'trip_end' => $end,
             'start_time' => $starttime,
-            'end_time' => $endtime,
-            'start_point' => $point,
-            'end_point' => $point,
-            'start_location' => 'hotel',
-            'end_location' => 'hotel',
-            'hottest' => 1
+            'end_time' => $endtime
         ];
+
+        if($hottest == 1){
+            $post['hottest'] = 1;
+        }
+        if($has_accom == 1){
+            $post['start_point'] = $point;
+            $post['end_point'] = $point;
+            $post['start_location'] = 'hotel';
+            $post['end_location'] = 'hotel';
+        }
 
         $ch = curl_init($host);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded','api_key: '.$api_key));
