@@ -335,11 +335,39 @@ class TripController extends Controller
         $hottest = $request->hottest;
         $has_accom = $request->has_accom;
 
+        //Generate all itineraries by NodeJSAPI
         $itinerary = $this->getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime,$priority,$point,$hottest,$has_accom);
+
+        //Get all pois from the itinerary
+        $itinerary_json = json_decode($itinerary,true);
+        $pois = json_encode($itinerary_json['itinerary_pois']);
+
+        //Get the all pois string
+        $poi_string = $this->getPOIStringFromNodeAPI($pois);
+        $poi_string = json_decode($poi_string,true);
+
+        //Get all details from details API where the Sygic API only accept max 64 of pois
+        foreach ($poi_string['places_list'] as $poi){
+            $poi_arr[] = json_decode($this->getPOIDetailsFromNodeAPI($poi),true);
+        }
+
+        $poi_data = array();
+        foreach($poi_arr as $p){
+            foreach ($p['details'] as $pinfo) {
+                array_push($poi_data, $pinfo);
+            }
+        }
+
+        $poi_details = array();
+        foreach ($poi_data as $a){
+            $poi_details[$a['id']] = $a;
+        }
 
         $new = new Itinerary();
         $new->itinerary_obj = $itinerary;
+        $new->pois = json_encode($poi_details,true);
         $new->save();
+
 
         $response = array(
             'status' => "success",
@@ -361,30 +389,8 @@ class TripController extends Controller
 
         $api_key = ApiInfo::GoogleMapApiData();
         $itinerary = Itinerary::where('id', '=', $id)->get()->first();
+        $poi_details = json_decode($itinerary['pois'],true);
         $itinerary = json_decode($itinerary['itinerary_obj'],true);
-        $pois = json_encode($itinerary['itinerary_pois']);
-
-        //print_r($pois);die();
-
-        $poi_string = $this->getPOIStringFromNodeAPI($pois);
-        $poi_string = json_decode($poi_string,true);
-
-        foreach ($poi_string['places_list'] as $poi){
-            $poi_arr[] = json_decode($this->getPOIDetailsFromNodeAPI($poi),true);
-        }
-
-        $poi_data = array();
-        foreach($poi_arr as $p){
-            foreach ($p['details'] as $pinfo) {
-                array_push($poi_data, $pinfo);
-            }
-        }
-
-        $poi_details = array();
-        foreach ($poi_data as $a){
-            $poi_details[$a['id']] = $a;
-        }
-
 
         $related_flight_id = null;
         if($itinerary['related_flight_id'] != 'null') {
