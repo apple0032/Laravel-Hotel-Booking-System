@@ -1045,7 +1045,7 @@
 
             $.ajax({
                 url: 'generateItinerary',
-                async: false,
+                //async: false,
                 type: 'POST',
                 data: {
                     _token: CSRF_TOKEN,

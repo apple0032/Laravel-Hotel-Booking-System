@@ -493,13 +493,24 @@
                                     <div class="line-between"></div>
                                 @endif
                             @elseif($poi['type'] == "transport")
-                                <div class="row itinerary_transport" data-toggle="modal" data-target="#iftameModal" onclick="loadIframe('<?php echo $itinerary['schedule'][$i][$date][$s-1]['coordinate']?>','<?php echo $itinerary['schedule'][$i][$date][$s+1]['coordinate']?>')">
-                                    <i class="fas fa-car-side"></i>
-                                    <div class="transport_button">
-                                         {{floor($poi['duration']/60)}} Minutes
+                                <?php
+                                    if(isset($itinerary['schedule'][$i][$date][$s-1]['coordinate'])){
+                                        $xstart = $itinerary['schedule'][$i][$date][$s-1]['coordinate'];
+                                    } else { $xstart = null;}
+
+                                    if(isset($itinerary['schedule'][$i][$date][$s+1]['coordinate'])){
+                                        $xnext = $itinerary['schedule'][$i][$date][$s+1]['coordinate'];
+                                    } else { $xnext = $itinerary['schedule'][$i][$date][$s+2]['coordinate'];}
+                                ?>
+                                @if($xstart != null)
+                                    <div class="row itinerary_transport" data-toggle="modal" data-target="#iftameModal" onclick="loadIframe('<?php echo $xstart?>','<?php echo $xnext?>')">
+                                        <i class="fas fa-car-side"></i>
+                                        <div class="transport_button">
+                                             {{floor($poi['duration']/60)}} Minutes
+                                        </div>
                                     </div>
-                                </div>
-                            <div class="line-between"></div>
+                                <div class="line-between"></div>
+                                @endif
                             @endif
                         @endforeach
                     </div>
