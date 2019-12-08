@@ -397,10 +397,30 @@ class TripController extends Controller
             $related_flight_id = $itinerary['related_flight_id'];
         }
 
+        $edit_itinerary = array();
+        foreach($itinerary['schedule'] as $k => $iti){
+            foreach ($iti as $k2 => $poi_gp){
+                $poi_arr = array();
+                foreach ($poi_gp as $k3 => $poi){
+                    if(isset($poi['poi_id']) && $poi['poi_id'] != 'hotel'){
+                        $poise['poi'] = $poi['poi_id'];
+                        $poise['time'] = $poi['schedule_time'];
+                        $poise['duration'] = $poi['duration'];
+                        $poise['location'] = $poi_details[$poise['poi']]['name'];
+                        $poise['thumbnail'] = $poi_details[$poise['poi']]['thumbnail_url'];
+                        array_push($poi_arr,$poise);
+                    }
+                    $edit_itinerary[$k] = $poi_arr;
+                }
+            }
+        }
+
         return view('trip.itinerary')
+            ->with('id',$id)
             ->with('itinerary',$itinerary)
             ->with('related_flight_id',$related_flight_id)
             ->with('poi_data',$poi_details)
+            ->with('edit_itinerary', $edit_itinerary)
             ->with('api_key',$api_key);
     }
 
@@ -549,6 +569,62 @@ class TripController extends Controller
         $response = array(
             'status' => "success",
             'result' => $result
+        );
+
+        return response()->json($response);
+    }
+
+    public function updateItinerary(Request $request){
+        //print_r($request->id);
+        //print_r($request->day);
+        //print_r($request->obj);
+
+        $obj = json_encode($request->obj);
+        $obj = '{"pois": ' . $obj . '}';
+
+        $itinerary = Itinerary::where('id', '=', $request->id)->get()->first();
+        $poi_details = json_decode($itinerary['itinerary_obj'],true);
+
+        $day = array_keys( $poi_details['schedule'][$request->day] )[0];
+
+        $host = request()->getHost();
+        $host = 'http://'.$host.':8080/trip-update';
+        $api_key = ApiInfo::NodeAPI();
+
+        $post = [
+            'pois' => $obj,
+            'date' => $day,
+            'start_time' => "10:00",
+            'end_time' => "22:00"
+        ];
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded','api_key: '.$api_key));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $result = json_decode($response,true);
+
+        $update_json = json_encode($result['schedule'][0][$day],JSON_UNESCAPED_SLASHES);
+        //$update_json = '[{"type":"poi","poi_id":"poi:20610","location":"Takashimaya","coordinate":"35.0030805,135.7683288","duration":3600,"rating":0.029983700945047,"schedule_time":"1/6/2020, 10:00:00","perex":"Shopaholics - beware! This major Kyoto department store is the right place for you.","thumbnail_url":"https://media-cdn.sygictraveldata.com/media/poi:20610"},{"type":"transport","duration":2606,"distance":26333},{"type":"poi","poi_id":"poi:20515","location":"Chion-in temple","coordinate":"35.0055008,135.7833427","duration":3600,"rating":0.18299526981186,"schedule_time":"1/6/2020, 11:31:00","perex":"Chion-in in Higashiyama-ku, Kyoto, Japan is the headquarters of the J\u014ddo-sh\u016b founded by H\u014dnen, who proclaimed that sentient beings are\u2026","thumbnail_url":"https://media-cdn.sygictraveldata.com/media/poi:20515"},{"type":"transport","duration":748,"distance":6993},{"type":"poi","poi_id":"poi:20606","location":"Pontoch\u014d","coordinate":"35.0042456,135.7712125","duration":5400,"rating":0.58326359302772,"schedule_time":"1/6/2020, 13:13:00","perex":"Ponto-ch\u014d is a Hanamachi district, which literally translates as \"flower town.\" This name is a Japanese way of saying that there are geisha\u2026","thumbnail_url":"https://media-cdn.sygictraveldata.com/media/poi:20606"}]';
+
+        $new = array();
+        $new[$day] = json_decode($update_json,true);
+
+        $poi_details['schedule'][$request->day] = $new;
+        $new_json = json_encode($poi_details,JSON_UNESCAPED_SLASHES);
+
+        //print_r($new_json);die();
+        $itinerary->itinerary_obj = $new_json;
+        $itinerary->save();
+
+        $response = array(
+            'status' => "success",
+            'result' => $itinerary
         );
 
         return response()->json($response);
