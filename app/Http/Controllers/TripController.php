@@ -398,8 +398,10 @@ class TripController extends Controller
         }
 
         $edit_itinerary = array();
+        $itinerary_timeflag = array();
         foreach($itinerary['schedule'] as $k => $iti){
             foreach ($iti as $k2 => $poi_gp){
+                array_push($itinerary_timeflag, $poi_gp[0]);
                 $poi_arr = array();
                 foreach ($poi_gp as $k3 => $poi){
                     if(isset($poi['poi_id']) && $poi['poi_id'] != 'hotel'){
@@ -421,6 +423,7 @@ class TripController extends Controller
             ->with('related_flight_id',$related_flight_id)
             ->with('poi_data',$poi_details)
             ->with('edit_itinerary', $edit_itinerary)
+            ->with('itinerary_timeflag', $itinerary_timeflag)
             ->with('api_key',$api_key);
     }
 
@@ -594,8 +597,8 @@ class TripController extends Controller
         $post = [
             'pois' => $obj,
             'date' => $day,
-            'start_time' => "10:00",
-            'end_time' => "22:00"
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time
         ];
 
         $ch = curl_init($host);

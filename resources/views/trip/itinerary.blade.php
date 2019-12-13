@@ -387,8 +387,8 @@
         }
 
         .day_itinerary{
-            margin-left: 20%;
-            margin-right: 20%;
+            margin-left: 2%;
+            margin-right: 2%;
         }
 
         .edit_each_poi {
@@ -429,307 +429,323 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
+        
+        .edit_timeflag{
+            margin-top:8px;
+        }
     </style>
-    <div class="loading_css">
-        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div> <br>
-        <div class="loading_text">Generating and formatting itineraries, please wait...</div>
-    </div>
     <body data-spy="scroll" data-target="#myScrollspy" data-offset="15">
-    <div class="container_itinerary">
-
-        <div class="row top_tab">
-            <div class="col-md-12">
-                <span class="timeline_tab">TIMELINE</span>
-                <span class="calendat_tab">CALENDAR</span>
-            </div>
+        <div class="loading_css">
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div> <br>
+            <div class="loading_text">Generating and formatting itineraries, please wait...</div>
         </div>
 
-        <div class="row">
-            <div class="col-md-1">
-                <nav class="col-sm-3" id="myScrollspy">
-                    <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
-                        @foreach($itinerary['dates'] as $i => $date)
-                            <li><a href="#day{{$i+1}}">{{substr($date,0,-5)}}</a></li>
-                        @endforeach
-                    </ul>
-                </nav>
+        <div class="container_itinerary">
+
+            <div class="row top_tab">
+                <div class="col-md-12">
+                    <span class="timeline_tab">TIMELINE</span>
+                    <span class="calendat_tab">CALENDAR</span>
+                </div>
             </div>
 
-            <div class="col-md-11 right_itinerary">
-                @foreach($itinerary['dates'] as $i => $date)
-                    <div class="dayofday dayof_{{$i}}">
-                        <i class="fas fa-pen-square update_itinerary" onclick="editMode('{{$i}}')" data-toggle="modal" data-target="#editItinerary"></i>
-                        <div class="eachday" id="day{{$i+1}}">
-                            <div class="mdate">
-                                {{$date}}
-                            </div>
-                            <div class="line-between-long"></div>
-                            @if($i == 0)
-                                <div class="row itinerary_dayend">
-                                    <i class="fas fa-plane-arrival"></i>
-                                    @if($related_flight_id == null)
-                                        Arrival
-                                    @else
-                                        <i class="fas fa-directions" data-toggle="modal" data-target="#iftameFlight" onclick="openflight('<?php echo $related_flight_id ?>')"></i>
-                                        <span class="linked">You had linked a flight booking.</span>
-                                    @endif
-                                </div>
-                                <div class="line-between"></div>
-                            @endif
-                            @foreach($itinerary['schedule'][$i][$date] as $s => $poi)
-                                @if($poi['type'] == "poi")
-                                    <div class="row itinerary_box">
-                                        <div class="col-md-12 itinerary_poi">
-                                            <div class="row">
-                                                <div class="col-md-2 itinerary_time">
-                                                    <span class="schedule_time">{{substr($poi['schedule_time'], -8,-3)}}</span>
-                                                    <i class="fas fa-hourglass-half"></i> &nbsp;{{$poi['duration']/60}} Minutes
-                                                </div>
-                                                <div class="col-md-2 itinerary_img">
-                                                    @if($poi['thumbnail_url'] != null)
-                                                        <img src="{{$poi['thumbnail_url']}}">
-                                                    @else
-                                                        <img src="{{asset('/images/no_image.jpg')}}">
-                                                    @endif
-                                                </div>
-                                                <div class="col-md-8 itinerary_details">
-                                                    <h3>{{$poi['location']}}</h3>
-                                                    @if($poi['rating'] > 0.5)
-                                                        @for ($r = 0; $r < 6; $r++)
-                                                            <i class="fas fa-star" style="color: #f6ab3f"></i>
-                                                        @endfor
-                                                    @elseif($poi['rating'] > 0.3)
-                                                        @for ($r = 0; $r < 5; $r++)
-                                                            <i class="fas fa-star" style="color: #f6ab3f"></i>
-                                                        @endfor
-                                                    @elseif($poi['rating'] > 0.1)
-                                                        @for ($r = 0; $r < 4; $r++)
-                                                            <i class="fas fa-star" style="color: #f6ab3f"></i>
-                                                        @endfor
-                                                    @elseif($poi['rating'] > 0.05)
-                                                        @for ($r = 0; $r < 3; $r++)
-                                                            <i class="fas fa-star" style="color: #f6ab3f"></i>
-                                                        @endfor
-                                                    @else
-                                                        <i class="fas fa-star" style="color: #f6ab3f"></i>
-                                                        <i class="fas fa-star" style="color: #f6ab3f"></i>
-                                                    @endif
-                                                    <br><br>
-                                                    {{$poi['perex']}} <br><br>
-                                                    <div class="see_more" data-toggle="modal" data-target="#detailsModal" onclick="loadDetails('<?php echo $poi['poi_id'] ?>')">
-                                                        <i class="fas fa-info-circle"></i> See more details
-                                                    </div>
-                                                    <br>
-                                                    <span class="marker" data-toggle="modal" data-target="#iftameMarker" onclick="loadMap('<?php echo $poi['coordinate'] ?>')">
-                                                        <i class="fas fa-map-marker-alt"></i> Maps
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @if($s != count($itinerary['schedule'][$i][$date]) - 1)
-                                        <div class="line-between"></div>
-                                    @endif
-                                @elseif($poi['type'] == "hotel")
-                                    <div class="row itinerary_box">
-                                        <div class="col-md-12 itinerary_poi">
-                                            <div class="row">
-                                                <div class="col-md-2 itinerary_time">
-                                                    <span class="schedule_time">{{substr($poi['schedule_time'], -8,-3)}}</span>
-                                                    <i class="fas fa-suitcase-rolling"></i>
-                                                </div>
-                                                <div class="col-md-2 itinerary_img">
-                                                    <img src="https://upload.cc/i1/2019/10/04/DnFrW4.jpg">
-                                                </div>
-                                                <div class="col-md-8 itinerary_details">
-                                                    <h3>{{ucfirst($poi['location'])}}</h3>
-                                                    <br><br>
-                                                    <i class="fas fa-location-arrow"></i>&nbsp;{{$poi['perex']}} <br><br>
-                                                    <br>
-                                                    <span class="marker" data-toggle="modal" data-target="#iftameMarker" onclick="loadMap('<?php echo $poi['coordinate'] ?>')">
-                                                        <i class="fas fa-map-marker-alt"></i> Maps
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @if($s != count($itinerary['schedule'][$i][$date]) - 1)
-                                        <div class="line-between"></div>
-                                    @endif
-                                @elseif($poi['type'] == "transport")
-                                    <?php
-                                        if(isset($itinerary['schedule'][$i][$date][$s-1]['coordinate'])){
-                                            $xstart = $itinerary['schedule'][$i][$date][$s-1]['coordinate'];
-                                        } else { $xstart = null;}
-
-                                        if(isset($itinerary['schedule'][$i][$date][$s+1]['coordinate'])){
-                                            $xnext = $itinerary['schedule'][$i][$date][$s+1]['coordinate'];
-                                        } else { $xnext = $itinerary['schedule'][$i][$date][$s+2]['coordinate'];}
-                                    ?>
-                                    @if($xstart != null)
-                                        <div class="row itinerary_transport" data-toggle="modal" data-target="#iftameModal" onclick="loadIframe('<?php echo $xstart?>','<?php echo $xnext?>')">
-                                            <i class="fas fa-car-side"></i>
-                                            <div class="transport_button">
-                                                 {{floor($poi['duration']/60)}} Minutes
-                                            </div>
-                                        </div>
-                                    <div class="line-between"></div>
-                                    @endif
-                                @endif
+            <div class="row">
+                <div class="col-md-1">
+                    <nav class="col-sm-3" id="myScrollspy">
+                        <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
+                            @foreach($itinerary['dates'] as $i => $date)
+                                <li><a href="#day{{$i+1}}">{{substr($date,0,-5)}}</a></li>
                             @endforeach
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="col-md-11 right_itinerary">
+                    @foreach($itinerary['dates'] as $i => $date)
+                        <div class="dayofday dayof_{{$i}}">
+                            <i class="fas fa-pen-square update_itinerary" onclick="editMode('{{$i}}')" data-toggle="modal" data-target="#editItinerary"></i>
+                            <div class="eachday" id="day{{$i+1}}">
+                                <div class="mdate">
+                                    {{$date}}
+                                </div>
+                                <div class="line-between-long"></div>
+                                @if($i == 0)
+                                    <div class="row itinerary_dayend">
+                                        <i class="fas fa-plane-arrival"></i>
+                                        @if($related_flight_id == null)
+                                            Arrival
+                                        @else
+                                            <i class="fas fa-directions" data-toggle="modal" data-target="#iftameFlight" onclick="openflight('<?php echo $related_flight_id ?>')"></i>
+                                            <span class="linked">You had linked a flight booking.</span>
+                                        @endif
+                                    </div>
+                                    <div class="line-between"></div>
+                                @endif
+                                @foreach($itinerary['schedule'][$i][$date] as $s => $poi)
+                                    @if($poi['type'] == "poi")
+                                        <div class="row itinerary_box">
+                                            <div class="col-md-12 itinerary_poi">
+                                                <div class="row">
+                                                    <div class="col-md-2 itinerary_time">
+                                                        <span class="schedule_time">{{substr($poi['schedule_time'], -8,-3)}}</span>
+                                                        <i class="fas fa-hourglass-half"></i> &nbsp;{{$poi['duration']/60}} Minutes
+                                                    </div>
+                                                    <div class="col-md-2 itinerary_img">
+                                                        @if($poi['thumbnail_url'] != null)
+                                                            <img src="{{$poi['thumbnail_url']}}">
+                                                        @else
+                                                            <img src="{{asset('/images/no_image.jpg')}}">
+                                                        @endif
+                                                    </div>
+                                                    <div class="col-md-8 itinerary_details">
+                                                        <h3>{{$poi['location']}}</h3>
+                                                        @if($poi['rating'] > 0.5)
+                                                            @for ($r = 0; $r < 6; $r++)
+                                                                <i class="fas fa-star" style="color: #f6ab3f"></i>
+                                                            @endfor
+                                                        @elseif($poi['rating'] > 0.3)
+                                                            @for ($r = 0; $r < 5; $r++)
+                                                                <i class="fas fa-star" style="color: #f6ab3f"></i>
+                                                            @endfor
+                                                        @elseif($poi['rating'] > 0.1)
+                                                            @for ($r = 0; $r < 4; $r++)
+                                                                <i class="fas fa-star" style="color: #f6ab3f"></i>
+                                                            @endfor
+                                                        @elseif($poi['rating'] > 0.05)
+                                                            @for ($r = 0; $r < 3; $r++)
+                                                                <i class="fas fa-star" style="color: #f6ab3f"></i>
+                                                            @endfor
+                                                        @else
+                                                            <i class="fas fa-star" style="color: #f6ab3f"></i>
+                                                            <i class="fas fa-star" style="color: #f6ab3f"></i>
+                                                        @endif
+                                                        <br><br>
+                                                        {{$poi['perex']}} <br><br>
+                                                        <div class="see_more" data-toggle="modal" data-target="#detailsModal" onclick="loadDetails('<?php echo $poi['poi_id'] ?>')">
+                                                            <i class="fas fa-info-circle"></i> See more details
+                                                        </div>
+                                                        <br>
+                                                        <span class="marker" data-toggle="modal" data-target="#iftameMarker" onclick="loadMap('<?php echo $poi['coordinate'] ?>')">
+                                                            <i class="fas fa-map-marker-alt"></i> Maps
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if($s != count($itinerary['schedule'][$i][$date]) - 1)
+                                            <div class="line-between"></div>
+                                        @endif
+                                    @elseif($poi['type'] == "hotel")
+                                        <div class="row itinerary_box">
+                                            <div class="col-md-12 itinerary_poi">
+                                                <div class="row">
+                                                    <div class="col-md-2 itinerary_time">
+                                                        <span class="schedule_time">{{substr($poi['schedule_time'], -8,-3)}}</span>
+                                                        <i class="fas fa-suitcase-rolling"></i>
+                                                    </div>
+                                                    <div class="col-md-2 itinerary_img">
+                                                        <img src="https://upload.cc/i1/2019/10/04/DnFrW4.jpg">
+                                                    </div>
+                                                    <div class="col-md-8 itinerary_details">
+                                                        <h3>{{ucfirst($poi['location'])}}</h3>
+                                                        <br><br>
+                                                        <i class="fas fa-location-arrow"></i>&nbsp;{{$poi['perex']}} <br><br>
+                                                        <br>
+                                                        <span class="marker" data-toggle="modal" data-target="#iftameMarker" onclick="loadMap('<?php echo $poi['coordinate'] ?>')">
+                                                            <i class="fas fa-map-marker-alt"></i> Maps
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if($s != count($itinerary['schedule'][$i][$date]) - 1)
+                                            <div class="line-between"></div>
+                                        @endif
+                                    @elseif($poi['type'] == "transport")
+                                        <?php
+                                            if(isset($itinerary['schedule'][$i][$date][$s-1]['coordinate'])){
+                                                $xstart = $itinerary['schedule'][$i][$date][$s-1]['coordinate'];
+                                            } else { $xstart = null;}
+
+                                            if(isset($itinerary['schedule'][$i][$date][$s+1]['coordinate'])){
+                                                $xnext = $itinerary['schedule'][$i][$date][$s+1]['coordinate'];
+                                            } else { $xnext = $itinerary['schedule'][$i][$date][$s+2]['coordinate'];}
+                                        ?>
+                                        @if($xstart != null)
+                                            <div class="row itinerary_transport" data-toggle="modal" data-target="#iftameModal" onclick="loadIframe('<?php echo $xstart?>','<?php echo $xnext?>')">
+                                                <i class="fas fa-car-side"></i>
+                                                <div class="transport_button">
+                                                     {{floor($poi['duration']/60)}} Minutes
+                                                </div>
+                                            </div>
+                                        <div class="line-between"></div>
+                                        @endif
+                                    @endif
+                                @endforeach
+                            </div>
+                            @if($i != count($itinerary['dates']) - 1)
+                                <div class="line-between"></div>
+                                <div class="row itinerary_dayend">
+                                    <i class="fas fa-bed"></i> End of the day
+                                </div>
+                                <div class="line-between-longest"></div>
+                            @else
+                                <div class="line-between-longest"></div>
+                                <div class="row itinerary_dayend">
+                                    <i class="fas fa-plane-departure"></i> Back to original country
+                                </div>
+                            @endif
                         </div>
-                        @if($i != count($itinerary['dates']) - 1)
-                            <div class="line-between"></div>
-                            <div class="row itinerary_dayend">
-                                <i class="fas fa-bed"></i> End of the day
-                            </div>
-                            <div class="line-between-longest"></div>
-                        @else
-                            <div class="line-between-longest"></div>
-                            <div class="row itinerary_dayend">
-                                <i class="fas fa-plane-departure"></i> Back to original country
-                            </div>
-                        @endif
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+
+        <!----------------- Modal Part ----------------->
+
+        <div class="modal fade" id="iftameModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <iframe id="google_iframe" src="" width="100%" height="650" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
                     </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-
-    <!----------------- Modal Part ----------------->
-
-    <div class="modal fade" id="iftameModal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <iframe id="google_iframe" src="" width="100%" height="650" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="iftameMarker" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <iframe id="place_point" src="" width="100%" height="650" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="iftameFlight" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    123123
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="detailsModal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="poi_content_header">
-                        <span class="poi_name">#NAME</span> - <span class="poi_oname">#ONAME</span>
-                        <span class="poi_star"><i class="fas fa-star" style="color: #ff9600;"></i></span>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div id="myCarousel" class="carousel slide" data-ride="carousel">
-                                <!-- Indicators -->
-                                <ol class="carousel-indicators">
+                </div>
+            </div>
+        </div>
 
-                                </ol>
+        <div class="modal fade" id="iftameMarker" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <iframe id="place_point" src="" width="100%" height="650" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                                <!-- Wrapper for slides -->
-                                <div class="carousel-inner">
+        <div class="modal fade" id="iftameFlight" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        123123
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                                </div>
-
-                                <!-- Left and right controls -->
-                                <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-                                    <span class="glyphicon glyphicon-chevron-left"></span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                                <a class="right carousel-control" href="#myCarousel" data-slide="next">
-                                    <span class="glyphicon glyphicon-chevron-right"></span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </div>
-                            <div class="poi_desc">
-                                <div class="poi_category">
-                                    <b>Category</b> : <span>#CATEGORIES</span>
-                                </div>
-                                <div class="poi_text">
-                                    <span></span>
-                                </div>
-                            </div>
+        <div class="modal fade" id="detailsModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="poi_content_header">
+                            <span class="poi_name">#NAME</span> - <span class="poi_oname">#ONAME</span>
+                            <span class="poi_star"><i class="fas fa-star" style="color: #ff9600;"></i></span>
                         </div>
-                        <div class="col-md-5">
-                            <div class="poi_content">
-                                <div class="poi_duration">
-                                    <b><i class="fas fa-hourglass-half"></i> Recommended Duration</b> <br>
-                                    <span></span>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                                    <!-- Indicators -->
+                                    <ol class="carousel-indicators">
+
+                                    </ol>
+
+                                    <!-- Wrapper for slides -->
+                                    <div class="carousel-inner">
+
+                                    </div>
+
+                                    <!-- Left and right controls -->
+                                    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                                        <span class="glyphicon glyphicon-chevron-left"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
                                 </div>
-                                <div class="poi_address">
-                                    <b><i class="fas fa-location-arrow"></i> Address</b> <br>
-                                    <span></span>
+                                <div class="poi_desc">
+                                    <div class="poi_category">
+                                        <b>Category</b> : <span>#CATEGORIES</span>
+                                    </div>
+                                    <div class="poi_text">
+                                        <span></span>
+                                    </div>
                                 </div>
-                                <div class="poi_admission">
-                                    <b><i class="fas fa-dollar-sign"></i> Admission</b> <br>
-                                    <span></span>
-                                </div>
-                                <div class="poi_opening">
-                                    <b><i class="fas fa-clock"></i> Opening Hours</b> <br>
-                                    <span></span>
-                                </div>
-                                <div class="poi_phone">
-                                    <b><i class="fas fa-mobile-alt"></i> Phone</b> <br>
-                                    <span></span>
-                                </div>
-                                <div class="poi_map">
-                                    <b><i class="fas fa-map-marked-alt"></i> Location</b> <br>
-                                    <iframe id="place_map" src="" width="100%" height="300" frameborder="0" allowfullscreen=""></iframe>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="poi_content">
+                                    <div class="poi_duration">
+                                        <b><i class="fas fa-hourglass-half"></i> Recommended Duration</b> <br>
+                                        <span></span>
+                                    </div>
+                                    <div class="poi_address">
+                                        <b><i class="fas fa-location-arrow"></i> Address</b> <br>
+                                        <span></span>
+                                    </div>
+                                    <div class="poi_admission">
+                                        <b><i class="fas fa-dollar-sign"></i> Admission</b> <br>
+                                        <span></span>
+                                    </div>
+                                    <div class="poi_opening">
+                                        <b><i class="fas fa-clock"></i> Opening Hours</b> <br>
+                                        <span></span>
+                                    </div>
+                                    <div class="poi_phone">
+                                        <b><i class="fas fa-mobile-alt"></i> Phone</b> <br>
+                                        <span></span>
+                                    </div>
+                                    <div class="poi_map">
+                                        <b><i class="fas fa-map-marked-alt"></i> Location</b> <br>
+                                        <iframe id="place_map" src="" width="100%" height="300" frameborder="0" allowfullscreen=""></iframe>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="editItinerary" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="day_itinerary" id="sortable">
-
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editItinerary" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <i class="far fa-clock"></i> START -
+                                <div class="edit_timeflag">
+                                    <input id="day_starttime" class="form-control" type="text" maxlength="30" autocomplete="off">
+                                </div>
+                                <br><br>
+                                <i class="far fa-clock"></i> END -
+                                <div class="edit_timeflag">
+                                    <input id="day_endtime" class="form-control" type="text" maxlength="30" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-md-10"><div class="day_itinerary" id="sortable"></div></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    </body>
 @endsection
 
 @section('scripts')
@@ -924,11 +940,20 @@
 
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     var edit_itinerary = {!! json_encode($edit_itinerary) !!};
+    var itinerary_timeflag = {!! json_encode($itinerary_timeflag) !!};
 
     function editMode(day){
         console.log(day);
         console.log(edit_itinerary[day]);
+        console.log(itinerary_timeflag[day]);
+        
+        
+        //Display timeflag field
+        $("#day_starttime").val(itinerary_timeflag[day].starttime);
+        $("#day_endtime").val(itinerary_timeflag[day].endtime);
+        
 
+        //Display whole schedule
         var edithtml = '';
 
         $.each( edit_itinerary[day], function( key, value ) {
@@ -1018,7 +1043,9 @@
                     _token: CSRF_TOKEN,
                     id: {{$id}},
                     day: day,
-                    obj: update_obj
+                    obj: update_obj,
+                    start_time: $("#day_starttime").val(),
+                    end_time: $("#day_endtime").val()
                 },
                 dataType: 'JSON',
                 success: function (data) {
