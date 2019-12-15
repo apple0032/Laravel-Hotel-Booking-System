@@ -7,6 +7,7 @@
     .navbar-default .navbar-nav > li > a {
         /*color: #c4fbcc;*/
         color: white;
+        font-family: 'Quicksand', sans-serif !important;
     }
 
     .navbar {
@@ -155,20 +156,23 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="{{ Request::is('/') ? "active" : "" }} cool-link"><a href="{{asset('/')}}">首頁</a></li>
-                <li class="{{ Request::is('allhotels') ? "active" : "" }} cool-link"><a href="{{asset('/allhotels')}}">酒店</a>
+                <li class="{{ Request::is('/') ? "active" : "" }} cool-link"><a href="{{asset('/')}}">HOME</a></li>
+                <li class="{{ Request::is('allhotels') ? "active" : "" }} cool-link"><a href="{{asset('/allhotels')}}">HOTELS</a>
                 </li>
-                <li class="{{ Request::is('flight') ? "active" : "" }} cool-link"><a href="{{asset('/flight')}}">航班</a>
+                <li class="{{ Request::is('flight') ? "active" : "" }} cool-link"><a href="{{asset('/flight')}}">FLIGHTS</a>
                 </li>
-                <li class="{{ Request::is('trip/plan') ? "active" : "" }} cool-link"><a href="{{asset('/trip/plan')}}">旅程</a>
+                <li class="<?php if(Request::is('trip/plan') || Route::getCurrentRoute()->getPath() == 'trip/itinerary/{id}'
+                || Route::getCurrentRoute()->getPath() == 'trip/itinerary/all/{user_id}' ){
+                    echo 'active';
+                }?> cool-link"><a href="{{asset('/trip/plan')}}">ITINERARIES</a>
                 </li>
-                <li class="{{ Request::is('about') ? "active" : "" }} cool-link"><a href="{{asset('/about')}}">關於</a>
+                <li class="{{ Request::is('about') ? "active" : "" }} cool-link"><a href="{{asset('/about')}}">ABOUT</a>
                 </li>
                 <li class="{{ Request::is('contact') ? "active" : "" }} cool-link"><a
-                            href="{{asset('/contact')}}">協助</a></li>
+                            href="{{asset('/contact')}}">ASSIST</a></li>
 
                 <li class="{{ Request::is('article') ? "active" : "" }} cool-link"><a
-                            href="{{asset('/article')}}">文檔</a></li>
+                            href="{{asset('/article')}}">DOCS</a></li>
 
                 {{--<li class="{{ Request::is('blog') ? "active" : "" }}"><a href="{{asset('/blog')}}">Blog</a></li>--}}
                 {{--<li class="{{ Request::is('about') ? "active" : "" }}"><a href="{{asset('/about')}}">About</a></li>--}}
@@ -191,6 +195,7 @@
                                 <li><a href="{{ route('hotel.booklist') }}"><i class="fas fa-bed"></i> &nbsp; Booking</a></li>
                                 <li><a href="{{ route('hotel.payment') }}"><i class="far fa-credit-card"></i> &nbsp; Payment</a></li>
                                 <li><a href="{{ route('flight.summary') }}"><i class="fas fa-plane-departure"></i> &nbsp; Flight</a></li>
+                                <li><a href="{{ route('flight.itinerary_all',Auth::user()->id) }}"><i class="fas fa-umbrella-beach"></i> &nbsp; Itinerary</a></li>
                                 <li><a href="{{ route('flight.trip') }}"><i class="fas fa-map-marked"></i> &nbsp; Trip</a></li>
 
                             <li role="separator" class="divider"></li>

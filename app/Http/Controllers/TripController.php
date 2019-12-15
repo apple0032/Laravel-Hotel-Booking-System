@@ -316,6 +316,7 @@ class TripController extends Controller
     public function generateItinerary(Request $request){
         //AJAX to generate itinerary
 
+        $user_id = Auth::user()->id;
         $city = $request->city;
         $start = substr($request->date, 0, 10);
         $end = substr($request->date, -10);
@@ -364,6 +365,7 @@ class TripController extends Controller
         }
 
         $new = new Itinerary();
+        $new->user_id = $user_id;
         $new->itinerary_obj = $itinerary;
         $new->pois = json_encode($poi_details,true);
         $new->save();
@@ -399,8 +401,16 @@ class TripController extends Controller
 
         $edit_itinerary = array();
         $itinerary_timeflag = array();
+        $have_hotel = false;
+        $hotel_details = null;
         foreach($itinerary['schedule'] as $k => $iti){
             foreach ($iti as $k2 => $poi_gp){
+                if($have_hotel == false){
+                    if($poi_gp[1]['type'] == "hotel"){
+                        $have_hotel = true;
+                        $hotel_details = $poi_gp[1];
+                    }
+                }
                 array_push($itinerary_timeflag, $poi_gp[0]);
                 $poi_arr = array();
                 foreach ($poi_gp as $k3 => $poi){
@@ -424,6 +434,7 @@ class TripController extends Controller
             ->with('poi_data',$poi_details)
             ->with('edit_itinerary', $edit_itinerary)
             ->with('itinerary_timeflag', $itinerary_timeflag)
+            ->with('hotel_details', $hotel_details)
             ->with('api_key',$api_key);
     }
 
@@ -439,7 +450,7 @@ class TripController extends Controller
             'trip_start' => $start,
             'trip_end' => $end,
             'start_time' => $starttime,
-            'end_time' => $endtime
+            'dayend_time' => $endtime
         ];
 
         if($hottest == 1){
@@ -598,7 +609,8 @@ class TripController extends Controller
             'pois' => $obj,
             'date' => $day,
             'start_time' => $request->start_time,
-            'end_time' => $request->end_time
+            'end_time' => $request->end_time,
+            'hotel' => $request->hotel_details
         ];
 
         $ch = curl_init($host);
@@ -632,6 +644,53 @@ class TripController extends Controller
 
         return response()->json($response);
     }
+
+
+    public function ItineraryAll($user_id){
+
+        $itineraries = Itinerary::where('user_id', '=', $user_id)->get()->toArray();
+        $city = array();
+        foreach($itineraries as $k =>$itinerary){
+            $json = json_decode($itinerary['itinerary_obj'],true);
+            $city[$k]['city'] = $json['city_name'];
+            $flag = Airports::where('municipality', '=', $city[$k]['city'])->get()->first();
+            if($flag != null) {
+                $city[$k]['flag'] = $flag->iso_country;
+            } else {
+                $city[$k]['flag'] = null;
+            }
+
+            $city[$k]['start'] = $json['trip_start'];
+            $city[$k]['end'] = $json['trip_end'];
+            $city[$k]['total'] = $json['trip_days'];
+        }
+
+        //print_r($city);die();
+        //print_r($itinerary);die();
+
+        return view('trip.itinerary_index')
+            ->with('city',$city)
+            ->with('itineraries',$itineraries);
+    }
+
+    public function ItineraryDelete($id){
+        $itinerary = Itinerary::where('id', '=', $id)->get()->first();
+        $itinerary->delete();
+        return redirect()->back();
+    }
+
+    public function ItineraryCopy($id){
+        $itinerary = Itinerary::where('id', '=', $id)->get()->first();
+
+        $new = new Itinerary();
+        $new->user_id = $itinerary->user_id;
+        $new->itinerary_obj = $itinerary->itinerary_obj;
+        $new->pois = $itinerary->pois;
+        $new->save();
+
+        return redirect()->back();
+    }
+
 }
 
 

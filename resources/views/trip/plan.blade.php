@@ -83,7 +83,7 @@
             color: #183849;
             background-color: #f7f7f7;
             border-radius: 5px;
-            padding: 40px 50px 20px 50px;
+            padding: 20px 50px 20px 50px;
             font-size: 20px;
             box-shadow: 0 1px 4px rgba(41, 51, 57, .5);
         }
@@ -465,6 +465,19 @@
             zoom: 150%;
             display: none;
         }
+
+        .weighting_label{
+            margin-bottom: 10px;
+            border-bottom: 1px dotted #173748;
+        }
+
+        .weight_max{
+            float: right;
+        }
+
+        .weight_max i{
+            margin-left: 13px;
+        }
     </style>
 
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -558,6 +571,13 @@
     <div class="step-3 animated">
         <div class="step-3_label">What would you like to do in your trip?</div>
         <div class="input_weighting">
+                <div class="row weighting_label">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9">
+                        <span class="weight_min"><i class="fas fa-long-arrow-alt-left"></i>Min</span>
+                        <span class="weight_max">Max<i class="fas fa-long-arrow-alt-right"></i></span>
+                    </div>
+                </div>
             @foreach($categories as $cat => $fa)
                 <div class="row weighting_group">
                     <div class="col-md-3">

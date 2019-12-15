@@ -1112,7 +1112,8 @@
                     @endif
                 @endforeach
             @else
-                此酒店暫沒有任何房間供應。
+                此酒店暫沒有任何房間供應。<br>
+                Not available now.
             @endif
         </div>
     </div>

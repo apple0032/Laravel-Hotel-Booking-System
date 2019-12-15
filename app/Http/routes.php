@@ -80,6 +80,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/trip/adviser/{city_name}', ['uses' => 'TripController@getTripAdviser', 'as' => 'flight.trip_adviser']);
     Route::get('/trip/itinerary/{id}', ['uses' => 'TripController@ItineraryIndex', 'as' => 'flight.itinerary']);
     Route::get('/trip/plan', ['uses' => 'TripController@PlanIndex', 'as' => 'flight.plan']);
+    Route::get('/trip/itinerary/all/{user_id}', ['uses' => 'TripController@ItineraryAll', 'as' => 'flight.itinerary_all']);
+    Route::get('/trip/delete-itinerary/{id}', ['uses' => 'TripController@ItineraryDelete', 'as' => 'flight.delete_itinerary']);
+    Route::get('/trip/copy-itinerary/{id}', ['uses' => 'TripController@ItineraryCopy', 'as' => 'flight.copy_itinerary']);
     Route::post('/trip/searchCity','TripController@searchCity');
     Route::post('/trip/searchPlaces','TripController@searchPlaces');
     Route::post('/trip/generateItinerary','TripController@generateItinerary');

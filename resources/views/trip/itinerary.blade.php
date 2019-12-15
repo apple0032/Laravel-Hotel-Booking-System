@@ -320,6 +320,7 @@
             border-left: 1px solid black;
             padding-left: 15px;
             cursor: pointer;
+            display: none;  /* Disable currently */
         }
 
         .see_more{
@@ -432,6 +433,17 @@
         
         .edit_timeflag{
             margin-top:8px;
+        }
+
+        .edit_time_left{
+            padding-top: 10px;
+            border: 1px solid #d1d1d1;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        #editItinerary .modal-body{
+            padding:20px;
         }
     </style>
     <body data-spy="scroll" data-target="#myScrollspy" data-offset="15">
@@ -634,7 +646,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
-                        123123
+                        <!-- flight details -->
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -725,18 +737,18 @@
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-2">
-                                <i class="far fa-clock"></i> START -
+                            <div class="col-md-2 col-md-offset-1 edit_time_left">
+                                <i class="far fa-clock"></i> DAY START TIME
                                 <div class="edit_timeflag">
                                     <input id="day_starttime" class="form-control" type="text" maxlength="30" autocomplete="off">
                                 </div>
-                                <br><br>
-                                <i class="far fa-clock"></i> END -
+                                <hr>
+                                <i class="far fa-clock"></i> DAY END TIME
                                 <div class="edit_timeflag">
                                     <input id="day_endtime" class="form-control" type="text" maxlength="30" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="col-md-10"><div class="day_itinerary" id="sortable"></div></div>
+                            <div class="col-md-8"><div class="day_itinerary" id="sortable"></div></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -884,9 +896,10 @@
         });
         $(".poi_category span").html('<i>'+cat_str+'</i>');
 
-        var desc_text = poi_data[id]['description']['text'];
-        $(".poi_text span").text(desc_text);
-
+        if(poi_data[id]['description'] != null) {
+            var desc_text = poi_data[id]['description']['text'];
+            $(".poi_text span").text(desc_text);
+        }
 
         //POI Content
         var duration = poi_data[id]['duration'];
@@ -941,12 +954,13 @@
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     var edit_itinerary = {!! json_encode($edit_itinerary) !!};
     var itinerary_timeflag = {!! json_encode($itinerary_timeflag) !!};
+    var hotel_details = {!! json_encode($hotel_details) !!};
 
     function editMode(day){
         console.log(day);
         console.log(edit_itinerary[day]);
         console.log(itinerary_timeflag[day]);
-        
+
         
         //Display timeflag field
         $("#day_starttime").val(itinerary_timeflag[day].starttime);
@@ -1034,6 +1048,9 @@
             });
 
             //console.log(update_obj);
+            if(hotel_details != null){
+                hotel_details = hotel_details.coordinate;
+            }
 
             $.ajax({
                 url: '../updateItinerary',
@@ -1045,7 +1062,8 @@
                     day: day,
                     obj: update_obj,
                     start_time: $("#day_starttime").val(),
-                    end_time: $("#day_endtime").val()
+                    end_time: $("#day_endtime").val(),
+                    hotel_details: hotel_details
                 },
                 dataType: 'JSON',
                 success: function (data) {
