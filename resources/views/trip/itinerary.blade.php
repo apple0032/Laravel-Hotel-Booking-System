@@ -397,7 +397,7 @@
             border: 1px solid #ccc;
             margin-bottom: 5px;
             border-radius: 5px;
-            cursor: pointer;
+            cursor: all-scroll;
         }
 
         .edit_each_poi img{
@@ -407,6 +407,7 @@
 
         .edit_leftside, .edit_rightside{
             display: inline-block;
+            vertical-align: top;
         }
 
         .edit_leftside{
@@ -454,6 +455,24 @@
         
         .add_area{
             margin-top: 10px;
+        }
+
+        .add_area .edit_title{
+            font-size: 12px;
+        }
+
+        .add_area .edit_rightside{
+            max-width: 140px;
+        }
+
+        #sortable2{
+            min-height: 50px;
+            border: 1px dotted #d7d7d7;
+            border-radius: 5px;
+        }
+
+        .drop_notice{
+            color: #c0c0c0;
         }
     </style>
     <body data-spy="scroll" data-target="#myScrollspy" data-offset="15">
@@ -753,16 +772,14 @@
                                     <input id="day_starttime" class="form-control" type="text" maxlength="30" autocomplete="off">
                                 </div>
                                 <hr>
-                                <i class="far fa-clock"></i> DAY END TIME
-                                <div class="edit_timeflag">
-                                    <input id="day_endtime" class="form-control" type="text" maxlength="30" autocomplete="off">
-                                </div>
+
                             </div>
                             <div class="col-md-7"><div class="day_itinerary connectedSortable" id="sortable"></div></div>
                             <div class="col-md-3">
-                                <input id="keyword" class="form-control" type="text" maxlength="30" autocomplete="off">
+                                <input id="keyword" class="form-control" type="text" maxlength="30" autocomplete="off" placeholder="Where do you want to go?">
                                 <button type="button" class="btn btn-primary" onclick="searchPoi()">Search</button>
                                 <div class="add_area connectedSortable" id="sortable2"></div>
+                                <div class="drop_notice"><i class="fas fa-hand-lizard"></i> Drop to add into your itinerary!</div>
                             </div>
                         </div>
                     </div>
@@ -979,7 +996,7 @@
         
         //Display timeflag field
         $("#day_starttime").val(itinerary_timeflag[day].starttime);
-        $("#day_endtime").val(itinerary_timeflag[day].endtime);
+        //$("#day_endtime").val(itinerary_timeflag[day].endtime);
         
 
         //Display whole schedule
@@ -1048,44 +1065,65 @@
     function savePoi(day){
         if(confirm("Are you sure you want to save this itinerary ?")) {
 
-            var update_obj = [];
-
+            var item = 0;
             $("#sortable .edit_each_poi").each(function() {
-                var poi = $(this).find(".poi-place").val();
-                var duration = $(this).find(".poi-duration").val();
-
-                var obj = {};
-                obj.poi = poi;
-                obj.duration = duration;
-
-                //console.log(obj);
-                update_obj.push(obj);
+                item++;
             });
 
-            //console.log(update_obj);
-            if(hotel_details != null){
-                hotel_details = hotel_details.coordinate;
-            }
+            if( item > 9) {
+                alert("Sorry! More then 10 attractions a day is not allowed!");
+            } else {
 
-            $.ajax({
-                url: '../updateItinerary',
-                async: false,
-                type: 'POST',
-                data: {
-                    _token: CSRF_TOKEN,
-                    id: {{$id}},
-                    day: day,
-                    obj: update_obj,
-                    start_time: $("#day_starttime").val(),
-                    end_time: $("#day_endtime").val(),
-                    hotel_details: hotel_details
-                },
-                dataType: 'JSON',
-                success: function (data) {
-                    location.reload();
+                var update_obj = [];
+                var validate_obj = [];
+                var update_result = true;
+                $("#sortable .edit_each_poi").each(function () {
+                    var poi = $(this).find(".poi-place").val();
+                    var duration = $(this).find(".poi-duration").val();
+
+                    var obj = {};
+                    obj.poi = poi;
+                    obj.duration = duration;
+
+                    //console.log(obj);
+                    if (validate_obj.includes(poi)) {
+                        update_result = false;
+                    } else {
+                        validate_obj.push(poi);
+                        update_obj.push(obj);
+                    }
+                });
+
+                //console.log(update_result);
+                //console.log(update_obj);
+
+                if (hotel_details != null) {
+                    hotel_details = hotel_details.coordinate;
                 }
-            });
 
+                if (update_result == true) {
+                    $.ajax({
+                        url: '../updateItinerary',
+                        async: false,
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            id: {{$id}},
+                            day: day,
+                            obj: update_obj,
+                            start_time: $("#day_starttime").val(),
+                            end_time: "24:00",
+                            hotel_details: hotel_details
+                        },
+                        dataType: 'JSON',
+                        success: function (data) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    alert("Same attraction in a single day is not allowed!")
+                }
+            }
         }
     }
 
@@ -1119,7 +1157,11 @@
                                     html += '<div class="edit_leftside"><img src="../../images/no_image.jpg"></div>';
                                 }
                                 html += '<div class="edit_rightside"><span class="edit_title"><b>'+value['name']+'</b></span>';
+                                html += '<br><span class="edit_duration" onclick="editDuration('+value['id'].replace("poi:", "")+')"><i class="far fa-clock"></i> <b>'+value['duration']/60+' Minutes</b></span><br>';
                                 html += '</div>';
+                                html += '<div class="edit_delete" onclick="deletePoi('+value['id'].replace("poi:", "")+')"><i class="fas fa-trash"></i></div>';
+                                html += '<input type="hidden" class="poi-place" value="'+value['id'].replace("poi:", "")+'">';
+                                html += '<input type="hidden" class="poi-duration" value="'+value['duration']+'">';
                             html += "</div>";
                         });
                     }
@@ -1129,5 +1171,12 @@
             });
         }
     }
+
+    $("#keyword").on('keyup', function (e) {
+        if (e.keyCode === 13) {
+            searchPoi();
+        }
+    });
+
 </script>
 @endsection
