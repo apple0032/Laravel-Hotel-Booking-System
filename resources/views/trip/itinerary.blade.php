@@ -13,10 +13,11 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         $( function() {
-            $( "#sortable" ).sortable({
-                opacity: 0.4
+            $( "#sortable, #sortable2" ).sortable({
+                opacity: 0.4,
+                connectWith: ".connectedSortable"
             });
-            $( "#sortable" ).disableSelection();
+            $( "#sortable, #sortable2" ).disableSelection();
         } );
     </script>
     <style type="text/css" class="cp-pen-styles">
@@ -757,11 +758,11 @@
                                     <input id="day_endtime" class="form-control" type="text" maxlength="30" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="col-md-7"><div class="day_itinerary" id="sortable"></div></div>
+                            <div class="col-md-7"><div class="day_itinerary connectedSortable" id="sortable"></div></div>
                             <div class="col-md-3">
                                 <input id="keyword" class="form-control" type="text" maxlength="30" autocomplete="off">
                                 <button type="button" class="btn btn-primary" onclick="searchPoi()">Search</button>
-                                <div class="add_area"></div>
+                                <div class="add_area connectedSortable" id="sortable2"></div>
                             </div>
                         </div>
                     </div>
