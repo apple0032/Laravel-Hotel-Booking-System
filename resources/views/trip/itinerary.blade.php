@@ -445,6 +445,11 @@
         #editItinerary .modal-body{
             padding:20px;
         }
+        
+        .edit_box{
+            margin-left: 0px;
+            margin-right: 0px;
+        }
     </style>
     <body data-spy="scroll" data-target="#myScrollspy" data-offset="15">
         <div class="loading_css">
@@ -736,8 +741,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-2 col-md-offset-1 edit_time_left">
+                        <div class="row edit_box">
+                            <div class="col-md-2 edit_time_left">
                                 <i class="far fa-clock"></i> DAY START TIME
                                 <div class="edit_timeflag">
                                     <input id="day_starttime" class="form-control" type="text" maxlength="30" autocomplete="off">
@@ -748,7 +753,10 @@
                                     <input id="day_endtime" class="form-control" type="text" maxlength="30" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="col-md-8"><div class="day_itinerary" id="sortable"></div></div>
+                            <div class="col-md-7"><div class="day_itinerary" id="sortable"></div></div>
+                            <div class="col-md-3">
+                                Add new
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
