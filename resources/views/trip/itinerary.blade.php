@@ -450,6 +450,10 @@
             margin-left: 0px;
             margin-right: 0px;
         }
+        
+        .add_area{
+            margin-top: 10px;
+        }
     </style>
     <body data-spy="scroll" data-target="#myScrollspy" data-offset="15">
         <div class="loading_css">
@@ -755,7 +759,9 @@
                             </div>
                             <div class="col-md-7"><div class="day_itinerary" id="sortable"></div></div>
                             <div class="col-md-3">
-                                Add new
+                                <input id="keyword" class="form-control" type="text" maxlength="30" autocomplete="off">
+                                <button type="button" class="btn btn-primary" onclick="searchPoi()">Search</button>
+                                <div class="add_area"></div>
                             </div>
                         </div>
                     </div>
@@ -1082,5 +1088,45 @@
         }
     }
 
+    function searchPoi(){
+        var city = {!! json_encode($city) !!};
+        var keyword = $('#keyword').val();
+        
+        if(keyword == '' || keyword == null){
+            alert("Please enter keyword.");
+        } else {
+            $.ajax({
+                url: '../searchAttractions',
+                async: false,
+                type: 'POST',
+                data: {
+                    _token: CSRF_TOKEN,
+                    keyword: $('#keyword').val(),
+                    city: city
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    var html = '';
+                    
+                    if(data.length > 0){
+                        $.each( data, function( key, value ) {
+                            html += "<div class='edit_each_poi' id='poi-"+value['id'].substring(4)+"'>";
+                                if(value['thumbnail_url'] != null){
+                                    html += '<div class="edit_leftside"><img src="'+value['thumbnail_url']+'"></div>';
+                                } else {
+                                    html += '<div class="edit_leftside"><img src="../../images/no_image.jpg"></div>';
+                                }
+                                html += '<div class="edit_rightside"><span class="edit_title"><b>'+value['name']+'</b></span>';
+                                html += '</div>';
+                            html += "</div>";
+                        });
+                    }
+                    
+                    $('.add_area').html(html)
+                }
+            });
+        }
+    }
 </script>
 @endsection

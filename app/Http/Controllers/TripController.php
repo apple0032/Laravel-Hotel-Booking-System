@@ -398,6 +398,7 @@ class TripController extends Controller
         if($itinerary['related_flight_id'] != 'null') {
             $related_flight_id = $itinerary['related_flight_id'];
         }
+        $city = $itinerary['city'];
 
         $edit_itinerary = array();
         $itinerary_timeflag = array();
@@ -435,6 +436,7 @@ class TripController extends Controller
             ->with('edit_itinerary', $edit_itinerary)
             ->with('itinerary_timeflag', $itinerary_timeflag)
             ->with('hotel_details', $hotel_details)
+            ->with('city',$city)
             ->with('api_key',$api_key);
     }
 
@@ -690,7 +692,31 @@ class TripController extends Controller
 
         return redirect()->back();
     }
+    
+    public function searchAttractions(Request $request){
+        
+        $host = request()->getHost();
+        $host = 'http://'.$host.':8080/trip/search';
+        $api_key = ApiInfo::NodeAPI();
 
+        $post = [
+            'keyword' => $request->keyword,
+            'city' => $request->city
+        ];
+
+        $ch = curl_init($host);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded','api_key: '.$api_key));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $result = json_decode($response,true);
+        
+        return $result['places'];
+    }
 }
 
 
