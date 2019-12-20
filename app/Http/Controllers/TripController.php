@@ -600,6 +600,7 @@ class TripController extends Controller
 
         $itinerary = Itinerary::where('id', '=', $request->id)->get()->first();
         $poi_details = json_decode($itinerary['itinerary_obj'],true);
+        $poi_info = json_decode($itinerary['pois'],true);
 
         $day = array_keys( $poi_details['schedule'][$request->day] )[0];
 
@@ -637,6 +638,14 @@ class TripController extends Controller
 
         //print_r($new_json);die();
         $itinerary->itinerary_obj = $new_json;
+        
+        foreach($result['details'] as $poi_id => $de){
+            if(!isset($poi_info[$poi_id])){
+                $poi_info[$poi_id] = $de;
+            }
+        }
+        $itinerary->pois = json_encode($poi_info,true);
+        
         $itinerary->save();
 
         $response = array(

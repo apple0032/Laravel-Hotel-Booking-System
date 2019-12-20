@@ -474,6 +474,16 @@
         .drop_notice{
             color: #c0c0c0;
         }
+        
+        .ui-sortable-placeholder{
+            height: 55px;
+            visibility: visible !important;
+            color: #ddd !important;
+        }
+        
+        .not_found_msg{
+            margin: 10px;
+        }
     </style>
     <body data-spy="scroll" data-target="#myScrollspy" data-offset="15">
         <div class="loading_css">
@@ -778,6 +788,7 @@
                             <div class="col-md-3">
                                 <input id="keyword" class="form-control" type="text" maxlength="30" autocomplete="off" placeholder="Where do you want to go?">
                                 <button type="button" class="btn btn-primary" onclick="searchPoi()">Search</button>
+                                <div class="not_found_msg"></div>
                                 <div class="add_area connectedSortable" id="sortable2"></div>
                                 <div class="drop_notice"><i class="fas fa-hand-lizard"></i> Drop to add into your itinerary!</div>
                             </div>
@@ -1149,6 +1160,7 @@
                     var html = '';
                     
                     if(data.length > 0){
+                        $(".not_found_msg").html();
                         $.each( data, function( key, value ) {
                             html += "<div class='edit_each_poi' id='poi-"+value['id'].substring(4)+"'>";
                                 if(value['thumbnail_url'] != null){
@@ -1164,9 +1176,12 @@
                                 html += '<input type="hidden" class="poi-duration" value="'+value['duration']+'">';
                             html += "</div>";
                         });
+                        
+                        $('.add_area').html(html);
+                    } else {
+                        $(".not_found_msg").html('<i class="fas fa-exclamation-circle"></i> Attractions not found.');
                     }
                     
-                    $('.add_area').html(html)
                 }
             });
         }
