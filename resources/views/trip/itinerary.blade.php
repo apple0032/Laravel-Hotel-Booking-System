@@ -587,31 +587,35 @@
                                             <div class="line-between"></div>
                                         @endif
                                     @elseif($poi['type'] == "hotel")
-                                        <div class="row itinerary_box">
-                                            <div class="col-md-12 itinerary_poi">
-                                                <div class="row">
-                                                    <div class="col-md-2 itinerary_time">
-                                                        <span class="schedule_time">{{substr($poi['schedule_time'], -8,-3)}}</span>
-                                                        <i class="fas fa-suitcase-rolling"></i>
-                                                    </div>
-                                                    <div class="col-md-2 itinerary_img">
-                                                        <img src="https://upload.cc/i1/2019/10/04/DnFrW4.jpg">
-                                                    </div>
-                                                    <div class="col-md-8 itinerary_details">
-                                                        <h3>{{ucfirst($poi['location'])}}</h3>
-                                                        <br><br>
-                                                        <i class="fas fa-location-arrow"></i>&nbsp;{{$poi['perex']}} <br><br>
-                                                        <br>
-                                                        <span class="marker" data-toggle="modal" data-target="#iftameMarker" onclick="loadMap('<?php echo $poi['coordinate'] ?>')">
-                                                            <i class="fas fa-map-marker-alt"></i> Maps
-                                                        </span>
+                                    
+                                        @if( ($stay == null) || ($s == 1 && $stay['roomflag'][$i]['start'] == 1) || ($s != 1 && $stay['roomflag'][$i]['end'] == 1)  )
+                                            <div class="row itinerary_box">
+                                                <div class="col-md-12 itinerary_poi">
+                                                    <div class="row">
+                                                        <div class="col-md-2 itinerary_time">
+                                                            <span class="schedule_time">{{substr($poi['schedule_time'], -8,-3)}}</span>
+                                                            <i class="fas fa-suitcase-rolling"></i>
+                                                        </div>
+                                                        <div class="col-md-2 itinerary_img">
+                                                            <img src="https://upload.cc/i1/2019/10/04/DnFrW4.jpg">
+                                                        </div>
+                                                        <div class="col-md-8 itinerary_details">
+                                                            <h3>{{ucfirst($poi['location'])}}</h3>
+                                                            <br><br>
+                                                            <i class="fas fa-location-arrow"></i>&nbsp;{{$poi['perex']}} <br><br>
+                                                            <br>
+                                                            <span class="marker" data-toggle="modal" data-target="#iftameMarker" onclick="loadMap('<?php echo $poi['coordinate'] ?>')">
+                                                                <i class="fas fa-map-marker-alt"></i> Maps
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        @if($s != count($itinerary['schedule'][$i][$date]) - 1)
-                                            <div class="line-between"></div>
+                                            @if($s != count($itinerary['schedule'][$i][$date]) - 1)
+                                                <div class="line-between"></div>
+                                            @endif
                                         @endif
+                                        
                                     @elseif($poi['type'] == "transport")
                                         <?php
                                             if(isset($itinerary['schedule'][$i][$date][$s-1]['coordinate'])){
@@ -784,7 +788,10 @@
                                 <hr>
 
                             </div>
-                            <div class="col-md-7"><div class="day_itinerary connectedSortable" id="sortable"></div></div>
+                            <div class="col-md-7">
+                                <div class="day_itinerary connectedSortable" id="sortable"></div>
+                                <div class="day_itinerary_save"></div>
+                            </div>
                             <div class="col-md-3">
                                 <input id="keyword" class="form-control" type="text" maxlength="30" autocomplete="off" placeholder="Where do you want to go?">
                                 <button type="button" class="btn btn-primary" onclick="searchPoi()">Search</button>
@@ -1038,9 +1045,10 @@
             edithtml += '</div>';
         });
 
-        edithtml += '<button type="button" class="btn btn-success" id="save-update" onclick="savePoi('+day+')">SAVE</button>';
-
         $(".day_itinerary").html(edithtml);
+        
+        var saveHtml = '<button type="button" class="btn btn-success" id="save-update" onclick="savePoi('+day+')">SAVE</button>';
+        $(".day_itinerary_save").html(saveHtml);
     }
 
     function editDuration(poi) {

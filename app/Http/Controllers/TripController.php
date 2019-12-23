@@ -342,6 +342,7 @@ class TripController extends Controller
         //Get all pois from the itinerary
         $itinerary_json = json_decode($itinerary,true);
         $pois = json_encode($itinerary_json['itinerary_pois']);
+        $trip_days = json_encode($itinerary_json['trip_days']);
 
         //Get the all pois string
         $poi_string = $this->getPOIStringFromNodeAPI($pois);
@@ -363,11 +364,19 @@ class TripController extends Controller
         foreach ($poi_data as $a){
             $poi_details[$a['id']] = $a;
         }
+        
+        $stay_obj = array();
+        for ($x = 0; $x < $trip_days; $x++) {
+            $stay_obj[$x]['start'] = 1;
+            $stay_obj[$x]['end'] = 1;
+        }
+        $stay_obj = '{"roomflag" : '.json_encode($stay_obj).'}';
 
         $new = new Itinerary();
         $new->user_id = $user_id;
         $new->itinerary_obj = $itinerary;
         $new->pois = json_encode($poi_details,true);
+        $new->stay_obj = $stay_obj;
         $new->save();
 
 
@@ -392,6 +401,7 @@ class TripController extends Controller
         $api_key = ApiInfo::GoogleMapApiData();
         $itinerary = Itinerary::where('id', '=', $id)->get()->first();
         $poi_details = json_decode($itinerary['pois'],true);
+        $stay = json_decode($itinerary['stay_obj'],true);
         $itinerary = json_decode($itinerary['itinerary_obj'],true);
 
         $related_flight_id = null;
@@ -435,6 +445,7 @@ class TripController extends Controller
             ->with('poi_data',$poi_details)
             ->with('edit_itinerary', $edit_itinerary)
             ->with('itinerary_timeflag', $itinerary_timeflag)
+            ->with('stay',$stay)
             ->with('hotel_details', $hotel_details)
             ->with('city',$city)
             ->with('api_key',$api_key);
