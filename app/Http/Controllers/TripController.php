@@ -737,6 +737,25 @@ class TripController extends Controller
         
         return $result['places'];
     }
+
+    public function updateRoomView(Request $request){
+        //print_r($request->id);die();
+
+        $itinerary = Itinerary::where('id', '=', $request->id)->get()->first();
+        $stay_obj = json_decode($itinerary->stay_obj,true);
+        $obj = $stay_obj['roomflag'][$request->day];
+        $obj['start'] = intval($request->start);
+        $obj['end'] = intval($request->end);
+
+        $stay_obj['roomflag'][$request->day] = $obj;
+        $update_obj = json_encode($stay_obj);
+
+        $itinerary->stay_obj = $update_obj;
+        $itinerary->save();
+
+        return;
+    }
+
 }
 
 

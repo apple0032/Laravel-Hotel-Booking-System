@@ -380,12 +380,25 @@
             border-radius: 5px;
         }
 
-        .update_itinerary{
+        .update_itinerary, .update_view{
             float: right;
             font-size: 30px;
             border-radius: 5px;
             padding: 1px 7px 1px 7px;
             cursor: pointer;
+        }
+
+        .update_view{
+            background: #333333;
+            color: white;
+            font-size: 24px;
+            padding-left: 0px;
+            padding-right: 0px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            margin-top: 3px;
+            width: 26px;
+            height: 26px;
         }
 
         .day_itinerary{
@@ -484,6 +497,107 @@
         .not_found_msg{
             margin: 10px;
         }
+
+
+        /* Custom radio buttons */
+        input[type="radio"] + label {
+            display: inline-block;
+            cursor: pointer;
+            position: relative;
+            padding-left: 30px;
+            margin-right: 15px;
+            font-size: 17px;
+        }
+        input[type="radio"] + label:before {
+            content: "";
+            display: block;
+            width: 22px;
+            height: 22px;
+            margin-right: 14px;
+            position: absolute;
+            top: -3px;
+            left: 0;
+            border: 1px solid #aaa;
+            background-color: #fff;
+            border-radius: 50%;
+        }
+        input[type="radio"] {
+            display: none !important;
+            *display: inline;
+        }
+        input[type="radio"]:checked + label:after {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 2px;
+            left: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #173848;
+        }
+        /* Custom checkbox */
+        input[type="checkbox"] + label {
+            display: inline-block;
+            cursor: pointer;
+            position: relative;
+            padding-left: 30px;
+            margin-right: 15px;
+            font-size: 13px;
+        }
+        input[type="checkbox"] + label:before {
+            content: "";
+            display: block;
+            width: 22px;
+            height: 22px;
+            margin-right: 14px;
+            position: absolute;
+            top: -3px;
+            left: 0;
+            border: 1px solid #aaa;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+        input[type="checkbox"] {
+            display: none !important;
+            *display: inline;
+        }
+        input[type="checkbox"]:checked + label:after {
+            content: "✔";
+            font-size: 20px;
+            line-height: 20px;
+            color: #b7b7b7;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .radio label, .radio2 label{
+            font-weight: normal !important;
+        }
+
+        .radio, .radio2{
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        .room_view span{
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .room_view h3{
+            margin-bottom: 30px;
+        }
+
+        .saving_view{
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
     </style>
     <body data-spy="scroll" data-target="#myScrollspy" data-offset="15">
         <div class="loading_css">
@@ -515,6 +629,9 @@
                     @foreach($itinerary['dates'] as $i => $date)
                         <div class="dayofday dayof_{{$i}}">
                             <i class="fas fa-pen-square update_itinerary" onclick="editMode('{{$i}}')" data-toggle="modal" data-target="#editItinerary"></i>
+                            @if($hotel_details != null)
+                                <i class="fas fa-eye update_view" onclick="editView('{{$i}}')" data-toggle="modal" data-target="#editView"></i>
+                            @endif
                             <div class="eachday" id="day{{$i+1}}">
                                 <div class="mdate">
                                     {{$date}}
@@ -594,13 +711,13 @@
                                                     <div class="row">
                                                         <div class="col-md-2 itinerary_time">
                                                             <span class="schedule_time">{{substr($poi['schedule_time'], -8,-3)}}</span>
-                                                            <i class="fas fa-suitcase-rolling"></i>
+                                                            <i class="fas fa-hotel"></i>
                                                         </div>
                                                         <div class="col-md-2 itinerary_img">
-                                                            <img src="https://upload.cc/i1/2019/10/04/DnFrW4.jpg">
+                                                            <img src="https://room-matehotels.com/images/img/general/small/slide_home_alba.jpg">
                                                         </div>
                                                         <div class="col-md-8 itinerary_details">
-                                                            <h3>{{ucfirst($poi['location'])}}</h3>
+                                                            <h3>{{ucfirst($poi['location'])}} / Accommodation</h3>
                                                             <br><br>
                                                             <i class="fas fa-location-arrow"></i>&nbsp;{{$poi['perex']}} <br><br>
                                                             <br>
@@ -807,6 +924,31 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="editView" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row room_view">
+                            <div style="text-align: center">
+                                <h3>Do you want to display the accommodation into your itinerary of that day?</h3>
+                                <span> - Start from the day - </span>
+                                <div class="radio"></div>
+                                <br>
+                                <span> - End from the day - </span>
+                                <div class="radio2"></div>
+                                <div class="saving_view"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </body>
 @endsection
 
@@ -1005,6 +1147,7 @@
     var edit_itinerary = {!! json_encode($edit_itinerary) !!};
     var itinerary_timeflag = {!! json_encode($itinerary_timeflag) !!};
     var hotel_details = {!! json_encode($hotel_details) !!};
+    var stay_details = {!! json_encode($stay) !!};
 
     function editMode(day){
         console.log(day);
@@ -1200,6 +1343,75 @@
             searchPoi();
         }
     });
+
+    function editView(day){
+
+        var stay = stay_details['roomflag'][day];
+        //console.log(stay);
+
+        var html = '';
+        html += '<input id="first" type="radio" name="view_start" value="1"';
+        if(stay['start'] === 1){
+            html += ' checked=""';
+        }
+        html +='>';
+        html += '<label for="first"><i class="fas fa-eye"></i> Show</label>';
+
+        html += '<input id="second" type="radio" name="view_start" value="0"';
+        if(stay['start'] === 0){
+            html += ' checked=""';
+        }
+        html +='>';
+        html += '<label for="second"><i class="fas fa-eye-slash"></i> Disable</label>';
+
+        $(".room_view .radio").html(html);
+
+
+
+        /************* END *************/
+        console.log(stay['end']);
+        var html2 = '';
+        html2 += '<input id="first2" type="radio" name="view_end" value="1"';
+        if(stay['end'] === 1){
+            html2 += ' checked=""';
+        }
+        html2 +='>';
+        html2 += '<label for="first2"><i class="fas fa-eye"></i> Show</label>';
+
+        html2 += '<input id="second2" type="radio" name="view_end" value="0"';
+        if(stay['end'] === 0){
+            html2 += ' checked=""';
+        }
+        html2 +='>';
+        html2 += '<label for="second2"><i class="fas fa-eye-slash"></i> Disable</label>';
+        console.log(html2);
+
+        $(".room_view .radio2").html(html2);
+
+        $(".saving_view").html('<button type="button" class="btn btn-success" id="save-view" onclick="saveView('+day+')">SAVE</button>');
+    }
+
+    function saveView(day){
+        var start = $('[name="view_start"]:checked').val();
+        var end = $('[name="view_end"]:checked').val();
+
+        $.ajax({
+            url: '../updateRoomView',
+            async: false,
+            type: 'POST',
+            data: {
+                _token: CSRF_TOKEN,
+                id: {{$id}},
+                start: start,
+                end: end,
+                day: day
+            },
+            dataType: 'JSON',
+            complete: function () {
+                location.reload();
+            }
+        });
+    }
 
 </script>
 @endsection
