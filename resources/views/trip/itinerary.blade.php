@@ -629,7 +629,7 @@
                     @foreach($itinerary['dates'] as $i => $date)
                         <div class="dayofday dayof_{{$i}}">
                             <i class="fas fa-pen-square update_itinerary" onclick="editMode('{{$i}}')" data-toggle="modal" data-target="#editItinerary"></i>
-                            @if($hotel_details != null)
+                            @if($hotel_details != null && $stay != null)
                                 <i class="fas fa-eye update_view" onclick="editView('{{$i}}')" data-toggle="modal" data-target="#editView"></i>
                             @endif
                             <div class="eachday" id="day{{$i+1}}">
@@ -1345,6 +1345,10 @@
     });
 
     function editView(day){
+
+        if(stay_details == null){
+            return;
+        }
 
         var stay = stay_details['roomflag'][day];
         //console.log(stay);
