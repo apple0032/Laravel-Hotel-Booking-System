@@ -206,8 +206,8 @@
                     </li>
 
                 @else
-                    <li class="cool-link"><a href="{{route('login')}}">登入</a></li>
-                    <li class="cool-link"><a href="{{route('register')}}">註冊</a></li>
+                    <li class="cool-link"><a href="{{route('login')}}">LOGIN</a></li>
+                    <li class="cool-link"><a href="{{route('register')}}">REGISTER</a></li>
                     {{--<a href="{{ route('login') }}" class="btn btn-default">Login</a>--}}
 
                 @endif
