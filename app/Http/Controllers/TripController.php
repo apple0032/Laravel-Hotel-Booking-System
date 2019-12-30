@@ -212,7 +212,8 @@ class TripController extends Controller
         } else {
             $booking = null;
         }
-
+        
+        //print_r($trip_data->itinerary);die();
         //echo '<pre>';print_r($booking);echo '</pre>';die();
 
         $city = Cities::where('name','=',$trip_data->city)->first();

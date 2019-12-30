@@ -9,5 +9,10 @@ class Itinerary extends Model
 {
     protected $table = 'itinerary';
 
+    public function Trip()
+    {
+        return $this->belongsTo('App\Trip');
+    }
+    
 }
 

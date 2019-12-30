@@ -495,7 +495,7 @@
                             },
                             success: function (data) {
                                 //$('.hotel_section').html('');
-                                $('.hotel_section').load('trip/'+sid+' .load_hotel', function () {});
+                                $('.hotel_section').load('trip/info/'+sid+' .load_hotel', function () {});
                             }
                         });
                     }

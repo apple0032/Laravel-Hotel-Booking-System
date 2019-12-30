@@ -19,6 +19,11 @@ class Trip extends Model
     {
         return $this->hasone('App\Cities');
     }
+    
+    public function Itinerary()
+    {
+        return $this->hasmany('App\Itinerary');
+    }
 
     public static function getTrip($book_id){
         $trip = Trip::where('booking_id','=',$book_id)->first();

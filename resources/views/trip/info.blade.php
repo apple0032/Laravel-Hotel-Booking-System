@@ -174,10 +174,12 @@
                     <div class="hotel_content">
                         <div class="row">
                             <div class="col-md-12 hotel_content_image">
-                                @if($booking->image == 'null')
+                                @if( ($booking->image == 'null.jpg') && ($booking->default_image != '') &&  ($booking->default_image != null) )
+                                    <img src="https://photos.hotellook.k8s.avs.io/image_v2/limit/h{{$booking->default_image}}_0/640/480.jpg">
+                                @elseif( ($booking->image != 'null.jpg') && ($booking->image != '') && ($booking->image != null) )
                                     <img src="{{URL::to('/')}}/images/upload/{{$booking->image}}">
                                 @else
-                                    <img src="https://photos.hotellook.k8s.avs.io/image_v2/limit/h{{$booking->default_image}}_0/640/480.jpg">
+                                    <img src="{{URL::to('/')}}/images/no_image.jpg">
                                 @endif
                             </div>
                             <div class="col-md-12 hotel_details">
@@ -229,7 +231,7 @@
                 </div>
             </div>
         @endif
-
+        
     </div>
 
 @endsection
