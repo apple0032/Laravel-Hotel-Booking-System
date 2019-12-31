@@ -143,8 +143,7 @@
 
 .no_hotel_block{
     padding-top:60px;
-    padding-right: 15%;
-    padding-left: 15%;
+    margin: 0;
 }
 
 .no_hotel_button, .no_hotel_select, .dismatch_btn{
@@ -161,7 +160,7 @@
     background:#4a9afe;
 }
 
-.no_hotel_button:hover, .dismatch_btn:hover{
+.no_hotel_button:hover, .dismatch_btn:hover, .reload-btn:hover{
     box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,.9);
 }
 
@@ -204,8 +203,23 @@
   }
 }
 
-
 .dismatch_btn{
     margin-top: 10px;
     background: #fe4a5d;
+}
+
+.reload-btn{
+    width: 150px;
+    border-radius: 5px;
+    text-align: center;
+    padding: 5px 10px;
+    color: white;
+    background: #2d6098;
+    cursor: pointer;
+}
+
+.reload_area{
+    border-top: 1px dotted #ccc;
+    margin-top: 10px;
+    padding-top: 10px;
 }

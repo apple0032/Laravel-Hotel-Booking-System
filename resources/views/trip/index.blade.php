@@ -458,57 +458,64 @@
                 $('.trip_header').css("background-image", "url('"+img+"')");
                 $('.trip_header_country span').html(country);
 
-                //ajax to load trip details
-                $('.trip_content').load('trip/info/'+sid+' .trip_details', function () {
-                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-                    
-                    $('.no_hotel_button').click(function () {
-                        $('.no_hotel_button').fadeOut();
-                        $('.no_hotel_select').fadeIn();
-                    });
-
-                    $('.link_submit').click(function () {
-                        //$('.no_hotel_button').fadeIn();
-                        var selected = $('#sel1').val();
-                        if(selected != null){
-                            var con = confirm("Sure to match?");
-                            if (con) {
-                                ApiUpdateMatching(CSRF_TOKEN, sid, selected);
-                            }
-                        }
-                    });
-                    
-                    $('.dismatch_btn').click(function () {
-                        var con = confirm("Sure to dismatch?");
-                        if (con) {
-                            ApiUpdateMatching(CSRF_TOKEN, sid, 0);
-                        }
-                    });
-
-                    function ApiUpdateMatching(token,sid,selected) {
-                        $('.no_hotel_select').fadeOut();
-
-                        $.ajax({
-                            url: 'matchbooking',
-                            type: 'POST',
-                            data: {
-                                _token: token,
-                                id : sid,
-                                booking: selected
-                            },
-                            dataType: 'JSON',
-                            beforeSend: function () {
-
-                            },
-                            success: function (data) {
-                                //$('.hotel_section').html('');
-                                $('.hotel_section').load('trip/info/'+sid+' .load_hotel', function () {});
-                            }
-                        });
-                    }
-                });
+                ajaxLoad(sid,userid);
             });
         });
 
+        function ajaxLoad(sid,userid){
+            //ajax to load trip details
+            $('.trip_content').load('trip/info/'+sid+' .trip_details', function () {
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+                $('.no_hotel_button').click(function () {
+                    $('.no_hotel_button').fadeOut();
+                    $('.no_hotel_select').fadeIn();
+                });
+
+                $('.link_submit').click(function () {
+                    //$('.no_hotel_button').fadeIn();
+                    var selected = $('#sel1').val();
+                    if(selected != null){
+                        var con = confirm("Sure to match?");
+                        if (con) {
+                            ApiUpdateMatching(CSRF_TOKEN, sid, selected);
+                        }
+                    }
+                });
+
+                $('.dismatch_btn').click(function () {
+                    var con = confirm("Sure to dismatch?");
+                    if (con) {
+                        ApiUpdateMatching(CSRF_TOKEN, sid, 0);
+                    }
+                });
+
+                $(".reload-btn").click(function () {
+                    ajaxLoad(sid);
+                });
+
+                function ApiUpdateMatching(token,sid,selected) {
+                    $('.no_hotel_select').fadeOut();
+
+                    $.ajax({
+                        url: 'matchbooking',
+                        type: 'POST',
+                        data: {
+                            _token: token,
+                            id : sid,
+                            booking: selected
+                        },
+                        dataType: 'JSON',
+                        beforeSend: function () {
+
+                        },
+                        success: function (data) {
+                            //$('.hotel_section').html('');
+                            $('.hotel_section').load('trip/info/'+sid+' .load_hotel', function () {});
+                        }
+                    });
+                }
+            });
+        }
     </script>
 @endsection

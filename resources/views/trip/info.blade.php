@@ -55,7 +55,7 @@
         <div class="flight_section col-md-6">
             <div class="flight_title">
                 <i class="fas fa-ticket-alt"></i> Electronic flight ticket
-                <a href="{{URL::to('/')}}/flight-summary"><i class="fas fa-link"></i></a>
+                <a href="{{URL::to('/')}}/flight-summary" target="_blank"><i class="fas fa-link"></i></a>
             </div>
 
             @foreach($flight as $ft)
@@ -168,7 +168,7 @@
                 <div class="load_hotel">
                     <div class="flight_title">
                         <i class="fas fa-hotel"></i> Hotel booking
-                        <a href="{{URL::to('/')}}/book/booklist"><i class="fas fa-link"></i></a>
+                        <a href="{{URL::to('/')}}/book/booklist" target="_blank"><i class="fas fa-link"></i></a>
                     </div>
 
                     <div class="hotel_content">
@@ -211,11 +211,16 @@
                         </div>
                     </div>
                 </div>
-        @else
+        @endif
             <div class="hotel_section2 col-md-12">
                 <div class="row no_hotel_block">
                     <div class="col-md-12 no_hotel_button" onclick="window.location.href='#'">
-                        <i class="fas fa-exclamation-circle"></i> &nbsp;&nbsp; No hotel booking linkage right now. Do it now?
+                        <i class="fas fa-retweet"></i>
+                        @if($booking != null)
+                            Re-match your hotel booking?
+                        @else
+                            No hotel booking linkage right now. Do it now?
+                        @endif
                     </div>
                     <div class="col-md-12 no_hotel_select" onclick="window.location.href='#'">
                         <select class="form-control" id="sel1">
@@ -229,14 +234,21 @@
                     </div>
                 </div>
             </div>
-        @endif
         
         @if($booking != null)
-        <div class="col-md-12 dismatch_btn">
-            <i class="fas fa-ban"></i> Dismatch this booking
+        <div class="col-md-12">
+            <div class="dismatch_btn">
+                <i class="fas fa-ban"></i> Dismatch this booking
+            </div>
         </div>
         @endif
         
+        </div>
+
+        <div class="col-md-12 reload_area">
+            <div class="reload-btn">
+                <i class="fas fa-sync"></i> Reload the trip
+            </div>
         </div>
     </div>
 
