@@ -162,9 +162,9 @@
             @endforeach
 
         </div>
-
+        
+        <div class="hotel_section col-md-6">
         @if($booking != null)
-            <div class="hotel_section col-md-6">
                 <div class="load_hotel">
                     <div class="flight_title">
                         <i class="fas fa-hotel"></i> Hotel booking
@@ -211,9 +211,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
         @else
-            <div class="hotel_section col-md-6">
+            <div class="hotel_section2 col-md-12">
                 <div class="row no_hotel_block">
                     <div class="col-md-12 no_hotel_button" onclick="window.location.href='#'">
                         <i class="fas fa-exclamation-circle"></i> &nbsp;&nbsp; No hotel booking linkage right now. Do it now?
@@ -232,6 +231,13 @@
             </div>
         @endif
         
+        @if($booking != null)
+        <div class="col-md-12 dismatch_btn">
+            <i class="fas fa-ban"></i> Dismatch this booking
+        </div>
+        @endif
+        
+        </div>
     </div>
 
 @endsection

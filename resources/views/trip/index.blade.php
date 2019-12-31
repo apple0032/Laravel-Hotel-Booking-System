@@ -477,6 +477,13 @@
                             }
                         }
                     });
+                    
+                    $('.dismatch_btn').click(function () {
+                        var con = confirm("Sure to dismatch?");
+                        if (con) {
+                            ApiUpdateMatching(CSRF_TOKEN, sid, 0);
+                        }
+                    });
 
                     function ApiUpdateMatching(token,sid,selected) {
                         $('.no_hotel_select').fadeOut();

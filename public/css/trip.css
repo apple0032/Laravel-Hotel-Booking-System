@@ -147,7 +147,7 @@
     padding-left: 15%;
 }
 
-.no_hotel_button, .no_hotel_select{
+.no_hotel_button, .no_hotel_select, .dismatch_btn{
     text-align: center;
     box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,.2);
     padding: .5rem .75rem;
@@ -158,11 +158,11 @@
 }
 
 .no_hotel_button{
-    background:#fe4a5d;
+    background:#4a9afe;
 }
 
-.no_hotel_button:hover{
-        box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,.9);
+.no_hotel_button:hover, .dismatch_btn:hover{
+    box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,.9);
 }
 
 .no_hotel_select{
@@ -202,4 +202,10 @@
   100% {
     transform: rotate(1800deg);
   }
+}
+
+
+.dismatch_btn{
+    margin-top: 10px;
+    background: #fe4a5d;
 }
