@@ -20,6 +20,7 @@ use App\FlightPayment;
 use App\Trip;
 use App\CountryImage;
 use App\Cities;
+use App\Country;
 use App\ApiInfo;
 use App\Itinerary;
 
@@ -680,7 +681,16 @@ class TripController extends Controller
             if($flag != null) {
                 $city[$k]['flag'] = $flag->iso_country;
             } else {
-                $city[$k]['flag'] = null;
+                $cities = Cities::where('name', '=', $city[$k]['city'])->get()->first();
+                $country = Country::where('country_id', '=', $cities->country_id)->get()->first();
+
+                if($country != null) {
+                    $result = self::getCountryCodeByAPI($country->name);
+                    $result = json_decode($result,true);
+                    $city[$k]['flag'] = $result[0]['alpha2Code'];
+                } else {
+                    $city[$k]['flag'] = null;
+                }
             }
 
             $city[$k]['start'] = $json['trip_start'];
@@ -694,6 +704,13 @@ class TripController extends Controller
         return view('trip.itinerary_index')
             ->with('city',$city)
             ->with('itineraries',$itineraries);
+    }
+
+    public function getCountryCodeByAPI($name){
+        $url = 'https://restcountries.eu/rest/v2/name/'.$name;
+        $result = file_get_contents($url, false);
+
+        return $result;
     }
 
     public function ItineraryDelete($id){
