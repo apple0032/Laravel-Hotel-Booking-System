@@ -678,7 +678,18 @@
     <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script>
-
+        var flight_info = {!! json_encode($flight_info) !!};
+        var related_flight_id;
+        console.log(flight_info);
+        if(flight_info != null){
+            $("#searchcity").val(flight_info.city);
+            $("#searchcity").attr('readonly', true); 
+            $("#daterange").val(flight_info.dep+' - '+flight_info.arr);
+            related_flight_id = flight_info.related_flight_id;
+        } else {
+            related_flight_id = null;
+        }
+        
         $(function () {
             $('input[name="daterange"]').daterangepicker({
                 opens: 'right',
@@ -728,7 +739,7 @@
         $('#searchcity').keyup(delay(function (e) {
             var keyword = $(this).val();
 
-            if (keyword) {
+            if (keyword && flight_info == null) {
                 typingTimer = setTimeout(function () {
 
                     $.ajax({
@@ -1076,7 +1087,8 @@
                     priority: priority,
                     hottest: hottest,
                     has_accom: has_accom,
-                    point:point
+                    point:point,
+                    related_flight_id: related_flight_id
                 },
                 dataType: 'JSON',
                 beforeSend: function () {

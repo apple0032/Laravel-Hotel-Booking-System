@@ -23,6 +23,7 @@ use App\Cities;
 use App\Country;
 use App\ApiInfo;
 use App\Itinerary;
+use Illuminate\Support\Facades\Input;
 
 class TripController extends Controller
 {
@@ -337,6 +338,17 @@ class TripController extends Controller
         $point = $request->point;
         $hottest = $request->hottest;
         $has_accom = $request->has_accom;
+        
+        
+        //Handle flight-trip relationship
+        if($request->related_flight_id != null){
+            $trip = Trip::where('related_flight_id', '=', $request->related_flight_id)->get()->first();
+            $trip_id = $trip->id;
+        } else {
+            $trip_id = null;
+        }
+        //print_r($trip_id);die();
+        
 
         //Generate all itineraries by NodeJSAPI
         $itinerary = $this->getItineraryFromNodeAPI($city,$start,$end,$starttime,$endtime,$priority,$point,$hottest,$has_accom);
@@ -376,6 +388,7 @@ class TripController extends Controller
 
         $new = new Itinerary();
         $new->user_id = $user_id;
+        $new->trip_id = $trip_id;
         $new->itinerary_obj = $itinerary;
         $new->pois = json_encode($poi_details,true);
         $new->stay_obj = $stay_obj;
@@ -552,7 +565,45 @@ class TripController extends Controller
 
         $api_key = ApiInfo::GoogleMapJsApiData();
         
-        return view('trip.plan')->with('categories',$categories)->with('api_key',$api_key);
+        //Handle create itinerary with flight booking
+        $flight = Input::get('f');
+        $flight_info = array();
+        if($flight != null){
+            $flight_obj = FlightBooking::where('related_flight_id', '=', $flight)->get()->toArray();
+            if($flight_obj == null){
+                return redirect()->route('pages.error');
+            } else {
+                //print_r($flight_obj);die();
+                $flight_info['related_flight_id'] = $flight;
+                $flight_info['city'] = $flight_obj[0]['city'];
+                $cities = Cities::where('name', '=', $flight_info['city'])->get()->first();
+                $country = Country::where('country_id', '=', $cities->country_id)->get()->first();
+                $flight_info['country'] = $country->name;
+                
+                count($flight_obj) == 2 ? $flight_info['round-trip'] = true : $flight_info['round-trip'] = false;
+                
+                if(count($flight_obj) == 2){
+                    if($flight_obj[1]['dep_date'] > $flight_obj[0]['dep_date']){
+                        $flight_info['dep'] = $flight_obj[0]['dep_date'];
+                        $flight_info['arr'] = $flight_obj[1]['dep_date'];
+                    } else {
+                        $flight_info['dep'] = $flight_obj[1]['dep_date'];
+                        $flight_info['arr'] = $flight_obj[0]['dep_date'];
+                    }
+                } else {
+                    $flight_info['arr'] = $flight_info['dep'] = $flight_obj[0]['dep_date'];
+                }
+            }
+        }
+        
+        if(empty($flight_info)){ $flight_info = null; }
+        
+        //print_r($flight_info);die();
+        
+        return view('trip.plan')
+            ->with('categories',$categories)
+            ->with('flight_info',$flight_info)
+            ->with('api_key',$api_key);
     }
 
     public function searchCity(Request $request){

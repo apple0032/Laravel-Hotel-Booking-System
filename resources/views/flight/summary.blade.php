@@ -83,12 +83,12 @@
             margin-left: 30px;
         }
 
-        .seat_btn{
+        .option_btn{
             text-align: center;
             font-size: 19px;
         }
 
-        .seat_btn i{
+        .option_btn i{
             border: 1px solid #2d6098;
             padding: 5px 7px;
             border-radius: 2px;
@@ -118,6 +118,11 @@
             color: #ffffff;
             border: 0;
             cursor: auto;
+        }
+        
+        .option_btn .fa-umbrella-beach{
+            background: #585858;
+            border: 0;
         }
 
         .total_pass{
@@ -164,14 +169,15 @@
                             <th>燃油</th>
                             <th>機位</th>
                             <th>選位</th>
+                            <th>Trip</th>
                         </tr>
                         </thead>
                         <tbody id="myTable">
 
                         @foreach($booking as $key => $bk)
                             <tr class="book_row book_{{$bk->related_flight_id}}" data-sid="{{$bk->related_flight_id}}" style="">
-                                <td style="width: 200px;"><img src="https://countryflags.io/{{$bk->country_code}}/flat/32.png">　{{$bk->country}}</td>
-                                <td style="width: 200px;"><img src="https://countryflags.io/{{$bk->arr_country_code}}/flat/32.png">　{{$bk->arr_country}}</td>
+                                <td style="width: 160px;"><img src="https://countryflags.io/{{$bk->country_code}}/flat/32.png">　{{$bk->country}}</td>
+                                <td style="width: 160px;"><img src="https://countryflags.io/{{$bk->arr_country_code}}/flat/32.png">　{{$bk->arr_country}}</td>
                                 <td>{{$bk->dep_airport}}</td>
                                 <td>{{$bk->arr_airport}}</td>
                                 <td style="width: 100px;">{{substr($bk->dep_date,0,10)}}</td>
@@ -183,7 +189,7 @@
                                 <td>$ {{$bk->price}}</td>
                                 <td>$ {{$bk->tax}}</td>
                                 <td>{{$bk->class}}</td>
-                                <td class="seat_btn">
+                                <td class="option_btn">
                                     @php
                                         $dep_time = (substr($bk->dep_date,0,10)).' '.$bk->flight_start;
                                         $dep_time = strtotime($dep_time);
@@ -198,6 +204,9 @@
                                     @else
                                         <span class="disable_seat"> <i class="fas fa-times"></i></span>
                                     @endif
+                                </td>
+                                <td class="option_btn">
+                                    <a href="trip/plan?f={{$bk->related_flight_id}}"><i class="fas fa-umbrella-beach"></i></a>
                                 </td>
                             </tr>
                             <tr class="book_detail bk_detail{{$bk->related_flight_id}} animated bounceInLeft faster">
@@ -339,27 +348,34 @@
         $(".dropdown").click(function () {
             $(".dropdown").addClass('open');
         });
+        
+        var option = false;
+        $(".option_btn").click(function () {
+            option = true;
+        });
 
         $('.book_row').each(function () {
             $(this).on("click", function () {
-                var sid = $(this).data('sid');
-                var sbg = $('#sbg').val();
-                if(sbg != sid) {
-                    $('.book_'+sid).css("background-color", "#f4cfcf");
-                    $('.book_'+sbg).css("background-color", "white");
-                    $('#sbg').val(sid);
-                }
+                if(option == false){
+                    var sid = $(this).data('sid');
+                    var sbg = $('#sbg').val();
+                    if(sbg != sid) {
+                        $('.book_'+sid).css("background-color", "#f4cfcf");
+                        $('.book_'+sbg).css("background-color", "white");
+                        $('#sbg').val(sid);
+                    }
 
-                if ($('.bk_detail' + sid).hasClass("act") == false) {
+                    if ($('.bk_detail' + sid).hasClass("act") == false) {
 
-                    $('.bk_detail' + sid).fadeIn();
-                    $('.bk_detail' + sid).addClass('act');
+                        $('.bk_detail' + sid).fadeIn();
+                        $('.bk_detail' + sid).addClass('act');
 
-                    $('.book_detail:not(.bk_detail' + sid + ')').hide();
-                    $('.book_detail:not(.bk_detail' + sid + ')').removeClass('act');
-                } else {
-                    $('.bk_detail' + sid).fadeOut();
-                    $('.bk_detail' + sid).removeClass('act');
+                        $('.book_detail:not(.bk_detail' + sid + ')').hide();
+                        $('.book_detail:not(.bk_detail' + sid + ')').removeClass('act');
+                    } else {
+                        $('.bk_detail' + sid).fadeOut();
+                        $('.bk_detail' + sid).removeClass('act');
+                    }
                 }
             });
         });
