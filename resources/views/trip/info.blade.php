@@ -53,7 +53,7 @@
     <div class="trip_details row">
 
         <div class="flight_section col-md-6">
-            <div class="flight_title">
+            <div class="trip_title">
                 <i class="fas fa-ticket-alt"></i> Electronic flight ticket
                 <a href="{{URL::to('/')}}/flight-summary" target="_blank"><i class="fas fa-link"></i></a>
             </div>
@@ -166,7 +166,7 @@
         <div class="hotel_section col-md-6">
         @if($booking != null)
                 <div class="load_hotel">
-                    <div class="flight_title">
+                    <div class="trip_title">
                         <i class="fas fa-hotel"></i> Hotel booking
                         <a href="{{URL::to('/')}}/book/booklist" target="_blank"><i class="fas fa-link"></i></a>
                     </div>
@@ -243,6 +243,54 @@
         </div>
         @endif
         
+        </div>
+        
+        <div class="col-md-12 iti_section">
+            <div class="trip_title">
+                <i class="fas fa-umbrella-beach"></i> Itinerary
+                <a href="{{URL::to('/')}}/trip/itinerary/all/{{Auth::user()->id}}" target="_blank"><i class="fas fa-link"></i></a>
+            </div>
+            @if(count($trip_data->itinerary) > 0)
+                <div class="row itinerary_boxs">
+                    <div class="col-md-12">
+                        <div class="container book_container">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr class="table_header">
+                                        <th>Country</th>
+                                        <th>City</th>
+                                        <th>Trip Start</th>
+                                        <th>Trip End</th>
+                                        <th>Total Day</th>
+                                        <th>View & Update</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($trip_data->itinerary as $k => $itinerary)
+                                            <tr>
+                                                <td>
+                                                    @if($iti_info[$k]['flag'] != null)
+                                                        <img src="https://countryflags.io/{{$iti_info[$k]['flag']}}/flat/32.png">
+                                                    @endif
+                                                </td>
+                                                <td>{{ucfirst($iti_info[$k]['city'])}}</td>
+                                                <td>{{$iti_info[$k]['start']}}</td>
+                                                <td>{{$iti_info[$k]['end']}}</td>
+                                                <td>{{$iti_info[$k]['total']}} Days</td>
+                                                <td class="edit_btn">
+                                                    <a href="../itinerary/{{$itinerary['id']}}" target="_blank"><i class="fas fa-eye"></i></a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            <i class="fas fa-calendar-minus"></i> Total <b>{{count($trip_data->itinerary)}}</b> of itineraries.
         </div>
 
         <div class="col-md-12 reload_area">

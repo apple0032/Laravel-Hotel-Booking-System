@@ -223,12 +223,15 @@ class TripController extends Controller
         $bk = self::getHotelBookingFromNodeAPI($trip_data->user_id);
         //$bk = null;
         //echo '<pre>';print_r($bk);echo '</pre>';die();
+        
+        $iti_info = self::getItineraryDetails($trip_data->itinerary);
 
         return view('trip.info')
             ->with('flight',$flight)
             ->with('booking',$booking)
             ->with('trip_data',$trip_data)
             ->with('trip',$trip)
+            ->with('iti_info',$iti_info)
             ->with('bk',$bk);
     }
 
@@ -724,6 +727,25 @@ class TripController extends Controller
     public function ItineraryAll($user_id){
 
         $itineraries = Itinerary::where('user_id', '=', $user_id)->get()->toArray();
+        $city = self::getItineraryDetails($itineraries);
+
+        //print_r($city);die();
+        //print_r($itinerary);die();
+
+        return view('trip.itinerary_index')
+            ->with('city',$city)
+            ->with('itineraries',$itineraries);
+    }
+
+    public function getCountryCodeByAPI($name){
+        $url = 'https://restcountries.eu/rest/v2/name/'.$name;
+        $result = file_get_contents($url, false);
+
+        return $result;
+    }
+    
+    public function getItineraryDetails($itineraries){
+        
         $city = array();
         foreach($itineraries as $k =>$itinerary){
             $json = json_decode($itinerary['itinerary_obj'],true);
@@ -748,20 +770,8 @@ class TripController extends Controller
             $city[$k]['end'] = $json['trip_end'];
             $city[$k]['total'] = $json['trip_days'];
         }
-
-        //print_r($city);die();
-        //print_r($itinerary);die();
-
-        return view('trip.itinerary_index')
-            ->with('city',$city)
-            ->with('itineraries',$itineraries);
-    }
-
-    public function getCountryCodeByAPI($name){
-        $url = 'https://restcountries.eu/rest/v2/name/'.$name;
-        $result = file_get_contents($url, false);
-
-        return $result;
+        
+        return $city;
     }
 
     public function ItineraryDelete($id){

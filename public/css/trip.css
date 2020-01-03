@@ -104,14 +104,14 @@
     font-size: 6px;
 }
 
-.flight_title{
+.trip_title{
     text-transform: uppercase;
     font-family: 'Bree Serif', serif;
     font-size: 25px;
     margin-bottom: 12px;
 }
 
-.flight_title i{
+.trip_title i{
     margin-right: 15px;
 }
 
@@ -222,4 +222,20 @@
     border-top: 1px dotted #ccc;
     margin-top: 10px;
     padding-top: 10px;
+}
+
+.edit_btn{
+    font-size:20px;
+    text-align:center;
+}
+        
+.iti_section{
+    margin-top: 20px;
+    padding-top:20px;
+    margin-bottom: 20px;
+    border-top: 1px dotted #ccc;
+}
+
+.itinerary_boxs{
+    margin-top:5px;
 }
