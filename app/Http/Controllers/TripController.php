@@ -579,22 +579,27 @@ class TripController extends Controller
                 //print_r($flight_obj);die();
                 $flight_info['related_flight_id'] = $flight;
                 $flight_info['city'] = $flight_obj[0]['city'];
-                $cities = Cities::where('name', '=', $flight_info['city'])->get()->first();
-                $country = Country::where('country_id', '=', $cities->country_id)->get()->first();
-                $flight_info['country'] = $country->name;
-                
-                count($flight_obj) == 2 ? $flight_info['round-trip'] = true : $flight_info['round-trip'] = false;
-                
-                if(count($flight_obj) == 2){
-                    if($flight_obj[1]['dep_date'] > $flight_obj[0]['dep_date']){
-                        $flight_info['dep'] = $flight_obj[0]['dep_date'];
-                        $flight_info['arr'] = $flight_obj[1]['dep_date'];
+
+                if($flight_info['city'] != null) {
+                    $cities = Cities::where('name', '=', $flight_info['city'])->get()->first();
+                    $country = Country::where('country_id', '=', $cities->country_id)->get()->first();
+                    $flight_info['country'] = $country->name;
+
+                    count($flight_obj) == 2 ? $flight_info['round-trip'] = true : $flight_info['round-trip'] = false;
+
+                    if (count($flight_obj) == 2) {
+                        if ($flight_obj[1]['dep_date'] > $flight_obj[0]['dep_date']) {
+                            $flight_info['dep'] = $flight_obj[0]['dep_date'];
+                            $flight_info['arr'] = $flight_obj[1]['dep_date'];
+                        } else {
+                            $flight_info['dep'] = $flight_obj[1]['dep_date'];
+                            $flight_info['arr'] = $flight_obj[0]['dep_date'];
+                        }
                     } else {
-                        $flight_info['dep'] = $flight_obj[1]['dep_date'];
-                        $flight_info['arr'] = $flight_obj[0]['dep_date'];
+                        $flight_info['arr'] = $flight_info['dep'] = $flight_obj[0]['dep_date'];
                     }
                 } else {
-                    $flight_info['arr'] = $flight_info['dep'] = $flight_obj[0]['dep_date'];
+                    $flight_info = null;
                 }
             }
         }

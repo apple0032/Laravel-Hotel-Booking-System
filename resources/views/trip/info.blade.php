@@ -249,6 +249,7 @@
             <div class="trip_title">
                 <i class="fas fa-umbrella-beach"></i> Itinerary
                 <a href="{{URL::to('/')}}/trip/itinerary/all/{{Auth::user()->id}}" target="_blank"><i class="fas fa-link"></i></a>
+                <a href="{{URL::to('/')}}/trip/plan?f={{$trip_data->related_flight_id}}" target="_blank"><i class="fas fa-plus-circle"></i></a>
             </div>
             @if(count($trip_data->itinerary) > 0)
                 <div class="row itinerary_boxs">
@@ -279,7 +280,7 @@
                                                 <td>{{$iti_info[$k]['end']}}</td>
                                                 <td>{{$iti_info[$k]['total']}} Days</td>
                                                 <td class="edit_btn">
-                                                    <a href="../itinerary/{{$itinerary['id']}}" target="_blank"><i class="fas fa-eye"></i></a>
+                                                    <a href="{{URL::to('/')}}/trip/itinerary/{{$itinerary['id']}}" target="_blank"><i class="fas fa-eye"></i></a>
                                                 </td>
                                             </tr>
                                         @endforeach
