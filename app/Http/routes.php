@@ -89,6 +89,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/trip/updateItinerary','TripController@updateItinerary');
     Route::post('/trip/searchAttractions','TripController@searchAttractions');
     Route::post('/trip/updateRoomView','TripController@updateRoomView');
+    Route::post('/trip/dismatchItinerary','TripController@dismatchItinerary');
+    Route::post('/trip/matchItinerary','TripController@matchItinerary');
     
     //Image
     Route::post('/images-save', 'UploadImagesController@store');

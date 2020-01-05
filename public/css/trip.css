@@ -142,7 +142,7 @@
 }
 
 .no_hotel_block{
-    padding-top:60px;
+    padding-top:20px;
     margin: 0;
 }
 
@@ -160,7 +160,7 @@
     background:#4a9afe;
 }
 
-.no_hotel_button:hover, .dismatch_btn:hover, .reload-btn:hover{
+.no_hotel_button:hover, .dismatch_btn:hover, .reload-btn:hover, .add-btn:hover{
     box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,.9);
 }
 
@@ -228,6 +228,11 @@
     font-size:20px;
     text-align:center;
 }
+
+.edit_btn i{
+    color: #337ab7;
+    cursor: pointer;
+}
         
 .iti_section{
     margin-top: 20px;
@@ -238,4 +243,28 @@
 
 .itinerary_boxs{
     margin-top:5px;
+}
+
+.flag {
+    text-align: center;
+    background-color: #070f1012;
+}
+
+.table_header{
+    background: #cbcbcb;
+}
+
+.add_itinerary{
+    margin-top: 20px;
+}
+
+.add-btn{
+    width: 100px;
+    border-radius: 5px;
+    text-align: center;
+    padding: 5px 10px;
+    color: white;
+    background: #db7569;
+    cursor: pointer;
+    transition: 0.2s all;
 }

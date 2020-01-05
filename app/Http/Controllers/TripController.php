@@ -218,7 +218,23 @@ class TripController extends Controller
         //print_r($trip_data->itinerary);die();
         //echo '<pre>';print_r($booking);echo '</pre>';die();
 
+
+        //Get all itinerary by user_id & country name
         $city = Cities::where('name','=',$trip_data->city)->first();
+        $country = Country::where('country_id', '=', $city->country_id)->get()->first();
+        $result = self::getCountryCodeByAPI($country->name);
+        $result = json_decode($result,true);
+        $country = $result[0]['alpha2Code'];
+
+        $itineraries = Itinerary::where('user_id', '=', Auth::user()->id)->where('trip_id','=',null)->get();
+        $itineraries = self::getItineraryDetails($itineraries);
+        foreach ($itineraries as $k => $iti){
+            if($iti['flag'] != $country){
+                unset($itineraries[$k]);
+            }
+        }
+        //print_r($itineraries);die();
+
 
         $bk = self::getHotelBookingFromNodeAPI($trip_data->user_id);
         //$bk = null;
@@ -232,6 +248,7 @@ class TripController extends Controller
             ->with('trip_data',$trip_data)
             ->with('trip',$trip)
             ->with('iti_info',$iti_info)
+            ->with('itineraries',$itineraries)
             ->with('bk',$bk);
     }
 
@@ -753,6 +770,7 @@ class TripController extends Controller
         
         $city = array();
         foreach($itineraries as $k =>$itinerary){
+            $city[$k]['id'] = $itinerary['id'];
             $json = json_decode($itinerary['itinerary_obj'],true);
             $city[$k]['city'] = $json['city_name'];
             $flag = Airports::where('municipality', '=', $city[$k]['city'])->get()->first();
@@ -835,6 +853,27 @@ class TripController extends Controller
         $update_obj = json_encode($stay_obj);
 
         $itinerary->stay_obj = $update_obj;
+        $itinerary->save();
+
+        return;
+    }
+
+
+    public function dismatchItinerary(Request $request){
+
+        //print_r($request->id);die();
+        $itinerary = Itinerary::where('id','=',$request->id)->first();
+        $itinerary->trip_id = null;
+        $itinerary->save();
+
+        return;
+    }
+
+    public function matchItinerary(Request $request){
+
+        //print_r($request->id);die();
+        $itinerary = Itinerary::where('id','=',$request->id)->first();
+        $itinerary->trip_id = $request->sid;
         $itinerary->save();
 
         return;

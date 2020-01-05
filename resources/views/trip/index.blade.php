@@ -114,6 +114,8 @@
             text-align: center;
             font-family: "Montserrat", sans-serif;
             min-height:  720px;
+            pointer-events: none;
+            opacity: 0.05;
         }
         .timeline .row {
             margin-bottom: 50px;
@@ -346,7 +348,19 @@
         }
         
         .trip_content{
-            text-align: center
+            text-align: center;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+
+        .page_loading,.trip_loading{
+            text-align: center;
+            padding-right: 64px;
+        }
+
+        .page_loading .lds-hourglass, .trip_loading .lds-hourglass{
+            position: absolute;
+            padding-top: 30px;
         }
     </style>
 
@@ -360,6 +374,9 @@
                 </h3>
             </div>
         </section>
+        <div class="page_loading">
+            <div class="lds-hourglass"></div>
+        </div>
         <section class="timeline">
             <div class="container">
                 @if($trip != null)
@@ -409,17 +426,17 @@
 
                 <!-- Modal content-->
                 <div class="modal-content">
-                    <div class="modal-body">
+                    <div class="modal-body" style="min-height: 600px">
                         <div class="trip_header">
                             <div class="trip_header_country">
                                 <span></span>
                             </div>
                         </div>
-
-                        <div class="trip_content">
+                        <div class="trip_loading">
                             <div class="lds-hourglass"></div>
+                        </div>
+                        <div class="trip_content">
                             <!-- Get info via ajax -->
-
                         </div>
 
 
@@ -448,6 +465,12 @@
 
     <script>
 
+        window.addEventListener('load', function () {
+            //Wait until the page was loaded
+            $('.page_loading').css("display", "none");
+            $('.timeline').css("pointer-events", "all").css("opacity", "1");
+        });
+
         $('.country-block').each(function () {
             $(this).on("click", function () {
                 var sid = $(this).data('sid');
@@ -465,6 +488,9 @@
         function ajaxLoad(sid,userid){
             //ajax to load trip details
             $('.trip_content').load('trip/info/'+sid+' .trip_details', function () {
+
+                tripLoadingFinish();
+
                 var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 
                 $('.no_hotel_button').click(function () {
@@ -484,10 +510,52 @@
                 });
 
                 $('.dismatch_btn').click(function () {
-                    var con = confirm("Sure to dismatch?");
+                    var con = confirm("Sure to Mismatch?");
                     if (con) {
                         ApiUpdateMatching(CSRF_TOKEN, sid, 0);
                     }
+                });
+
+                $('.fa-trash').click(function () {
+                    var con = confirm("Sure to Mismatch?");
+                    if (con) {
+                        var iti_id = $(this).parent().find('.iti_id').val();
+                        $.ajax({
+                            url: 'trip/dismatchItinerary',
+                            type: 'POST',
+                            data: {
+                                _token: CSRF_TOKEN,
+                                id : iti_id
+                            },
+                            dataType: 'JSON',
+                            beforeSend: function () {
+                                tripLoading();
+                            },
+                            complete: function () {
+                                $(".reload-btn").click();
+                            }
+                        });
+                    }
+                });
+
+                $('.add-btn').click(function () {
+                    var iti_id = $('#iti_list').val();
+                    $.ajax({
+                        url: 'trip/matchItinerary',
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            id : iti_id,
+                            sid: sid
+                        },
+                        dataType: 'JSON',
+                        beforeSend: function () {
+                            tripLoading();
+                        },
+                        complete: function () {
+                            $(".reload-btn").click();
+                        }
+                    });
                 });
 
                 $(".reload-btn").click(function () {
@@ -507,13 +575,22 @@
                         },
                         dataType: 'JSON',
                         beforeSend: function () {
-
+                            tripLoading();
                         },
                         success: function (data) {
-                            //$('.hotel_section').html('');
-                            $('.hotel_section').load('trip/info/'+sid+' .load_hotel', function () {});
+                            $(".reload-btn").click();
                         }
                     });
+                }
+
+                function tripLoading() {
+                    $('.trip_loading').css("display","block");
+                    $('.trip_content').css("pointer-events", "none").css("opacity", "0.1");
+                }
+
+                function tripLoadingFinish() {
+                    $('.trip_loading').css("display","none");
+                    $('.trip_content').css("pointer-events", "all").css("opacity", "1");
                 }
             });
         }

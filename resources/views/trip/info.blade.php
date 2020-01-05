@@ -44,7 +44,7 @@
         }
 
         body {
-            background-image: url('') !important;
+            background-image: none !important;
             background: #f2f2f2;
         }
         
@@ -238,7 +238,7 @@
         @if($booking != null)
         <div class="col-md-12">
             <div class="dismatch_btn">
-                <i class="fas fa-ban"></i> Dismatch this booking
+                <i class="fas fa-ban"></i> Mismatch this booking
             </div>
         </div>
         @endif
@@ -265,12 +265,13 @@
                                         <th>Trip End</th>
                                         <th>Total Day</th>
                                         <th>View & Update</th>
+                                        <th>Mismatch</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($trip_data->itinerary as $k => $itinerary)
                                             <tr>
-                                                <td>
+                                                <td class="flag">
                                                     @if($iti_info[$k]['flag'] != null)
                                                         <img src="https://countryflags.io/{{$iti_info[$k]['flag']}}/flat/32.png">
                                                     @endif
@@ -282,6 +283,10 @@
                                                 <td class="edit_btn">
                                                     <a href="{{URL::to('/')}}/trip/itinerary/{{$itinerary['id']}}" target="_blank"><i class="fas fa-eye"></i></a>
                                                 </td>
+                                                <td class="edit_btn">
+                                                    <i class="fas fa-trash"></i>
+                                                    <input type="hidden" class="iti_id" value="{{$itinerary['id']}}">
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -292,6 +297,23 @@
                 </div>
             @endif
             <i class="fas fa-calendar-minus"></i> Total <b>{{count($trip_data->itinerary)}}</b> of itineraries.
+
+            @if($itineraries != null)
+                <div class="row add_itinerary">
+                    <div class="col-md-5">
+                        <select class="form-control" id="iti_list">
+                            @foreach($itineraries as $iti_item)
+                                <option value="{{$iti_item['id']}}">{{ucfirst($iti_item['city'])}} / From ({{$iti_item['start']}}) To ({{$iti_item['end']}}) / {{$iti_item['total']}} Days </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="add-btn">
+                            <i class="fas fa-plus"></i> Add
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <div class="col-md-12 reload_area">
