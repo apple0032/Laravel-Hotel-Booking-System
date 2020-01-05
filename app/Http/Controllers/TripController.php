@@ -220,19 +220,21 @@ class TripController extends Controller
 
 
         //Get all itinerary by user_id & country name
-        $city = Cities::where('name','=',$trip_data->city)->first();
-        $country = Country::where('country_id', '=', $city->country_id)->get()->first();
-        $result = self::getCountryCodeByAPI($country->name);
-        $result = json_decode($result,true);
-        $country = $result[0]['alpha2Code'];
+        if($trip_data->city != null) {
+            $city = Cities::where('name', '=', $trip_data->city)->first();
+            $country = Country::where('country_id', '=', $city->country_id)->get()->first();
+            $result = self::getCountryCodeByAPI($country->name);
+            $result = json_decode($result, true);
+            $country = $result[0]['alpha2Code'];
 
-        $itineraries = Itinerary::where('user_id', '=', Auth::user()->id)->where('trip_id','=',null)->get();
-        $itineraries = self::getItineraryDetails($itineraries);
-        foreach ($itineraries as $k => $iti){
-            if($iti['flag'] != $country){
-                unset($itineraries[$k]);
+            $itineraries = Itinerary::where('user_id', '=', Auth::user()->id)->where('trip_id', '=', null)->get();
+            $itineraries = self::getItineraryDetails($itineraries);
+            foreach ($itineraries as $k => $iti) {
+                if ($iti['flag'] != $country) {
+                    unset($itineraries[$k]);
+                }
             }
-        }
+        } else {$itineraries = null;}
         //print_r($itineraries);die();
 
 

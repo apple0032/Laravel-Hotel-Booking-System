@@ -476,17 +476,20 @@
                 var sid = $(this).data('sid');
                 var img = $(this).data('img');
                 var country = $(this).data('country');
-                var userid = <?php print_r(Auth::user()->id)?>
+                //var userid = <?php print_r(Auth::user()->id)?>
 
                 $('.trip_header').css("background-image", "url('"+img+"')");
                 $('.trip_header_country span').html(country);
 
-                ajaxLoad(sid,userid);
+                ajaxLoad(sid);
             });
         });
 
-        function ajaxLoad(sid,userid){
+        function ajaxLoad(sid){
             //ajax to load trip details
+            $('.trip_loading').css("display","block");
+            $('.trip_content').css("pointer-events", "none").css("opacity", "0.1");
+
             $('.trip_content').load('trip/info/'+sid+' .trip_details', function () {
 
                 tripLoadingFinish();
