@@ -24,11 +24,11 @@
         }
 
         body {
-            font-family: "Noto Sans TC", sans-serif !important;
+            font-family: 'Quicksand', sans-serif !important;
         }
 
         .book_container {
-            margin-bottom: 40px;
+            margin-bottom: 120px;
         }
 
         .book_row {
@@ -143,11 +143,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="container book_container">
-                <h2><i class="fas fa-plane-departure"></i> 您的航班預約</h2><br>
+                <h2><i class="fas fa-plane-departure"></i> Flight Booking</h2><br>
 
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fas fa-search"></i></span>
-                    <input class="form-control" id="myInput" type="text" placeholder="搜尋">
+                    <input class="form-control" id="myInput" type="text" placeholder="Search">
                 </div>
 
                 <br>
@@ -155,20 +155,20 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr class="table_header">
-                            <th>出發國家</th>
-                            <th>到達國家</th>
-                            <th>出發</th>
-                            <th>到達</th>
-                            <th>日期</th>
-                            <th>航空公司</th>
-                            <th>航班</th>
-                            <th>起飛</th>
-                            <th>落機</th>
-                            <th>需時</th>
-                            <th>價錢</th>
-                            <th>燃油</th>
-                            <th>機位</th>
-                            <th>選位</th>
+                            <th>Departure</th>
+                            <th>Arrival</th>
+                            <th>Departure Airport</th>
+                            <th>Arrival Airport</th>
+                            <th>Date</th>
+                            <th>Airlines</th>
+                            <th>Flight</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Time</th>
+                            <th>Price</th>
+                            <th>Fuel</th>
+                            <th>Seat</th>
+                            <th>Choose</th>
                             <th>Trip</th>
                         </tr>
                         </thead>
@@ -326,7 +326,7 @@
                     </table>
                 </div>
 
-                <i class="fas fa-bars"></i> 您共有 <b>{{$booking->count()}}</b> 項航班預約記錄
+                <i class="fas fa-bars"></i> You have total <b>{{$booking->count()}}</b> flight booking record.
             </div>
 
 

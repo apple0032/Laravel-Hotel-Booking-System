@@ -193,7 +193,7 @@
                             @endif
 
                                 <li><a href="{{ route('hotel.booklist') }}"><i class="fas fa-bed"></i> &nbsp; Booking</a></li>
-                                <li><a href="{{ route('hotel.payment') }}"><i class="far fa-credit-card"></i> &nbsp; Payment</a></li>
+                                <li><a href="{{ route('hotel.payment') }}"><i class="fas fa-money-check-alt"></i> &nbsp; Payment</a></li>
                                 <li><a href="{{ route('flight.summary') }}"><i class="fas fa-plane-departure"></i> &nbsp; Flight</a></li>
                                 <li><a href="{{ route('trip.itinerary_all',Auth::user()->id) }}"><i class="fas fa-umbrella-beach"></i> &nbsp; Itinerary</a></li>
                                 <li><a href="{{ route('trip.trip') }}"><i class="fas fa-map-marked"></i> &nbsp; Trip</a></li>

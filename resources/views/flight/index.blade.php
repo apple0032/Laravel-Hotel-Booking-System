@@ -262,7 +262,7 @@
                         <div class="row search_exclamation">
                             <div class="col-md-12">
                                 <i class="fas fa-exclamation-circle"></i>
-                                <span>請輸入國家名稱並在選單點選, 然後再簡選機場</span>
+                                <span>請輸入並點選國家然後選擇機場 Please enter and select country name then select airport</span>
                             </div>
                         </div>
 

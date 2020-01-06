@@ -61,11 +61,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="container book_container">
-                <h2>您的帳單紀錄</h2><br>
+                <h2><i class="fas fa-money-check-alt"></i> Payment Record</h2><br>
 
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fas fa-search"></i></span>
-                    <input class="form-control" id="myInput" type="text" placeholder="搜尋">
+                    <input class="form-control" id="myInput" type="text" placeholder="Search">
                 </div>
 
                 <br>
@@ -73,17 +73,17 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr class="table_header">
-                            <th>酒店</th>
-                            <th>酒店房間</th>
-                            <th>人數</th>
-                            <th>入住日數</th>
-                            <th>每晚收費</th>
-                            <th>預訂手續費</th>
-                            <th>總價錢</th>
-                            <th>付款方式</th>
-                            <th>卡號</th>
-                            <th>付款狀態</th>
-                            <th>創建時間</th>
+                            <th>Hotel</th>
+                            <th>Room Class</th>
+                            <th>People</th>
+                            <th>Days</th>
+                            <th>Price/day</th>
+                            <th>Handling Fee</th>
+                            <th>Total Price</th>
+                            <th>Method</th>
+                            <th>Card Number</th>
+                            <th>Status</th>
+                            <th>Create Datetime</th>
 
                         </tr>
                         </thead>
@@ -137,7 +137,7 @@
                     </table>
                 </div>
 
-                <i class="far fa-credit-card"></i> 您共有 <b>{{$booking->count()}}</b> 項帳單紀錄
+                <i class="far fa-credit-card"></i> You have total <b>{{$booking->count()}}</b> of payment record
             </div>
 
 

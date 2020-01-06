@@ -178,7 +178,7 @@
                                     @if(Trip::getTrip($bk->id) == false)
                                         <a href="booklist?bkhotel={{$bk->id}}"><i class="fas fa-plane"></i></a>
                                     @else
-                                        <a href="{{URL::to('/')}}/trip"><span class="booked_flight">已預訂</span></a>
+                                        <a href="#"><span class="booked_flight">已預訂</span></a>
                                     @endif
                                 </td>
                             </tr>
@@ -316,7 +316,7 @@
                     </table>
                 </div>
 
-                <i class="fas fa-hotel"></i> 您共有 <b>{{$booking->count()}}</b> 項酒店預約
+                <i class="fas fa-hotel"></i> You have total <b>{{$booking->count()}}</b> of Hotel Bookings
             </div>
 
 

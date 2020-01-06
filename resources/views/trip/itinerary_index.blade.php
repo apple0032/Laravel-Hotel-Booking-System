@@ -40,11 +40,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="container book_container">
-                <h2><i class="fas fa-umbrella-beach"></i> Your itineraries</h2><br>
+                <h2><i class="fas fa-umbrella-beach"></i> Itineraries</h2><br>
 
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fas fa-search"></i></span>
-                    <input class="form-control" id="myInput" type="text" placeholder="搜尋">
+                    <input class="form-control" id="myInput" type="text" placeholder="Search">
                 </div>
 
                 <br>
