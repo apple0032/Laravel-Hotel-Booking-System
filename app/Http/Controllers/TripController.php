@@ -932,5 +932,8 @@ https://admin.sygictraveldata.com/data-export/zf8979vspcvz61dya3pyxbvsduyjtnh4
  * https://api.sygictravelapi.com/1.1/en/places/poi:19822/media
 
 
-
+/******
+ *
+ * Testing git function on new win 10 PC environment
+ *
 */
