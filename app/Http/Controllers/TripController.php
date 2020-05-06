@@ -529,7 +529,7 @@ class TripController extends Controller
 
     public function getPOIStringFromNodeAPI($pois){
         $host = request()->getHost();
-        $host = 'http://'.$host.':8080/pois';
+        $host = 'http://'.$host.':8080/trip/pois';
         $api_key = ApiInfo::NodeAPI();
 
         $post = [
@@ -552,7 +552,7 @@ class TripController extends Controller
 
     public function getPOIDetailsFromNodeAPI($pois){
         $host = request()->getHost();
-        $host = 'http://'.$host.':8080/pois-info';
+        $host = 'http://'.$host.':8080/trip/pois-info';
         $api_key = ApiInfo::NodeAPI();
 
         $post = [
@@ -686,6 +686,11 @@ class TripController extends Controller
         //print_r($request->day);
         //print_r($request->obj);
 
+        $hotel_details = null;
+        if($request->hotel_details != ""){
+            $hotel_details = $request->hotel_details;
+        }
+
         $obj = json_encode($request->obj);
         $obj = '{"pois": ' . $obj . '}';
 
@@ -696,7 +701,7 @@ class TripController extends Controller
         $day = array_keys( $poi_details['schedule'][$request->day] )[0];
 
         $host = request()->getHost();
-        $host = 'http://'.$host.':8080/trip-update';
+        $host = 'http://'.$host.':8080/trip/update';
         $api_key = ApiInfo::NodeAPI();
 
         $post = [
@@ -704,7 +709,7 @@ class TripController extends Controller
             'date' => $day,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
-            'hotel' => $request->hotel_details
+            'hotel' => $hotel_details
         ];
 
         $ch = curl_init($host);

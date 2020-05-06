@@ -492,6 +492,7 @@
             height: 55px;
             visibility: visible !important;
             color: #ddd !important;
+            background-color: rgba(33, 237, 255, 0.04);
         }
         
         .not_found_msg{
